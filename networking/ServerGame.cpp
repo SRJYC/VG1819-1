@@ -209,19 +209,19 @@ namespace networking
 						printf("Server received SUMMON_UNIT packet from [Client: %d]\n", iter->first);
 						Buffer buffer;
 						buffer.m_data = &(m_network_data[i]);
-						buffer.m_size = SUMMON_UNIT_PACKET_SIZE;
+						buffer.m_size = UNIT_PACKET_SIZE;
 
-						SummonUnitPacket summonUnitPacket;
+						UnitPacket summonUnitPacket;
 						summonUnitPacket.deserialize(buffer);
-						i += SUMMON_UNIT_PACKET_SIZE;
+						i += UNIT_PACKET_SIZE;
 						printf("Server sending Unit index: %d, posX: %d, posY: %d\n", summonUnitPacket.m_unitId, summonUnitPacket.m_posX, summonUnitPacket.m_posY);
 						
-						char data[SUMMON_UNIT_PACKET_SIZE];
+						char data[UNIT_PACKET_SIZE];
 						Buffer newBuffer;
 						newBuffer.m_data = data;
-						newBuffer.m_size = SUMMON_UNIT_PACKET_SIZE;
+						newBuffer.m_size = UNIT_PACKET_SIZE;
 						summonUnitPacket.serialize(newBuffer);
-						m_network->sendToOthers(iter->first, data, SUMMON_UNIT_PACKET_SIZE);
+						m_network->sendToOthers(iter->first, data, UNIT_PACKET_SIZE);
 
 						//sendSummonedUnitPacket(iter->first, summonUnitPacket);
 
@@ -229,11 +229,12 @@ namespace networking
 					}
 					case STARTING_COMMANDER_DATA:
 					{
+						printf("Server received STARTING_COMMANDER_DATA packet from [Client: %d]\n", iter->first);
 						Buffer buffer;
 						buffer.m_data = &(m_network_data[i]);
-						buffer.m_size = SUMMON_UNIT_PACKET_SIZE;
+						buffer.m_size = UNIT_PACKET_SIZE;
 
-						SummonUnitPacket commanderDataPacket;
+						UnitPacket commanderDataPacket;
 						commanderDataPacket.deserialize(buffer);
 
 						m_commanders.push_back(commanderDataPacket);
@@ -246,21 +247,22 @@ namespace networking
 
 							StartingCommandersPacket commandersPacket;
 							commandersPacket.m_packetType = STARTING_COMMANDER_DATA;
-							commandersPacket.m_clientId = -1;
+							commandersPacket.m_clientId = -1; // -1 to signal originally from the Server
 
-							commandersPacket.m_client1Id = m_commanders[0].m_clientId;
-							commandersPacket.m_player1Commander = m_commanders[0].m_unitId;
-							commandersPacket.m_pos1X = m_commanders[0].m_posX;
-							commandersPacket.m_pos1Y = m_commanders[0].m_posY;
+							commandersPacket.commander0.clientId = m_commanders[0].m_clientId;
+							commandersPacket.commander0.unitId = m_commanders[0].m_unitId;
+							commandersPacket.commander0.posX = m_commanders[0].m_posX;
+							commandersPacket.commander0.posY = m_commanders[0].m_posY;
 
-							commandersPacket.m_client2Id = m_commanders[1].m_clientId;
-							commandersPacket.m_player2Commander = m_commanders[1].m_unitId;
-							commandersPacket.m_pos2X = m_commanders[1].m_posX;
-							commandersPacket.m_pos2Y = m_commanders[1].m_posY;
+							commandersPacket.commander1.clientId = m_commanders[1].m_clientId;
+							commandersPacket.commander1.unitId = m_commanders[1].m_unitId;
+							commandersPacket.commander1.posX = m_commanders[1].m_posX;
+							commandersPacket.commander1.posY = m_commanders[1].m_posY;
+
 							commandersPacket.serialize(newBuffer);
 							m_network->sendToAll(data, STARTING_COMMANDERS_PACKET_SIZE);
 						}
-						i += SUMMON_UNIT_PACKET_SIZE;
+						i += UNIT_PACKET_SIZE;
 						break;
 					}
 					case SKIP_TURN:
@@ -289,12 +291,12 @@ namespace networking
 		}
 	}
 
-	void ServerGame::sendSummonedUnitPacket(unsigned int p_iClientId, SummonUnitPacket p_packet)
+	void ServerGame::sendSummonedUnitPacket(unsigned int p_iClientId, UnitPacket p_packet)
 	{
-		char packet_data[SUMMON_UNIT_PACKET_SIZE];
+		char packet_data[UNIT_PACKET_SIZE];
 
 		//p_packet.serialize(packet_data);
 
-		m_network->sendToOthers(p_iClientId, packet_data, SUMMON_UNIT_PACKET_SIZE);
+		m_network->sendToOthers(p_iClientId, packet_data, UNIT_PACKET_SIZE);
 	}
 }

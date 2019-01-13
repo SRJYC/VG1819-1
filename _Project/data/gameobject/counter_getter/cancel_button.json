@@ -1,0 +1,24 @@
+{
+    "name" : "Cancel Button", 
+    "components" : [
+        {
+            "name" : "UIObject",
+            "texture" : "textures/ui/buttons/blank_button.tga"
+        },
+        {
+            "name" : "ClickableButton",
+            "regularTexture" : "textures/ui/buttons/button_cancel.png",
+            "highlightedTexture" : "textures/ui/buttons/button_cancel_highlight.png"
+        },
+        {
+            "name" : "ClickableFrame"
+        },
+        {
+            "name" : "CounterGetterButton",
+            "behavior":"cancel"
+        }
+    ],
+    "translate" : [0,0,0.05],
+    "translate2d":[650,270],
+    "scale2d": [100,50]
+}

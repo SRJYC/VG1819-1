@@ -98,7 +98,7 @@ namespace unit
 		unit::Unit* unit = kibble::getUnitInstanceFromId(p_unit->m_kibbleID);
 
 		// Add all differences to take into account are here. ---------------------------
-		unit->m_attributes[UNIT_COST] = (int)p_unit->m_attributes[UNIT_COST];
+		unit->m_attributes = p_unit->m_attributes;
 
 		return spawnUnitObjectInternally(unit);
 	}

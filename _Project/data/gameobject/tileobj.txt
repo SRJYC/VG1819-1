@@ -10,7 +10,7 @@
         },
 	{
 		"name" : "QuadEdgeRenderable",
-		"enabled" : true
+		"enabled" : false
 	}
     ]
 }

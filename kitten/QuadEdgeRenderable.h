@@ -6,7 +6,7 @@
 
 #define P1_EDGE_TEXTURE "textures/ui/saphire.png"
 #define P2_EDGE_TEXTURE "textures/ui/topaz.png"
-#define DEFAULT_EDGE_TEXTURE "textures/crap/smoke.tga"
+#define DEFAULT_EDGE_TEXTURE "textures/ui/white.png"
 
 namespace kitten
 {

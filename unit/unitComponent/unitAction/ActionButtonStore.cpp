@@ -130,14 +130,10 @@ void unit::ActionButtonStore::setButton(const std::string & p_msg, bool p_a, int
 	a->setUnit(m_unit);
 	a->setActive(p_a);
 
-	userinterface::ClickableButton* cb = go->getComponent<userinterface::ClickableButton>();
 	if (p_cd > 0 || !p_a)
 	{
+		userinterface::ClickableButton* cb = go->getComponent<userinterface::ClickableButton>();
 		cb->setActive(false);
-	}
-	else
-	{
-		cb->setActive(true);
 	}
 
 	go->setEnabled(true);

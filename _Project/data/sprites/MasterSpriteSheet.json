@@ -16,7 +16,6 @@
 		"ArmorySheet.json",
 		"KingSheet.json",
 		"QueenSheet.json",
-		"WallSheet.json",
-		"UnitAuraSheet.json"
+		"WallSheet.json"
 	]
 }

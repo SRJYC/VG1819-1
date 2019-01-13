@@ -25,7 +25,7 @@ namespace networking
 		void update();
 		void receiveFromClients();
 		
-		void sendSummonedUnitPacket(unsigned int p_iClientId, SummonUnitPacket p_packet);
+		void sendSummonedUnitPacket(unsigned int p_iClientId, UnitPacket p_packet);
 
 		void flagShutdown(bool p_flag) { m_shutdown = p_flag; }
 
@@ -44,6 +44,6 @@ namespace networking
 		static bool sm_networkValid;
 
 		// Vector to hold the starting data of all player's Commanders
-		std::vector<SummonUnitPacket> m_commanders;
+		std::vector<UnitPacket> m_commanders;
 	};
 }

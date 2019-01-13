@@ -327,7 +327,8 @@
     <ClCompile Include="..\UI\UIObject.cpp" />
     <ClCompile Include="..\UI\CommanderContext.cpp" />
     <ClCompile Include="..\unitInteraction\CounterGetter.cpp" />
-    <ClCompile Include="..\unitInteraction\CounterGetterDisplay.cpp" />
+    <ClCompile Include="..\unitInteraction\CounterGetterButton.cpp" />
+    <ClCompile Include="..\unitInteraction\CounterGetterController.cpp" />
     <ClCompile Include="..\unitInteraction\TileGetter.cpp" />
     <ClCompile Include="..\unitInteraction\UnitInteractionManager.cpp" />
     <ClCompile Include="..\unit\InitiativeTracker\InitiativeTracker.cpp" />
@@ -652,7 +653,8 @@
     <ClInclude Include="..\UI\CommanderContext.h" />
     <ClInclude Include="..\UI\CardArt.h" />
     <ClInclude Include="..\unitInteraction\CounterGetter.h" />
-    <ClInclude Include="..\unitInteraction\CounterGetterDisplay.h" />
+    <ClInclude Include="..\unitInteraction\CounterGetterButton.h" />
+    <ClInclude Include="..\unitInteraction\CounterGetterController.h" />
     <ClInclude Include="..\unitInteraction\TileGetter.h" />
     <ClInclude Include="..\unitInteraction\UnitInteractionManager.h" />
     <ClInclude Include="..\unit\InitiativeTracker\InitiativeTracker.h" />

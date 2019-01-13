@@ -1,0 +1,14 @@
+{
+    "name" : "Counter Getter", 
+    "components" : [
+        {
+            "name":"UIObject",
+            "texture":"textures/ui/slider_bar.png"
+        },
+        {
+            "name":"CounterGetterController"
+        }
+    ],
+    "translate2d" : [390,260],
+    "scale2d": [500,200]
+}

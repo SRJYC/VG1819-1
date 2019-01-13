@@ -12,7 +12,7 @@
 
 #define BASIC_PACKET_SIZE sizeof(Packet)
 #define SKIP_TURN_PACKET_SIZE sizeof(SkipTurnPacket)
-#define SUMMON_UNIT_PACKET_SIZE sizeof(SummonUnitPacket)
+#define UNIT_PACKET_SIZE sizeof(UnitPacket)
 #define STARTING_COMMANDERS_PACKET_SIZE sizeof(StartingCommandersPacket)
 #define TEST_PACKET_SIZE sizeof(TestPacket)
 
@@ -28,6 +28,13 @@ enum PacketTypes {
 	GAME_TURN_START,
 	STARTING_COMMANDER_DATA,
 	DESYNCED
+};
+
+struct UnitInfo
+{
+	int clientId;	// Who owns the unit
+	int unitId;		// Kibble unit ID
+	int posX, posY; // Tile coordinates
 };
 
 class Buffer
@@ -95,15 +102,14 @@ struct Packet {
 	}
 };
 
-struct SummonUnitPacket : Packet
+struct UnitPacket : Packet
 {
 	int m_unitId;
 	int m_posX, m_posY;
 
 	void serialize(Buffer& p_buffer) 
 	{
-		writeInt(p_buffer, m_packetType);
-		writeInt(p_buffer, m_clientId);
+		Packet::serialize(p_buffer);
 		writeInt(p_buffer, m_unitId);
 		writeInt(p_buffer, m_posX);
 		writeInt(p_buffer, m_posY);
@@ -111,8 +117,7 @@ struct SummonUnitPacket : Packet
 
 	void deserialize(Buffer& p_buffer)
 	{
-		m_packetType = readInt(p_buffer);
-		m_clientId = readInt(p_buffer);
+		Packet::deserialize(p_buffer);
 		m_unitId = readInt(p_buffer);
 		m_posX = readInt(p_buffer);
 		m_posY = readInt(p_buffer);
@@ -140,36 +145,35 @@ struct SkipTurnPacket : Packet
 
 struct StartingCommandersPacket : Packet
 {
-	int m_client1Id, m_client2Id;
-	int m_player1Commander, m_player2Commander;
-	int m_pos1X, m_pos1Y, m_pos2X, m_pos2Y;
+	UnitInfo commander0;
+	UnitInfo commander1;
 
 	void serialize(Buffer& p_buffer)
 	{
-		writeInt(p_buffer, m_packetType);
-		writeInt(p_buffer, m_clientId);
-		writeInt(p_buffer, m_client1Id);
-		writeInt(p_buffer, m_client2Id);
-		writeInt(p_buffer, m_player1Commander);
-		writeInt(p_buffer, m_pos1X);
-		writeInt(p_buffer, m_pos1Y);
-		writeInt(p_buffer, m_player2Commander);
-		writeInt(p_buffer, m_pos2X);
-		writeInt(p_buffer, m_pos2Y);
+		Packet::serialize(p_buffer);
+		writeInt(p_buffer, commander0.clientId);
+		writeInt(p_buffer, commander0.unitId);
+		writeInt(p_buffer, commander0.posX);
+		writeInt(p_buffer, commander0.posY);
+
+		writeInt(p_buffer, commander1.clientId);
+		writeInt(p_buffer, commander1.unitId);
+		writeInt(p_buffer, commander1.posX);
+		writeInt(p_buffer, commander1.posY);
 	}
 
 	void deserialize(Buffer& p_buffer)
 	{
-		m_packetType = readInt(p_buffer);
-		m_clientId = readInt(p_buffer);
-		m_client1Id = readInt(p_buffer);
-		m_client2Id = readInt(p_buffer);
-		m_player1Commander = readInt(p_buffer);
-		m_pos1X = readInt(p_buffer);
-		m_pos1Y = readInt(p_buffer);
-		m_player2Commander = readInt(p_buffer);
-		m_pos2X = readInt(p_buffer);
-		m_pos2Y = readInt(p_buffer);
+		Packet::deserialize(p_buffer);
+		commander0.clientId = readInt(p_buffer);
+		commander0.unitId = readInt(p_buffer);
+		commander0.posX = readInt(p_buffer);
+		commander0.posY = readInt(p_buffer);
+
+		commander1.clientId = readInt(p_buffer);
+		commander1.unitId = readInt(p_buffer);
+		commander1.posX = readInt(p_buffer);
+		commander1.posY = readInt(p_buffer);
 	}
 };
 

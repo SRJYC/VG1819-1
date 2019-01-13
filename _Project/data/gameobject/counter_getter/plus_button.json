@@ -1,0 +1,24 @@
+{
+    "name" : "plus Button", 
+    "components" : [
+        {
+            "name" : "UIObject",
+            "texture" : "textures/ui/buttons/blank_button.tga"
+        },
+        {
+            "name" : "ClickableButton",
+            "regularTexture" : "textures/ui/buttons/button_slider_plus.png",
+            "highlightedTexture" : "textures/ui/buttons/button_slider_plus_highlight.png"
+        },
+        {
+            "name" : "ClickableFrame"
+        },
+        {
+            "name" : "CounterGetterButton",
+            "behavior":"plus"
+        }
+    ],
+    "translate" : [0,0,0.05],
+    "translate2d":[830,280],
+    "scale2d": [50,50]
+}

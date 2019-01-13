@@ -1,0 +1,24 @@
+{
+    "name" : "Check Button", 
+    "components" : [
+        {
+            "name" : "UIObject",
+            "texture" : "textures/ui/buttons/blank_button.tga"
+        },
+        {
+            "name" : "ClickableButton",
+            "regularTexture" : "textures/ui/buttons/button_check.png",
+            "highlightedTexture" : "textures/ui/buttons/button_check_highlight.png"
+        },
+        {
+            "name" : "ClickableFrame"
+        },
+        {
+            "name" : "CounterGetterButton",
+            "behavior":"check"
+        }
+    ],
+    "translate" : [0,0,0.05],
+    "translate2d":[540,270],
+    "scale2d": [100,50]
+}

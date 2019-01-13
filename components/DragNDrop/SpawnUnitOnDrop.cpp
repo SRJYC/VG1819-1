@@ -12,7 +12,30 @@
 #include "board/BoardManager.h"
 #include <iostream>
 
+// Networking
+#include "networking\ClientGame.h"
+
 #define CARD_HOVER_MOVE_TIME 0.2
+
+void SpawnUnitOnDrop::onClick()
+{
+	if (networking::ClientGame::isNetworkValid())
+	{
+		if (unit::InitiativeTracker::getInstance()->getCurrentUnitIndex() >= 0)
+		{
+			unit::Unit* currentUnit = unit::InitiativeTracker::getInstance()->getCurrentUnit()->getComponent<unit::Unit>();
+			unit::Unit* clientCommander = networking::ClientGame::getInstance()->getCommander();
+			if (currentUnit == clientCommander)
+			{
+				DragNDrop::onClick();
+			}
+		}
+	}
+	else
+	{
+		DragNDrop::onClick();
+	}
+}
 
 void SpawnUnitOnDrop::onDrop()
 {
@@ -44,6 +67,13 @@ void SpawnUnitOnDrop::onDrop()
 
 	// Generate Unit and set Tile
 	unit::UnitSpawn::getInstance()->spawnUnitObject(unit)->getComponent<unit::UnitMove>()->setTile(targetTile);
+
+	// Send the summoned unit if we're playing multiplayer
+	if (networking::ClientGame::isNetworkValid())
+	{
+		TileInfo* tileInfo = targetTile->getComponent<TileInfo>();
+		networking::ClientGame::getInstance()->sendSummonUnitPacket(unit->m_kibbleID, tileInfo->getPosX(), tileInfo->getPosY());
+	}
 
 	// Remove Card from hand
 	userinterface::CardUIO* cardUIObject = this->m_attachedObject->getComponent<userinterface::CardUIO>();

@@ -1,0 +1,11 @@
+{
+    "name" : "Min Counter", 
+    "components" : [
+        {
+            "name":"TextBox",
+            "message":"min"
+        }
+    ],
+    "translate" : [0,0,0.1],
+    "translate2d" : [400,410]
+}

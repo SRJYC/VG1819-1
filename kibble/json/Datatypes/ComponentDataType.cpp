@@ -923,13 +923,7 @@ kitten::K_Component* getMainMenuBoard(nlohmann::json* p_jsonFile)
 
 #include "unit/InitiativeTracker/UnitAura.h"
 kitten::K_Component* getUnitAura(nlohmann::json* p_jsonFile) {
-	float p_speed, p_max, p_min;
-
-	SETOPTDEF(p_speed, "speed",0.005);
-	SETOPTDEF(p_max, "max",1.2);
-	SETOPTDEF(p_min, "min",0.8);
-
-	return new unit::UnitAura(p_speed,p_max,p_min);
+	return new unit::UnitAura();
 }
 
 #include "unit/unitComponent/UnitSelect.h"
@@ -1475,6 +1469,29 @@ kitten::K_Component* getDirectionalLight(nlohmann::json* p_jsonFile) {
 	return new kitten::K_DirectionalLight(ambientColor, directionalColor, useCallbacks);
 }
 
+#include "unitInteraction/CounterGetterButton.h"
+kitten::K_Component* getCounterGetterButton(nlohmann::json* p_jsonFile) {
+	std::string behavior;
+	CounterGetterButton::ButtonBehavior b;
+	SETOPT(behavior, "behavior");
+	
+	if (behavior == "plus")
+		b = CounterGetterButton::plus;
+	else if (behavior == "minus")
+		b = CounterGetterButton::minus;
+	else if (behavior == "check")
+		b = CounterGetterButton::check;
+	else
+		b = CounterGetterButton::cancel;
+
+	return new CounterGetterButton(b);
+}
+
+#include "unitInteraction/CounterGetterController.h"
+kitten::K_Component* getCounterGetterController(nlohmann::json* p_jsonFile) {
+	return new CounterGetterController();
+}
+
 std::map<std::string, kitten::K_Component* (*)(nlohmann::json* p_jsonFile)> jsonComponentMap;
 void setupComponentMap() {
 	jsonComponentMap["MoveByMouseRightClickDrag"] = &getMoveByMouseRightClickDrag;
@@ -1583,7 +1600,8 @@ void setupComponentMap() {
 	jsonComponentMap["DirectionalLight"] = &getDirectionalLight;
 	jsonComponentMap["PivotTextBox"] = &getPivotTextBox;
 	jsonComponentMap["CardArt"] = &getCardArt;
-
+	jsonComponentMap["CounterGetterController"] = &getCounterGetterController;
+	jsonComponentMap["CounterGetterButton"] = &getCounterGetterButton;
 }
 
 kitten::K_Component* getRelatedComponentBy(nlohmann::json* p_jsonFile) {

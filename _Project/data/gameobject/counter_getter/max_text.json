@@ -1,0 +1,11 @@
+{
+    "name" : "Max Counter", 
+    "components" : [
+        {
+            "name":"TextBox",
+            "message":"max"
+        }
+    ],
+    "translate" : [0,0,0.1],
+    "translate2d" : [830,410]
+}

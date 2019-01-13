@@ -1,0 +1,12 @@
+{
+    "name" : "Current Counter", 
+    "components" : [
+        {
+            "name":"TextBox",
+            "message":"current",
+            "alignment":"center"
+        }
+    ],
+    "translate" : [0,0,0.1],
+    "translate2d" : [400,410]
+}

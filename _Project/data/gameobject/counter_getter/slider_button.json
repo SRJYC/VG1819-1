@@ -1,0 +1,12 @@
+{
+    "name" : "Counter Getter", 
+    "components" : [
+        {
+            "name":"UIObject",
+            "texture":"textures/ui/slider_button.png"
+        }
+    ],
+    "translate":[0,0,0.1],
+    "translate2d" : [400,350],
+    "scale2d": [30,30]
+}

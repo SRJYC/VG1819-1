@@ -523,9 +523,6 @@
     <ClCompile Include="..\unitInteraction\CounterGetter.cpp">
       <Filter>unitInteraction</Filter>
     </ClCompile>
-    <ClCompile Include="..\unitInteraction\CounterGetterDisplay.cpp">
-      <Filter>unitInteraction</Filter>
-    </ClCompile>
     <ClCompile Include="..\puppy\Particles\AccelerationAff.cpp">
       <Filter>puppy\particles</Filter>
     </ClCompile>
@@ -836,6 +833,12 @@
     </ClCompile>
     <ClCompile Include="ShowLoadingOnClick.cpp">
       <Filter>components\scene changers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unitInteraction\CounterGetterButton.cpp">
+      <Filter>unitInteraction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\unitInteraction\CounterGetterController.cpp">
+      <Filter>unitInteraction</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1286,9 +1289,6 @@
       <Filter>ability</Filter>
     </ClInclude>
     <ClInclude Include="..\unitInteraction\CounterGetter.h">
-      <Filter>unitInteraction</Filter>
-    </ClInclude>
-    <ClInclude Include="..\unitInteraction\CounterGetterDisplay.h">
       <Filter>unitInteraction</Filter>
     </ClInclude>
     <ClInclude Include="..\puppy\Particles\AccelerationAff.h">
@@ -1797,6 +1797,12 @@
     </ClInclude>
     <ClInclude Include="..\UI\CardArt.h">
       <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unitInteraction\CounterGetterButton.h">
+      <Filter>unitInteraction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\unitInteraction\CounterGetterController.h">
+      <Filter>unitInteraction</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

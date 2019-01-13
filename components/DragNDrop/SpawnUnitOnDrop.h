@@ -12,6 +12,7 @@ public:
 	~SpawnUnitOnDrop();
 
 	void start() override;
+	void onClick() override;
 	void onHoverStart() override;
 	void onHoverEnd() override;
 	void onDrop() override;

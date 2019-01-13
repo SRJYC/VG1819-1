@@ -8,7 +8,6 @@ CounterGetter:
 
 #pragma once
 #include "UnitInteractionManager.h"
-#include "CounterGetterDisplay.h"
 class CounterGetter
 {
 public:
@@ -21,7 +20,7 @@ public:
 	void cancel();
 private:
 	std::string m_name;
-	kitten::K_GameObject* m_displayWindoGO;
+	kitten::K_GameObject* m_displayWindowGO;
 
 	void getAllCounter(unit::Unit * p_source);
 	void playerChooseCounter(unit::AbilityDescription * p_ad, unit::Unit * p_source);
