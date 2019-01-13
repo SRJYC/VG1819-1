@@ -46,7 +46,7 @@ void kitten::SimpleQuadRenderable::onDisabled()
 {
 	if (m_isStatic)
 	{
-		removeFromStaticRender(m_staticTex);
+		removeFromStaticRender(*m_mat);
 	}
 	else
 	{
@@ -112,7 +112,7 @@ kitten::SimpleQuadRenderable::~SimpleQuadRenderable()
 	{
 		if (m_isEnabled && m_isRenderingStatic)
 		{
-			removeFromStaticRender(m_staticTex);
+			removeFromStaticRender(*m_mat);
 		}
 		else if (m_isEnabled)
 		{

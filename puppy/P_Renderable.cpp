@@ -4,9 +4,14 @@
 
 namespace puppy
 {
-	void P_Renderable::addToStaticRender(const Texture* p_texNeeded, TexturedVertex p_data[], int p_numElements)
+	void P_Renderable::addToStaticRender(const Material& p_mat, const TexturedVertex p_data[], int p_numElements)
 	{
-		puppy::StaticRenderables::getInstance()->addToRender(this, p_texNeeded, p_data, p_numElements);
+		puppy::StaticRenderables::getInstance()->addToRender(this, &p_mat, p_data, p_numElements);
+	}
+
+	void P_Renderable::addToStaticRender(const Material& p_mat, const NormalVertex p_data[], int p_numElements)
+	{
+		puppy::StaticRenderables::getInstance()->addToRender(this, &p_mat, p_data, p_numElements);
 	}
 
 	void P_Renderable::addToDynamicRender()
@@ -14,9 +19,9 @@ namespace puppy
 		puppy::Renderer::getInstance()->addToRender(this);
 	}
 
-	void P_Renderable::removeFromStaticRender(const Texture* p_tex)
+	void P_Renderable::removeFromStaticRender(const Material& p_mat, bool p_usedNormals)
 	{
-		puppy::StaticRenderables::getInstance()->removeFromRender(this, p_tex);
+		puppy::StaticRenderables::getInstance()->removeFromRender(this, &p_mat, p_usedNormals);
 	}
 
 	void P_Renderable::removeFromDynamicRender()

@@ -4,9 +4,9 @@
 
 namespace puppy
 {
-	void P_UIRenderable::addToStaticUIRender(const Texture* p_texNeeded, TexturedVertex p_data[], int p_numElements)
+	void P_UIRenderable::addToStaticUIRender(const Material& p_mat, TexturedVertex p_data[], int p_numElements)
 	{
-		puppy::StaticRenderables::getInstance()->addToUIRender(this, p_texNeeded, p_data, p_numElements);
+		puppy::StaticRenderables::getInstance()->addToUIRender(this, &p_mat, p_data, p_numElements);
 	}
 
 	void P_UIRenderable::addToDynamicUIRender()
@@ -14,9 +14,9 @@ namespace puppy
 		puppy::Renderer::getInstance()->addUIToRender(this);
 	}
 
-	void P_UIRenderable::removeFromStaticUIRender(const Texture* p_tex)
+	void P_UIRenderable::removeFromStaticUIRender(const Material& p_mat)
 	{
-		puppy::StaticRenderables::getInstance()->removeFromUIRender(this, p_tex);
+		puppy::StaticRenderables::getInstance()->removeFromUIRender(this, &p_mat);
 	}
 
 	void P_UIRenderable::removeFromDynamicUIRender()

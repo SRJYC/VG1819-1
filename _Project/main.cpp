@@ -60,9 +60,8 @@ int main( void )
     // Ensure we can capture the escape key being pressed below
     glfwEnable( GLFW_STICKY_KEYS );
 	glEnable(GL_DEPTH_TEST);
-	
 
-    // Enable vertical sync (on cards that support it)
+    // VSYNC, 0 = Off, 1 = On, 2 = Halved, ...
     glfwSwapInterval( 0 );
     
 	kitten::initGame();
