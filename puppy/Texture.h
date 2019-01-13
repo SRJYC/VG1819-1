@@ -45,7 +45,7 @@ namespace puppy
 
 		void setSlot(int p_slot);
 
-		const GLuint* getTex() const;
+		GLuint getTex() const;
 		const std::string& getPath() const;
 
 		void apply() const;

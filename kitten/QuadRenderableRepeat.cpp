@@ -34,129 +34,120 @@ namespace kitten
 
 	QuadRenderableRepeat::~QuadRenderableRepeat()
 	{
-		if (!m_isStatic)
-		{
-			if (m_isEnabled)
-			{
-				removeFromDynamicRender();
-			}
-		} else
-		{
-			if (m_isEnabled && m_isRenderingStatic)
-			{
-				removeFromStaticRender(m_staticTex);
-			} else if (m_isEnabled)
-			{
-				removeFromDynamicRender();
-			}
-		}
+		onDisabled();
 	}
 
 	void QuadRenderableRepeat::addToStaticRender()
 	{
-		if (m_mat.getNumberOfTextures() == 1)
+		puppy::TexturedVertex verts[] =
 		{
-			puppy::TexturedVertex verts[] =
-			{
-				{ -0.5f, 0.0f, 0.5f,		0.0f, 0.0f },
-				{ 0.5f, 0.0f, 0.5f,			0.0f, m_vRepeat },
-				{ 0.5f, 0.0f,-0.5f,			m_uRepeat, m_vRepeat },
-				{ 0.5f, 0.0f,-0.5f,			m_uRepeat, m_vRepeat },
-				{ -0.5f, 0.0f,-0.5f,		m_uRepeat, 0.0f },
-				{ -0.5f, 0.0f, 0.5f,		0.0f, 0.0f },
-			};
+			{ -0.5f, 0.0f, 0.5f,		0.0f, 0.0f },
+			{ 0.5f, 0.0f, 0.5f,			0.0f, m_vRepeat },
+			{ 0.5f, 0.0f,-0.5f,			m_uRepeat, m_vRepeat },
+			{ 0.5f, 0.0f,-0.5f,			m_uRepeat, m_vRepeat },
+			{ -0.5f, 0.0f,-0.5f,		m_uRepeat, 0.0f },
+			{ -0.5f, 0.0f, 0.5f,		0.0f, 0.0f },
+		};
 
-			//Transform into world space
-			puppy::StaticRenderables::putInWorldSpace(verts, 6, getTransform().getWorldTransform());
+		//Transform into world space
+		puppy::StaticRenderables::putInWorldSpace(verts, 6, getTransform().getWorldTransform());
 
-			m_staticTex = m_mat.getOwnedTexture();
-
-			K_Renderable::addToStaticRender(m_staticTex, verts, 6);
-		}
+		K_Renderable::addToStaticRender(m_mat, verts, 6);
 	}
 
 	void QuadRenderableRepeat::setTexture(const char* p_pathToTex)
 	{
-		m_mat.setTexture(p_pathToTex);
-
 		if (m_isStatic && m_isEnabled)
 		{
-			if (m_isRenderingStatic && m_mat.getNumberOfTextures() > 1)
+			if (m_isRenderingStatic)
 			{
-				removeFromStaticRender(m_staticTex);
-				addToDynamicRender();
-				m_isRenderingStatic = false;
-			} else if (m_hasStarted && m_mat.getNumberOfTextures() == 1)
-			{
-				m_isRenderingStatic = true;
-				addToStaticRender(); //Started, but we were not added to static render because we had no texture
+				removeFromStaticRender(m_mat);
 			}
+
+			m_mat.setTexture(p_pathToTex);
+
+			addToStaticRender();
+			m_isRenderingStatic = true;
+		}
+		else
+		{
+			m_mat.setTexture(p_pathToTex);
 		}
 	}
 
 	void QuadRenderableRepeat::addTexture(puppy::Texture* p_tex, const float& p_weight)
 	{
-		m_mat.addTexture(p_tex, p_weight);
-
 		if (m_isStatic && m_isEnabled)
 		{
-			if (m_isRenderingStatic && m_mat.getNumberOfTextures() > 1)
+			if (m_isRenderingStatic)
 			{
-				removeFromStaticRender(m_staticTex);
-				addToDynamicRender();
-				m_isRenderingStatic = false;
-			} else if (m_hasStarted && m_mat.getNumberOfTextures() == 1)
-			{
-				m_isRenderingStatic = true;
-				addToStaticRender(); //Started, but we were not added to static render because we had no texture
+				removeFromStaticRender(m_mat);
 			}
+
+			m_mat.addTexture(p_tex, p_weight);
+
+			addToStaticRender();
+			m_isRenderingStatic = true;
+		}
+		else
+		{
+			m_mat.addTexture(p_tex, p_weight);
 		}
 	}
 
 	void QuadRenderableRepeat::removeTexture(puppy::Texture* p_tex)
 	{
-		m_mat.removeTexture(p_tex);
-
-		if (m_isStatic)
+		if (m_isStatic && m_isEnabled)
 		{
-			if (m_mat.getNumberOfTextures() == 1 && m_isEnabled)
+			if (m_isRenderingStatic)
 			{
-				removeFromDynamicRender();
-				addToStaticRender();
-				m_isRenderingStatic = true;
+				removeFromStaticRender(m_mat);
 			}
+
+			m_mat.removeTexture(p_tex);
+
+			addToStaticRender();
+			m_isRenderingStatic = true;
+		}
+		else
+		{
+			m_mat.removeTexture(p_tex);
 		}
 	}
 
 	void QuadRenderableRepeat::changeWeight(puppy::Texture* p_tex, const float& p_weight)
 	{
-		m_mat.changeWeight(p_tex, p_weight);
+		if (m_isStatic && m_isEnabled)
+		{
+			if (m_isRenderingStatic)
+			{
+				removeFromStaticRender(m_mat);
+			}
+
+			m_mat.changeWeight(p_tex, p_weight);
+
+			addToStaticRender();
+			m_isRenderingStatic = true;
+		}
+		else
+		{
+			m_mat.changeWeight(p_tex, p_weight);
+		}
 	}
 
 	void QuadRenderableRepeat::start()
 	{
-		if (m_isStatic && m_mat.getNumberOfTextures() == 1)
-		{
-			m_isRenderingStatic = true;
-			addToStaticRender();
-		} else if (!m_isStatic)
-		{
-			addToDynamicRender();
-		}
+		onEnabled();
 	}
 
 	void QuadRenderableRepeat::onDisabled()
 	{
-		if (m_isStatic)
+		if (m_isStatic && m_isRenderingStatic)
 		{
-			if (m_mat.getNumberOfTextures() == 1)
-			{
-				removeFromStaticRender(m_staticTex);
-			} else
-			{
-				removeFromDynamicRender();
-			}
-		} else
+			removeFromStaticRender(m_mat);
+			m_isRenderingStatic = false;
+		}
+		else if (!m_isStatic)
 		{
 			removeFromDynamicRender();
 		}
@@ -164,16 +155,12 @@ namespace kitten
 
 	void QuadRenderableRepeat::onEnabled()
 	{
-		if (m_isStatic)
+		if (m_isStatic && m_mat.getNumberOfTextures() > 0)
 		{
-			if (m_mat.getNumberOfTextures() == 1)
-			{
-				addToStaticRender();
-			} else
-			{
-				addToDynamicRender();
-			}
-		} else
+			addToStaticRender();
+			m_isRenderingStatic = true;
+		}
+		else if (!m_isStatic)
 		{
 			addToDynamicRender();
 		}

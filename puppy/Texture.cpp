@@ -150,9 +150,9 @@ namespace puppy
 		m_slot = p_slot;
 	}
 
-	const GLuint* Texture::getTex() const
+	GLuint Texture::getTex() const
 	{
-		return &(Texture::m_tex);
+		return m_tex;
 	}
 
 	const std::string& Texture::getPath() const

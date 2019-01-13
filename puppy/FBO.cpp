@@ -23,7 +23,7 @@ namespace puppy
 			glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 		}
 
-		glFramebufferTexture2D(GL_FRAMEBUFFER, p_attachment, GL_TEXTURE_2D, *(p_tex->getTex()), p_mipMapLevel);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, p_attachment, GL_TEXTURE_2D, p_tex->getTex(), p_mipMapLevel);
 	}
 
 	void FBO::setRenderBuffer(GLenum p_attachment, const puppy::RenderBuffer* p_buffer)
