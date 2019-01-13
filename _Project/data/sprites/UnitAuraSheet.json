@@ -1,0 +1,23 @@
+{
+	"name" : "aura",
+	"texture" : "textures/sprites/aura_sheet.png",
+	
+	"sheetwidth" : 500,
+	"sheetheight" : 52,
+	
+	"characterwidth" : 95,
+	"characterheight" : 47,
+	
+	"padding" : 5,
+	
+	"defaultanimation" : "idle",
+	
+	"animations" : [
+		{
+			"name" : "idle",
+			"startpos" : [0,0],
+			"endpos" : [4,0],
+			"time" : 1
+		}
+	]
+}

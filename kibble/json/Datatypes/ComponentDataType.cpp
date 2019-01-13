@@ -923,7 +923,13 @@ kitten::K_Component* getMainMenuBoard(nlohmann::json* p_jsonFile)
 
 #include "unit/InitiativeTracker/UnitAura.h"
 kitten::K_Component* getUnitAura(nlohmann::json* p_jsonFile) {
-	return new unit::UnitAura();
+	float p_speed, p_max, p_min;
+
+	SETOPTDEF(p_speed, "speed",0.005);
+	SETOPTDEF(p_max, "max",1.2);
+	SETOPTDEF(p_min, "min",0.8);
+
+	return new unit::UnitAura(p_speed,p_max,p_min);
 }
 
 #include "unit/unitComponent/UnitSelect.h"
@@ -1036,10 +1042,7 @@ kitten::K_Component* getModelRenderable(nlohmann::json* p_jsonFile) {
 	bool flipUvs;
 	SETOPTDEF(flipUvs, "flipUVs", false);
 
-	bool isStatic;
-	SETOPTDEF(isStatic, "static", true);
-
-	return new ModelRenderable(modelPath.c_str(), flipUvs, isStatic);
+	return new ModelRenderable(modelPath.c_str(), flipUvs);
 }
 
 #include "unit\unitComponent\UnitHealthBar.h"

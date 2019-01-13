@@ -13,9 +13,13 @@ namespace unit
 	{
 	private:
 		kitten::K_GameObject* m_auraGO;
-		const float m_speed = 0.1;
+		const float m_speed;
+		const float m_max;
+		const float m_min;
+		float m_scale;
+		bool m_pos;
 	public:
-		UnitAura();
+		UnitAura(float p_speed=0.001, float p_max=1.2, float p_min=0.8);
 		~UnitAura();
 
 		void start() override;

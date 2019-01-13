@@ -12,14 +12,14 @@ std::vector<kitten::K_GameObject*> DecorationGenerator::generateDecoration(TileI
 
 	switch (type)
 	{
-	//case LandInformation::Grass_land:
-	//	return generateGrassDecoration();
-	//case LandInformation::Forest_land:
-	//	return generateForestDecoration();
+	case LandInformation::Grass_land:
+		return generateGrassDecoration();
+	case LandInformation::Forest_land:
+		return generateForestDecoration();
 	case LandInformation::Garden_land:
 		return generateGardenDecoration();
-	//case LandInformation::Swamp_land:
-	//	return generateSwampDecoration();
+	case LandInformation::Swamp_land:
+		return generateSwampDecoration();
 	case LandInformation::Water_land:
 		return generateWaterDecoration(x, y);
 	case LandInformation::Sand_land:
@@ -32,7 +32,17 @@ std::vector<kitten::K_GameObject*> DecorationGenerator::generateDecoration(TileI
 std::vector<kitten::K_GameObject*> DecorationGenerator::generateGrassDecoration()
 {
 	std::vector<kitten::K_GameObject*> list;
-	
+	kitten::K_GameObject* k;
+	kitten::K_GameObjectManager* gm = kitten::K_GameObjectManager::getInstance();
+
+	/*
+	float chance = (float)rand() / RAND_MAX;
+	if (chance < 0.4)
+	{
+		k = gm->createNewGameObject("TileDecoration/grass/grass.json");
+		list.push_back(k);
+	}*/
+	/*
 	int n = rand() % MAX_DECO_NUM;//number of decoration
 
 	for (int i = 0; i < n; i++)
@@ -50,7 +60,7 @@ std::vector<kitten::K_GameObject*> DecorationGenerator::generateGrassDecoration(
 		}
 		
 		list.push_back(k);
-	}
+	}*/
 	
 	return list;
 }
@@ -58,25 +68,33 @@ std::vector<kitten::K_GameObject*> DecorationGenerator::generateGrassDecoration(
 std::vector<kitten::K_GameObject*> DecorationGenerator::generateForestDecoration()
 {
 	std::vector<kitten::K_GameObject*> list;
-	
-	//always have 1 tree
-	kitten::K_GameObject* k = kitten::K_GameObjectManager::getInstance()->createNewGameObject("Decoration_tree.json");
+	kitten::K_GameObject* k;
+	kitten::K_GameObjectManager* gm = kitten::K_GameObjectManager::getInstance();
+
+
+	//tree
+	k = gm->createNewGameObject("TileDecoration/forest/tree.json");
 	list.push_back(k);
 
-	//50% chance it will has one more decoration
-	float chance = (float)rand() / RAND_MAX;
-	if (chance < 0.5)
-	{
-		kitten::K_GameObject* k3 = kitten::K_GameObjectManager::getInstance()->createNewGameObject("Decoration_stone.json");
-		list.push_back(k3);
-	}
-	
+
 	return list;
 }
 
 std::vector<kitten::K_GameObject*> DecorationGenerator::generateGardenDecoration()
 {
-	return std::vector<kitten::K_GameObject*>();
+	std::vector<kitten::K_GameObject*> list;
+	kitten::K_GameObject* k;
+	kitten::K_GameObjectManager* gm = kitten::K_GameObjectManager::getInstance();
+
+	//fence
+	k = gm->createNewGameObject("TileDecoration/garden/fence.json");
+	list.push_back(k);
+
+	//flower
+	k = gm->createNewGameObject("TileDecoration/garden/flower.json");
+	list.push_back(k);
+
+	return list;
 }
 
 std::vector<kitten::K_GameObject*> DecorationGenerator::generateWaterDecoration(int p_posX, int p_posY)
@@ -122,16 +140,15 @@ std::vector<kitten::K_GameObject*> DecorationGenerator::generateSandDecoration(i
 
 std::vector<kitten::K_GameObject*> DecorationGenerator::generateSwampDecoration()
 {
-	
 	std::vector<kitten::K_GameObject*> list;
-	
-	//50% chance it will has one decoration
-	float chance = (float)rand() / RAND_MAX;
-	if (chance < 0.5)
-	{
-		kitten::K_GameObject* k = kitten::K_GameObjectManager::getInstance()->createNewGameObject("Decoration_swamp.json");
-		list.push_back(k);
-	}
+	kitten::K_GameObject* k;
+	kitten::K_GameObjectManager* gm = kitten::K_GameObjectManager::getInstance();
+
+	//k = gm->createNewGameObject("TileDecoration/swamp/swamp_tree.json");
+	//list.push_back(k);
+
+	k = gm->createNewGameObject("TileDecoration/swamp/skull.json");
+	list.push_back(k);
 
 	return list;
 }

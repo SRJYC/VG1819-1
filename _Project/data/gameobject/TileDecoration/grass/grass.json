@@ -1,0 +1,17 @@
+{
+    "name" : "grass", 
+    "gameobjects" :[
+        {
+            "name" : "grass",
+            "components" : [
+				{
+					"name" : "ModelRenderable",
+					"path" : "models/tile/grass_low_poly.obj"
+				}
+            ],
+            "scale" : [0.1,0.01,0.1],
+            "translate" : [0,0,0]
+        }
+
+    ]
+}

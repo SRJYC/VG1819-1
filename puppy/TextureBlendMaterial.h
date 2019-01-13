@@ -17,9 +17,6 @@ namespace puppy
 		TextureBlendMaterial();
 		~TextureBlendMaterial();
 
-		virtual bool operator==(const Material& p_other) const;
-		virtual Material* clone() const override;
-
 		virtual void setTexture(const char* p_pathToTex) override;
 		Texture* getOwnedTexture();
 
@@ -29,6 +26,6 @@ namespace puppy
 		void changeWeight(Texture* p_tex, const float& p_weight);
 		int getNumberOfTextures() const;
 
-		virtual void apply() const override;
+		virtual void apply() override;
 	};
 }

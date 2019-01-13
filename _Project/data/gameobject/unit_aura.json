@@ -2,14 +2,15 @@
     "name" : "unit aura",
     "components" : [
         {
-            "name" : "UnitAura"
+            "name":"UnitAura",
+            "speed":0.01
         },
         {
             "name" : "SimpleQuadRenderable",
-            "texture":"textures/ui/circle.tga"
-        }
+            "texture":"textures/ui/select.png"
+		}
     ],
-    "translate":[0,-0.499,0],
-    "scale" : [0.6,0,0.6],
+    "translate":[0,-0.45,0],
+    "scale" : [1,1,1],
 	"rotate" : [0, 0, 0]
 }
