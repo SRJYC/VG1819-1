@@ -2,10 +2,8 @@
 
 namespace userinterface 
 {
-	std::map<UIElement::pivotType, puppy::VertexEnvironment*> UIElement::sm_vao;
-	std::map<UIElement::pivotType, int> UIElement::sm_instances;
 
-	UIBarRenderable::UIBarRenderable(const char* p_pathToTexture = nullptr) : UIElement(p_pathToTexture)
+	UIBarRenderable::UIBarRenderable(const char* p_pathToTexture) : UIElement(p_pathToTexture)
 	{
 	}
 

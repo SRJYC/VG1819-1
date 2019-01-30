@@ -359,6 +359,7 @@
     <ClCompile Include="..\UI\CardUIO.cpp" />
     <ClCompile Include="..\UI\ClickableButton.cpp" />
     <ClCompile Include="..\UI\ClickableCard.cpp" />
+    <ClCompile Include="..\UI\CommanderHealthBar.cpp" />
     <ClCompile Include="..\UI\DragNDrop.cpp" />
     <ClCompile Include="..\UI\HandFrame.cpp" />
     <ClCompile Include="..\UI\InterfaceBuilder.cpp" />
@@ -711,6 +712,7 @@
     <ClInclude Include="..\UI\CardUIO.h" />
     <ClInclude Include="..\UI\ClickableButton.h" />
     <ClInclude Include="..\UI\ClickableCard.h" />
+    <ClInclude Include="..\UI\CommanderHealthBar.h" />
     <ClInclude Include="..\UI\DragNDrop.h" />
     <ClInclude Include="..\UI\HandFrame.h" />
     <ClInclude Include="..\UI\InterfaceBuilder.h" />

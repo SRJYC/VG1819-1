@@ -9,11 +9,10 @@
 #include "puppy\Text\PivotTextBox.h"
 #include "kibble\kibble.hpp"
 #include "kitten\InputManager.h"
-#include "unit\Unit.h"
 #include "kibble\databank\databank.hpp"
 #include "ability\AbilityManager.h"
 #include "UI\Borders\BorderPiece.h"
-#include "UI\CommanderHealthBar.h"
+//#include "UI\CommanderHealthBar.h"
 #include <string>
 #include <map>
 
@@ -80,7 +79,7 @@ namespace userinterface
 		portrait->getTransform().place2D(0.0f, winY);
 		glm::vec3 porTrans = portrait->getTransform().getTranslation();
 
-		unit::CommanderHealthBar* chpb = new unit::CommanderHealthBar(m_attachedCommander, portrait);
+	//	unit::CommanderHealthBar* chpb = new unit::CommanderHealthBar(m_attachedCommander, portrait);
 
 		//build partial borders
 		//bottom

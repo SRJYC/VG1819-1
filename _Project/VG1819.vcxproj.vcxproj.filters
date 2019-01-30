@@ -959,6 +959,9 @@
     <ClCompile Include="PlayParticleSystemOnEnable.cpp">
       <Filter>components\util</Filter>
     </ClCompile>
+    <ClCompile Include="..\UI\CommanderHealthBar.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
     <ClCompile Include="..\UI\UIBarRenderable.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -2007,6 +2010,9 @@
     </ClInclude>
     <ClInclude Include="..\UI\Borders\BorderPiece.h">
       <Filter>UI\Borders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UI\CommanderHealthBar.h">
+      <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="..\UI\UIBarRenderable.h">
       <Filter>UI</Filter>

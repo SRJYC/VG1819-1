@@ -8,7 +8,7 @@
 #include "UI\UIBarRenderable.h"
 
 namespace unit {
-	CommanderHealthBar::CommanderHealthBar(unit::Unit* p_commander, kitten::K_GameObject* p_uie, float p_lerpTimeScalar = 4.0f)
+	CommanderHealthBar::CommanderHealthBar(unit::Unit* p_commander, kitten::K_GameObject* p_uie, float p_lerpTimeScalar)
 		: m_attachedCommander(p_commander), m_oldHealthPercent(1.0), m_lerpTimeScalar(p_lerpTimeScalar),
 		m_healthMat(puppy::ShaderType::basic)
 	{

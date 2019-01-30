@@ -1,6 +1,5 @@
 #pragma once
 #include "UI\UIElement.h"
-#include "UI\CommanderHealthBar.h"
 
 namespace userinterface {
 	class UIBarRenderable : public UIElement
