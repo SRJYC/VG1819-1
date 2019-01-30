@@ -618,9 +618,6 @@
     <ClCompile Include="..\UI\ClickableCard.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\UI\ContextMenu.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="..\unit\InitiativeTracker\UnitAura.cpp">
       <Filter>unit\InitiativeTracker</Filter>
     </ClCompile>
@@ -961,6 +958,9 @@
     </ClCompile>
     <ClCompile Include="PlayParticleSystemOnEnable.cpp">
       <Filter>components\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UI\UIBarRenderable.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1516,9 +1516,6 @@
     <ClInclude Include="..\UI\ClickableCard.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\UI\ContextMenu.h">
-      <Filter>UI</Filter>
-    </ClInclude>
     <ClInclude Include="..\unit\unitComponent\UnitSelect.h">
       <Filter>unit\unitComponent</Filter>
     </ClInclude>
@@ -2010,6 +2007,9 @@
     </ClInclude>
     <ClInclude Include="..\UI\Borders\BorderPiece.h">
       <Filter>UI\Borders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UI\UIBarRenderable.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

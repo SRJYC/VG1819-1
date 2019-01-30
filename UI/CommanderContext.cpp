@@ -13,6 +13,7 @@
 #include "kibble\databank\databank.hpp"
 #include "ability\AbilityManager.h"
 #include "UI\Borders\BorderPiece.h"
+#include "UI\CommanderHealthBar.h"
 #include <string>
 #include <map>
 
@@ -78,6 +79,8 @@ namespace userinterface
 		portraitComp->setTexture(m_attachedCommander->getPortraitTexturePath().c_str());
 		portrait->getTransform().place2D(0.0f, winY);
 		glm::vec3 porTrans = portrait->getTransform().getTranslation();
+
+		unit::CommanderHealthBar* chpb = new unit::CommanderHealthBar(m_attachedCommander, portrait);
 
 		//build partial borders
 		//bottom

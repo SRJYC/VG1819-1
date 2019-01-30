@@ -30,6 +30,7 @@
 #include "networking\menu\NetworkHostButton.h"
 #include "networking\menu\NetworkJoinButton.h"
 #include "_Project\StringInputDisplay.h"
+#include "UI\UIBarRenderable.h"
 
 #include "unit/InitiativeTracker/TrackerBlock.h"
 #include "unit/InitiativeTracker/TrackerBlockClickable.h"
@@ -155,6 +156,10 @@ namespace kitten
 		else if (p_componentName == "CommanderContext") // Datadriven
 		{
 			comp = new userinterface::CommanderContext();
+		}
+		else if (p_componentName == "UIBarRenderable") // hard coded
+		{
+			comp = new userinterface::UIBarRenderable();
 		}
 		else if (p_componentName == "MoveByMouseRightClickDrag")// Datadriven
 		{
