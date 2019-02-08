@@ -30,6 +30,8 @@ public:
 	void cancel();
 
 	bool isBusy() const;
+
+	void reset();
 private:
 	static UnitInteractionManager* sm_instance;
 	UnitInteractionManager();

@@ -69,7 +69,7 @@ namespace kitten
 
 		BoardManager::createInstance();
 
-		//UnitInteractionManager::createInstance();
+		UnitInteractionManager::createInstance();
 
 		LandInfoManager::createInstance();
 		
@@ -250,7 +250,7 @@ namespace kitten
 		// move to gameplay-init component
 		//unit::InitiativeTracker::destroyInstance();
 		BoardManager::destroyInstance();
-		//UnitInteractionManager::destroyInstance();
+		UnitInteractionManager::destroyInstance();
 
 		LandInfoManager::destroyInstance();
 

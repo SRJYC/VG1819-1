@@ -34,12 +34,14 @@ void UnitInteractionManager::request(unit::Unit* p_unit, unit::AbilityDescriptio
 	if(m_ad->m_intValue.find("need_unit")!= m_ad->m_intValue.end())
 		m_needunit = m_ad->m_intValue["need_unit"];
 
-	m_getCounter = true;
+	//check if needs counter
+	m_getCounter = (p_ad->m_stringValue.find(COUNTER_NAME) == p_ad->m_stringValue.end());
 
+	/*
 	if (p_ad->m_stringValue.find(COUNTER_NAME) != p_ad->m_stringValue.end())//need counter
 	{
 		m_getCounter = false;
-	}
+	}*/
 
 	m_getTile = false;
 
@@ -86,6 +88,9 @@ UnitInteractionManager::~UnitInteractionManager()
 
 void UnitInteractionManager::cancel()
 {
+	if (!m_busy)
+		return;
+
 	//delete package
 	if (m_package != nullptr)
 	{
@@ -102,8 +107,8 @@ void UnitInteractionManager::cancel()
 		delete m_package;
 		m_package = nullptr;
 
-		m_counterGetter->cancel();
-		m_tileGetter->cancel();
+		//m_counterGetter->cancel();
+		//m_tileGetter->cancel();
 	}
 
 	m_busy = false;
@@ -112,6 +117,24 @@ void UnitInteractionManager::cancel()
 bool UnitInteractionManager::isBusy() const
 {
 	return m_busy;
+}
+
+void UnitInteractionManager::reset()
+{
+	//delete package
+	if (m_package != nullptr)
+	{
+		delete m_package;
+		m_package = nullptr;
+	}
+
+	//tile getter will refresh whenever needed so don't need to reset
+
+	//reset counter getter
+	delete m_counterGetter;
+	m_counterGetter = new CounterGetter();
+
+	m_busy = false;
 }
 
 void UnitInteractionManager::send()

@@ -14,7 +14,7 @@ GameplayInit::GameplayInit(bool p_testing)
 GameplayInit::~GameplayInit()
 {
 	//BoardManager::getInstance()->destroyComponents();
-	UnitInteractionManager::destroyInstance();
+	//UnitInteractionManager::destroyInstance();
 	unit::InitiativeTracker::destroyInstance();
 	unit::UnitSpawn::destroyInstance();
 }
@@ -24,7 +24,8 @@ void GameplayInit::start() {
 	BoardManager::getInstance()->resetComponents();
 	unit::InitiativeTracker::createInstance();
 	unit::UnitSpawn::createInstance();
-	UnitInteractionManager::createInstance();
+	//UnitInteractionManager::createInstance();
+	UnitInteractionManager::getInstance()->reset();
 
 	if (m_testing) {
 		unit::UnitTest::getInstanceSafe()->test();
