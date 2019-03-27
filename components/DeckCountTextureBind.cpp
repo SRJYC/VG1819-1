@@ -28,6 +28,12 @@ void DeckCountTextureBind::deckEventReceiver(kitten::Event::EventType p_type, ki
 	}
 }
 
+void DeckCountTextureBind::enemyDrawEventReceiver(kitten::Event::EventType p_type, kitten::Event* p_data)
+{
+	int count = p_data->getInt(CARD_COUNT);
+	m_enemyCountText->setText(std::to_string(count));
+}
+
 void DeckCountTextureBind::start()
 {
 	kitten::EventManager::getInstance()->addListener(
@@ -38,6 +44,10 @@ void DeckCountTextureBind::start()
 		kitten::Event::EventType::Card_Discarded,
 		this,
 		std::bind(&DeckCountTextureBind::deckEventReceiver, this, std::placeholders::_1, std::placeholders::_2));
+	kitten::EventManager::getInstance()->addListener(
+		kitten::Event::EventType::Enemy_Draw_Card,
+		this,
+		std::bind(&DeckCountTextureBind::enemyDrawEventReceiver, this, std::placeholders::_1, std::placeholders::_2));
 
 	m_currentTexPair = m_texPairs.rbegin();
 	m_attachedObject->getComponent<userinterface::UIFrame>()->setTexture(m_currentTexPair->second.c_str());
@@ -47,8 +57,14 @@ void DeckCountTextureBind::start()
 	txtBoxComp->setText("Loading...");
 	const glm::vec2 deckScale = getTransform().getScale2D();
 	const glm::vec3 deckTrans = getTransform().getTranslation();
-	counter->getTransform().place2D(deckTrans.x + 20, deckTrans.y + deckScale.y + 10);
+	counter->getTransform().place2D(deckTrans.x + 20, deckTrans.y + deckScale.y);
 	m_countText = txtBoxComp;
+
+	kitten::K_GameObject* enemyCounter = kitten::K_GameObjectManager::getInstance()->createNewGameObject("ui/deck/deck_counter_textbox.json");
+	puppy::TextBox* entxtBoxComp = enemyCounter->getComponent<puppy::TextBox>();
+	enemyCounter->getTransform().place2D(deckTrans.x + 30, deckTrans.y + deckScale.y);
+	m_enemyCountText = txtBoxComp;
+
 
 }
 

@@ -495,6 +495,25 @@ namespace networking
 				i += BASIC_PACKET_SIZE;
 				break;
 			}
+			case PacketTypes::CARD_DRAW:
+			{
+				Buffer buffer;
+				buffer.m_data = &(m_network_data[i]);
+				buffer.m_size = COUNT_SIZE;
+
+				CardCountPacket countPacket;
+				countPacket.deserialize(buffer);
+
+				printf("[Client: %d] received CARD_DRAW packet from server\n", sm_iClientId);
+				i += COUNT_SIZE;
+
+				// Send the Server info to the Quickplay class
+				kitten::Event* eventData = new kitten::Event(kitten::Event::Enemy_Draw_Card);
+				eventData->putInt(CARD_COUNT, countPacket.m_clientId);
+				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Enemy_Draw_Card, eventData);
+
+				break;
+			}
 			default:
 				std::stringstream message;
 				message << "Client:" << sm_iClientId << " received error in packet types, received: " << packetType;

@@ -439,6 +439,13 @@ namespace networking
 						m_network->sendToOthers(iter->first, defaultBuffer.m_data, TEXTCHAT_MESSAGE_PACKET_SIZE);
 						break;
 					}
+					case CARD_DRAW:
+					{
+						i += COUNT_SIZE;
+						printf("Server received CARD_DRAW packet from [Client: %d]\n", iter->first);
+						m_network->sendToOthers(iter->first, defaultBuffer.m_data, COUNT_SIZE);
+						break;
+					}
 					case SKIP_TURN:
 					{
 						i += SKIP_TURN_PACKET_SIZE;
