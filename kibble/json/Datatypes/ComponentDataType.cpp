@@ -2113,6 +2113,11 @@ kitten::K_Component* getAmbientSystemController(nlohmann::json* p_jsonFile) {
 	return new AmbientSystemController(events, persistentSounds);
 }
 
+#include "_Project\VictorumAnalyitics.h"
+kitten::K_Component* getVictorumAnalytics(nlohmann::json* p_jsonFile) {
+	return new VictorumAnalytics();
+}
+
 std::map<std::string, kitten::K_Component* (*)(nlohmann::json* p_jsonFile)> jsonComponentMap;
 void setupComponentMap() {
 	jsonComponentMap["MoveByMouseRightClickDrag"] = &getMoveByMouseRightClickDrag;
@@ -2284,6 +2289,7 @@ void setupComponentMap() {
 	jsonComponentMap["AmbientVolumeController"] = &getAmbientVolumeController;
 	jsonComponentMap["IncreaseAmbientVolumeOnClick"] = &getIncreaseAmbientVolumeOnClick;
 	jsonComponentMap["DecreaseAmbientVolumeOnClick"] = &getDecreaseAmbientVolumeOnClick;
+	jsonComponentMap["VictorumAnalytics"] = &getVictorumAnalytics;
 
 }
 

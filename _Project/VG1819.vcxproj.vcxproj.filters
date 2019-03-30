@@ -1213,6 +1213,9 @@
     </ClCompile>
     <ClCompile Include="..\AI\Extract\Action.cpp" />
     <ClCompile Include="..\AI\Extract\Behavior.cpp" />
+    <ClCompile Include="VictorumAnalytics.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\kitten\K_Common.h">
@@ -2433,6 +2436,9 @@
     </ClInclude>
     <ClInclude Include="..\AI\Extract\Behavior.h">
       <Filter>AI\Extract</Filter>
+    </ClInclude>
+    <ClInclude Include="VictorumAnalyitics.h">
+      <Filter>components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
