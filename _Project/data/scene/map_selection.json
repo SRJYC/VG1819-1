@@ -1,0 +1,17 @@
+{
+    "gameobjects" : [
+        {
+            "filename" : "camgameobj_main_menu.txt", 
+            "translate" : [7, 7.0, 2.0],
+            "rotate" : [-70,0,0]
+        },
+		{
+			"name" : "MainMenuBoard",
+			"components" : [
+				{
+					"name" : "MainMenuBoard"
+				}
+			]
+		}
+    ]
+}

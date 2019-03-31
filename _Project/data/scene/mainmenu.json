@@ -33,6 +33,9 @@
         },
 		{
 			"filename" : "UI/options_menu/options_menu_main_button.json"
+		},
+		{
+			"filename" : "UI/map_button.json"
 		}
     ]
 }

@@ -1,0 +1,27 @@
+{
+    "name" : "Exit Game Button",
+	"components" : [
+		{
+			"name" : "UIObject",
+			"texture" : "textures/ui/buttons/button_exit_game.tga"
+		},
+		{
+			"name" : "PlayUniversalSoundOnUIClick",
+			"sound_name" : "click"
+		},
+		{
+			"name" : "ClickableButton",
+			"regularTexture" : "textures/ui/buttons/button_new_game.tga",
+			"highlightedTexture" : "textures/ui/buttons/button_new_game_highlighted.tga"
+		},
+		{
+			"name" : "ClickableFrame"
+        },
+		{
+			"name" : "ChangeSceneOnClick",
+			"scene" : "map_selection.json"
+		}
+	],
+	"translate2d" : [35, 100],
+	"scale2d" : [250, 80]
+}
