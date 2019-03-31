@@ -1130,9 +1130,6 @@
     <ClCompile Include="PlayBGMOnSceneChange.cpp">
       <Filter>components\sound</Filter>
     </ClCompile>
-    <ClCompile Include="LoadSceneOnFrame2.cpp">
-      <Filter>components</Filter>
-    </ClCompile>
     <ClCompile Include="ToggleChildEnabledOnKeyPress.cpp">
       <Filter>components\debug</Filter>
     </ClCompile>
@@ -1215,6 +1212,9 @@
     <ClCompile Include="..\AI\Extract\Behavior.cpp" />
     <ClCompile Include="VictorumAnalytics.cpp">
       <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadSceneOnFrame2.cpp">
+      <Filter>components\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2347,9 +2347,6 @@
     <ClInclude Include="PlayBGMOnSceneChange.h">
       <Filter>components\sound</Filter>
     </ClInclude>
-    <ClInclude Include="LoadSceneOnFrame2.h">
-      <Filter>components</Filter>
-    </ClInclude>
     <ClInclude Include="ToggleChildEnabledOnKeyPress.h">
       <Filter>components\debug</Filter>
     </ClInclude>
@@ -2439,6 +2436,9 @@
     </ClInclude>
     <ClInclude Include="VictorumAnalyitics.h">
       <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadSceneOnFrame2.h">
+      <Filter>components\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

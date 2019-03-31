@@ -14,6 +14,7 @@
 #define SIMPLE_OLIGARCH "simple_units/Oligarch.txt"
 #define SIMPLE_KING "simple_units/King.txt"
 #define SIMPLE_QUEEN "simple_units/Queen.txt"
+
 MainMenuBoard::MainMenuBoard()
 {
 	srand(time(NULL));

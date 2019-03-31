@@ -29,6 +29,7 @@
 #include "_Project\UniversalSounds.h"
 #include "components\DeckInitializingComponent.h"
 #include "kitten\event_system\EventManager.h"
+#include "_Project\VictorumAnalyitics.h"
 
 #define PING_PACKET_DELAY 5.0f
 
@@ -504,6 +505,8 @@ namespace networking
 				eventData->putInt(GAME_END_RESULT, CLIENT_DESYNCED);
 				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Network_End_Game, eventData);
 
+				VictorumAnalytics::sendErrorEvent("Client_Desync");
+
 				break;
 			}
 			case PacketTypes::SESSIONS_FULL:
@@ -527,6 +530,9 @@ namespace networking
 
 				printf("[Client: %d] received %d; error in packet types\n", sm_iClientId, packetType);
 				i += (unsigned int)data_length;
+
+				VictorumAnalytics::sendErrorEvent("Error_Packet");
+
 				break;
 			}
 		}
