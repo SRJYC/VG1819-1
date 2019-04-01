@@ -6,12 +6,7 @@
             "rotate" : [-70,0,0]
         },
 		{
-			"name" : "MainMenuBoard",
-			"components" : [
-				{
-					"name" : "MainMenuBoard"
-				}
-			]
+			"filename" : "mainmenu_background.json"
 		}
     ]
 }

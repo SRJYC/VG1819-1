@@ -1,0 +1,9 @@
+{
+    "name":"map_image",
+    "components" : [
+        {
+			"name" : "UIObject",
+			"texture" : ""
+		}
+    ]
+}

@@ -1,0 +1,14 @@
+{
+    "name":"map_detail",
+    "gameobjects" : [
+        {
+            "filename" : "map_image.json",
+            "translate2d" : [300, 700],
+	        "scale2d" : [500, 500]
+		},
+		{
+            "filename" : "map_description.json",
+            "translate2d" : [300, 100]
+		}
+    ]
+}

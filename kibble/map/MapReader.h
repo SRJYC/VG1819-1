@@ -1,5 +1,6 @@
 #pragma once
 
+#include "json.hpp"
 #include <string>
 #include <vector>
 
@@ -9,14 +10,23 @@ namespace kibble
 {
 	class MapReader
 	{
+		struct Map
+		{
+			std::string name;
+			std::string map;
+			std::string imgPath;
+			std::string description;
+		};
+
 	private:
 		MapReader();
 		~MapReader();
 		static MapReader* sm_instance;
 
-		std::vector<std::string> m_mapList;
+		std::vector<Map> m_mapList;
+		int m_selectedMapId;
 
-		void addMap(const std::string& p_mapName);
+		void addMap(nlohmann::json* p_json);
 	public:
 		static void createInstance();
 		static void destroyInstance();
@@ -24,6 +34,10 @@ namespace kibble
 
 		static void loadAllMap(const std::string& p_masterJsonName);
 
-		std::vector<std::pair<int,int> > getMap(int* p_dimX, int* p_dimZ, int* p_id);
+		std::vector<Map> getMapList() const;
+		std::vector<std::pair<int,int> > getMapData(int* p_dimX, int* p_dimZ, int* p_id) const;
+
+		void selectMap(int p_id) { m_selectedMapId = p_id; };
+		int getSelectedMap() const { return m_selectedMapId; };
 	};
 }

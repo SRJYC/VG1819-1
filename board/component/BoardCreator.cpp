@@ -62,7 +62,7 @@ void BoardCreator::createBoard(int p_id)
 
 	//get land list and dimension for random map
 	//pair = LandInformation::TileType , GameModeComponent::TileType 
-	std::vector<std::pair<int,int>> landList = kibble::MapReader::getInstance()->getMap(&dimX, &dimZ, &mapId);
+	std::vector<std::pair<int,int>> landList = kibble::MapReader::getInstance()->getMapData(&dimX, &dimZ, &mapId);
 
 	//board game object
 	kitten::K_GameObject* borad = kitten::K_GameObjectManager::getInstance()->createNewGameObject();
