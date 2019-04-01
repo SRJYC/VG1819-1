@@ -1,0 +1,16 @@
+{
+    "name":"map_image",
+    "components" : [
+        {
+            "name" : "TextBox",
+			"font" : "../fonts/nsimsun_14pt.fnt",
+			"color" : [1,1,1],
+            "alignment" : "left",
+            "width" : 314,
+            "height" : 14
+        },
+        {
+			"name" : "MapDetailController"
+		}
+    ]
+}

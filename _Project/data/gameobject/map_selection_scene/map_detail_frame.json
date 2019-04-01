@@ -2,13 +2,13 @@
     "name":"map_detail",
     "gameobjects" : [
         {
-            "filename" : "map_image.json",
-            "translate2d" : [300, 700],
+            "filename" : "map_selection_scene/map_image.json",
+            "translate2d" : [300, 200],
 	        "scale2d" : [500, 500]
 		},
 		{
-            "filename" : "map_description.json",
-            "translate2d" : [300, 100]
+            "filename" : "map_selection_scene/map_description.json",
+            "translate2d" : [500, 180]
 		}
     ]
 }

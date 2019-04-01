@@ -1,0 +1,8 @@
+{
+    "name":"map_detail",
+    "components" : [
+        {
+			"name" : "MapListController"
+		}
+    ]
+}

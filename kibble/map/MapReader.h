@@ -10,6 +10,7 @@ namespace kibble
 {
 	class MapReader
 	{
+	public:
 		struct Map
 		{
 			std::string name;
@@ -18,16 +19,6 @@ namespace kibble
 			std::string description;
 		};
 
-	private:
-		MapReader();
-		~MapReader();
-		static MapReader* sm_instance;
-
-		std::vector<Map> m_mapList;
-		int m_selectedMapId;
-
-		void addMap(nlohmann::json* p_json);
-	public:
 		static void createInstance();
 		static void destroyInstance();
 		static MapReader* getInstance() { return sm_instance; };
@@ -39,5 +30,16 @@ namespace kibble
 
 		void selectMap(int p_id) { m_selectedMapId = p_id; };
 		int getSelectedMap() const { return m_selectedMapId; };
+
+
+	private:
+		MapReader();
+		~MapReader();
+		static MapReader* sm_instance;
+
+		std::vector<Map> m_mapList;
+		int m_selectedMapId;
+
+		void addMap(nlohmann::json* p_json);
 	};
 }

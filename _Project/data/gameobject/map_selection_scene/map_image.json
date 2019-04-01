@@ -3,7 +3,10 @@
     "components" : [
         {
 			"name" : "UIObject",
-			"texture" : ""
+			"texture" : "textures/map/question-mark.jpg"
+        },
+        {
+			"name" : "MapDetailController"
 		}
     ]
 }

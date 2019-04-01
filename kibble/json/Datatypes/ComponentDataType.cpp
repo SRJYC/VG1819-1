@@ -2113,6 +2113,18 @@ kitten::K_Component* getAmbientSystemController(nlohmann::json* p_jsonFile) {
 	return new AmbientSystemController(events, persistentSounds);
 }
 
+#include "components/MapSelectionScene/MapDetailController.h"
+kitten::K_Component* getMapDetailController(nlohmann::json* p_jsonFile) {
+
+	return new MapDetailController();
+}
+
+#include "components/MapSelectionScene/MapListController.h"
+kitten::K_Component* getMapListController(nlohmann::json* p_jsonFile) {
+
+	return new MapListController();
+}
+
 std::map<std::string, kitten::K_Component* (*)(nlohmann::json* p_jsonFile)> jsonComponentMap;
 void setupComponentMap() {
 	jsonComponentMap["MoveByMouseRightClickDrag"] = &getMoveByMouseRightClickDrag;
@@ -2284,7 +2296,8 @@ void setupComponentMap() {
 	jsonComponentMap["AmbientVolumeController"] = &getAmbientVolumeController;
 	jsonComponentMap["IncreaseAmbientVolumeOnClick"] = &getIncreaseAmbientVolumeOnClick;
 	jsonComponentMap["DecreaseAmbientVolumeOnClick"] = &getDecreaseAmbientVolumeOnClick;
-
+	jsonComponentMap["MapDetailController"] = &getMapDetailController;
+	jsonComponentMap["MapListController"] = &getMapListController;
 }
 
 kitten::K_Component* getRelatedComponentBy(nlohmann::json* p_jsonFile) {

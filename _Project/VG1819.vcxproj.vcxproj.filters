@@ -1216,6 +1216,10 @@
     </ClCompile>
     <ClCompile Include="..\AI\Extract\Action.cpp" />
     <ClCompile Include="..\AI\Extract\Behavior.cpp" />
+    <ClCompile Include="..\components\MapSelectionScene\MapDetailController.cpp">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\components\MapSelectionScene\MapListController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\kitten\K_Common.h">
@@ -2437,6 +2441,12 @@
     <ClInclude Include="..\AI\Extract\Behavior.h">
       <Filter>AI\Extract</Filter>
     </ClInclude>
+    <ClInclude Include="..\components\MapSelectionScene\MapDetailController.h">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\components\MapSelectionScene\MapListController.h">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="kitten">
@@ -2672,6 +2682,9 @@
     </Filter>
     <Filter Include="board\tile\gameMode\AttackDefendMode">
       <UniqueIdentifier>{ff19a59d-90b3-496b-ba7a-6dfc9e88a4ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="components\MapSelectionScene">
+      <UniqueIdentifier>{3aaa8947-3585-4a49-8ab4-daa2c91044cb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
