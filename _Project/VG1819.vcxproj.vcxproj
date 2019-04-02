@@ -418,9 +418,9 @@
     <ClCompile Include="..\UI\InterfaceBuilder.cpp" />
     <ClCompile Include="..\UI\LandContext.cpp" />
     <ClCompile Include="..\UI\MainMenu\MainMenu.cpp" />
+    <ClCompile Include="..\UI\PauseMenu\PauseMenu.cpp" />
+    <ClCompile Include="..\UI\PauseMenu\ReturnToMainMenuButton.cpp" />
     <ClCompile Include="..\UI\StatusContext.cpp" />
-    <ClCompile Include="..\UI\TabMenu\ReturnToMainMenuButton.cpp" />
-    <ClCompile Include="..\UI\TabMenu\TabMenu.cpp" />
     <ClCompile Include="..\UI\TriggerEventButton.cpp" />
     <ClCompile Include="..\UI\TurnCounterController.cpp" />
     <ClCompile Include="..\UI\UIElement.cpp" />
@@ -827,9 +827,9 @@
     <ClInclude Include="..\UI\InterfaceBuilder.h" />
     <ClInclude Include="..\UI\LandContext.h" />
     <ClInclude Include="..\UI\MainMenu\MainMenu.h" />
+    <ClInclude Include="..\UI\PauseMenu\PauseMenu.h" />
+    <ClInclude Include="..\UI\PauseMenu\ReturnToMainMenuButton.h" />
     <ClInclude Include="..\UI\StatusContext.h" />
-    <ClInclude Include="..\UI\TabMenu\ReturnToMainMenuButton.h" />
-    <ClInclude Include="..\UI\TabMenu\TabMenu.h" />
     <ClInclude Include="..\UI\TriggerEventButton.h" />
     <ClInclude Include="..\UI\TurnCounterController.h" />
     <ClInclude Include="..\UI\UIElement.h" />

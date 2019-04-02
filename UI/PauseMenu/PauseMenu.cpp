@@ -1,14 +1,14 @@
-// TabMenu
+// PauseMenu
 //
-// Acts as something similar to a menu you would have when you hit 'Escape' in a game, 
-// but instead you hit 'Tab', showing a button to return to..
-// Hitting 'Tab' will either open the menu or close it depending on the state
+// Acts like a pause menu (but the game doesn't actually pause), which shows 
+// a main menu button and the options menu
+// Hitting 'Esc' will either open the menu or close it depending on the state
 // This also functions as a way to display the end game screen when a Commander is defeated, 
 // alerted through events
 //
 // @Ken
 
-#include "UI\TabMenu\TabMenu.h"
+#include "UI\PauseMenu\PauseMenu.h"
 #include "kitten\K_GameObjectManager.h"
 #include "kitten\K_ComponentManager.h"
 
@@ -19,21 +19,21 @@
 #define DISCONNECT_TEXTURE "textures/ui/disconnect_message.tga"
 #define DESYNC_TEXTURE "textures/ui/desync_message.tga"
 
-TabMenu::TabMenu(const char* p_pathToTex)
+PauseMenu::PauseMenu(const char* p_pathToTex)
 	:
 	UIFrame(p_pathToTex),
-	m_bOpened(false),
-	m_bGameEnded(false)
+	m_opened(false),
+	m_gameEnded(false)
 {
 
 }
 
-TabMenu::~TabMenu()
+PauseMenu::~PauseMenu()
 {
 	kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Network_End_Game, this);
 }
 
-void TabMenu::start()
+void PauseMenu::start()
 {
 	removeFromDynamicUIRender();
 
@@ -44,14 +44,20 @@ void TabMenu::start()
 	kitten::EventManager::getInstance()->addListener(
 		kitten::Event::EventType::Network_End_Game,
 		this,
-		std::bind(&TabMenu::enableEndGameScreen, this, std::placeholders::_1, std::placeholders::_2));
+		std::bind(&PauseMenu::enableEndGameScreen, this, std::placeholders::_1, std::placeholders::_2));
+
+	kitten::K_GameObjectManager* goManager = kitten::K_GameObjectManager::getInstance();
+
+	// Create Options Menu
+	m_optionsMenu = goManager->createNewGameObject("UI/options_menu/options_menu_no_close.json");
+	m_optionsMenu->setEnabled(false);
 
 	// Create Return to Main Menu Button
-	m_returnToMainButton = kitten::K_GameObjectManager::getInstance()->createNewGameObject("return_to_main_menu_button.txt"); 
+	m_returnToMainButton = goManager->createNewGameObject("return_to_main_menu_button.txt");
 	addToFrame(static_cast<userinterface::UIObject*>(m_returnToMainButton->getComponent<userinterface::UIObject>()));
 
 	// Create End Game screen UI
-	kitten::K_GameObject* endGameScreen = kitten::K_GameObjectManager::getInstance()->createNewGameObject("game_result_screen.txt");
+	kitten::K_GameObject* endGameScreen = goManager->createNewGameObject("game_result_screen.txt");
 	m_endGameScreenObj = static_cast<userinterface::UIObject*>(endGameScreen->getComponent<userinterface::UIObject>());
 	addToFrame(m_endGameScreenObj);
 
@@ -59,20 +65,26 @@ void TabMenu::start()
 	m_endGameScreenObj->setEnabled(false);
 }
 
-void TabMenu::update()
+void PauseMenu::update()
 {
-	if (m_input->keyDown(GLFW_KEY_ESC) && !m_input->keyDownLast(GLFW_KEY_ESC) && !m_bGameEnded)
+	if (m_input->keyDown(GLFW_KEY_ESC) && !m_input->keyDownLast(GLFW_KEY_ESC) && !m_gameEnded)
 	{
-		m_bOpened = !m_bOpened;
-		m_returnToMainButton->setEnabled(m_bOpened);
+		m_opened = !m_opened;
+		setEnabledUI(m_opened);
 
 		kitten::Event* eventData = new kitten::Event(kitten::Event::Pause_Menu_Open);
-		eventData->putInt(PAUSE_MENU_OPEN, m_bOpened);
+		eventData->putInt(PAUSE_MENU_OPEN, m_opened);
 		kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Pause_Menu_Open, eventData);
 	}	
 }
 
-void TabMenu::enableEndGameScreen(kitten::Event::EventType p_type, kitten::Event* p_data)
+void PauseMenu::setEnabledUI(bool p_enabled)
+{
+	m_returnToMainButton->setEnabled(p_enabled);
+	m_optionsMenu->setEnabled(p_enabled);
+}
+
+void PauseMenu::enableEndGameScreen(kitten::Event::EventType p_type, kitten::Event* p_data)
 {
 	int gameResult = p_data->getInt(GAME_END_RESULT);
 	switch (gameResult)
@@ -93,11 +105,11 @@ void TabMenu::enableEndGameScreen(kitten::Event::EventType p_type, kitten::Event
 
 	m_endGameScreenObj->setEnabled(true);	// Show UIObject with appropriate end game message
 	m_returnToMainButton->setEnabled(true); 
-	m_bGameEnded = true; // Permanently show main menu button
-	m_bOpened = true;
+	m_gameEnded = true; // Permanently show main menu button
+	m_opened = true;
 
 	// Disables interacting with other game features
 	kitten::Event* eventData = new kitten::Event(kitten::Event::Pause_Menu_Open);
-	eventData->putInt(PAUSE_MENU_OPEN, m_bOpened);
+	eventData->putInt(PAUSE_MENU_OPEN, m_opened);
 	kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Pause_Menu_Open, eventData);
 }

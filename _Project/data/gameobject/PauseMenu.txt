@@ -1,0 +1,8 @@
+{
+    "name" : "Pause Menu",
+    "components" : [
+		{
+			"name" : "PauseMenu"
+		}
+    ]
+}

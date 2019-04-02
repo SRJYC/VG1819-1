@@ -591,12 +591,6 @@
     <ClCompile Include="..\networking\menu\NetworkJoinButton.cpp">
       <Filter>networking\networking_menu</Filter>
     </ClCompile>
-    <ClCompile Include="..\UI\TabMenu\ReturnToMainMenuButton.cpp">
-      <Filter>UI\TabMenu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\UI\TabMenu\TabMenu.cpp">
-      <Filter>UI\TabMenu</Filter>
-    </ClCompile>
     <ClCompile Include="..\UI\ClickableCard.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -1216,6 +1210,12 @@
     </ClCompile>
     <ClCompile Include="..\AI\Extract\Action.cpp" />
     <ClCompile Include="..\AI\Extract\Behavior.cpp" />
+    <ClCompile Include="..\UI\PauseMenu\PauseMenu.cpp">
+      <Filter>UI\PauseMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UI\PauseMenu\ReturnToMainMenuButton.cpp">
+      <Filter>UI\PauseMenu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\kitten\K_Common.h">
@@ -1757,12 +1757,6 @@
     </ClInclude>
     <ClInclude Include="..\networking\menu\NetworkJoinButton.h">
       <Filter>networking\networking_menu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\UI\TabMenu\ReturnToMainMenuButton.h">
-      <Filter>UI\TabMenu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\UI\TabMenu\TabMenu.h">
-      <Filter>UI\TabMenu</Filter>
     </ClInclude>
     <ClInclude Include="..\UI\ClickableCard.h">
       <Filter>UI</Filter>
@@ -2437,6 +2431,12 @@
     <ClInclude Include="..\AI\Extract\Behavior.h">
       <Filter>AI\Extract</Filter>
     </ClInclude>
+    <ClInclude Include="..\UI\PauseMenu\PauseMenu.h">
+      <Filter>UI\PauseMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UI\PauseMenu\ReturnToMainMenuButton.h">
+      <Filter>UI\PauseMenu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="kitten">
@@ -2574,9 +2574,6 @@
     <Filter Include="components\decksdisplay">
       <UniqueIdentifier>{cc3644fd-64c1-472c-9553-f5208238bec6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI\TabMenu">
-      <UniqueIdentifier>{f65abade-0ab9-4b14-b9fa-06c669a75895}</UniqueIdentifier>
-    </Filter>
     <Filter Include="components\scene changers">
       <UniqueIdentifier>{39f54870-107c-4390-9169-e4df493df3e9}</UniqueIdentifier>
     </Filter>
@@ -2672,6 +2669,9 @@
     </Filter>
     <Filter Include="board\tile\gameMode\AttackDefendMode">
       <UniqueIdentifier>{ff19a59d-90b3-496b-ba7a-6dfc9e88a4ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\PauseMenu">
+      <UniqueIdentifier>{f65abade-0ab9-4b14-b9fa-06c669a75895}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

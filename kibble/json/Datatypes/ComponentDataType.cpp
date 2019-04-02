@@ -954,12 +954,12 @@ kitten::K_Component* getTriggerEventButton(nlohmann::json* p_jsonFile) {
 	return button;
 }
 
-#include "UI\TabMenu\TabMenu.h"
-kitten::K_Component* getTabMenu(nlohmann::json* p_jsonFile) {
+#include "UI\PauseMenu\PauseMenu.h"
+kitten::K_Component* getPauseMenu(nlohmann::json* p_jsonFile) {
 	std::string texture;
 
 	SETOPTDEF(texture, "texture", "textures/ui/blankFrame.tga");
-	return new TabMenu(texture.c_str());
+	return new PauseMenu(texture.c_str());
 }
 
 #include "ui/UIObject.h"
@@ -971,7 +971,7 @@ kitten::K_Component* getUIObject(nlohmann::json* p_jsonFile) {
 	return new userinterface::UIObject(texture.c_str());
 }
 
-#include "UI\TabMenu\ReturnToMainMenuButton.h"
+#include "UI\PauseMenu\ReturnToMainMenuButton.h"
 kitten::K_Component* getReturnToMainMenuButton(nlohmann::json* p_jsonFile) {
 	std::string regularTexture, highlightedTexture;
 	bool isEnabledOnPause;
@@ -1936,7 +1936,9 @@ kitten::K_Component* getPlayerPrefs(nlohmann::json* p_jsonFile) {
 
 #include "_Project\SavePlayerPrefsOnClick.h"
 kitten::K_Component* getSavePlayerPrefsOnClick(nlohmann::json* p_jsonFile) {
-	return new SavePlayerPrefsOnClick();
+	bool closeOnClick;
+	SETOPTDEF(closeOnClick, "closeOnClick", true);
+	return new SavePlayerPrefsOnClick(closeOnClick);
 }
 
 #include "_Project\DisableParentOnClick.h"
@@ -2192,7 +2194,7 @@ void setupComponentMap() {
 	jsonComponentMap["NetworkHostButton"] = &getNetworkHostButton;	
 	jsonComponentMap["NetworkConnectButton"] = &getNetworkConnectButton;
 	jsonComponentMap["TriggerEventButton"] = &getTriggerEventButton;
-	jsonComponentMap["TabMenu"] = &getTabMenu;
+	jsonComponentMap["PauseMenu"] = &getPauseMenu;
 	jsonComponentMap["UIObject"] = &getUIObject;
 	jsonComponentMap["ReturnToMainMenuButton"] = &getReturnToMainMenuButton;
 	jsonComponentMap["UnitAura"] = &getUnitAura;

@@ -301,27 +301,28 @@
 					]
 				},
 				{
-					"name" : "Back Button",
+					"name" : "Save Button",
 					"components" : 
 					[
 						{
 							"name" : "UIObject",
-							"texture" : "textures/ui/buttons/button_x.dds"
+							"texture" : "textures/ui/buttons/save_75x35.dds"
 						},
 						{
 							"name" : "ClickableFrame"
 						},
 						{
-							"name" : "SavePlayerPrefsOnClick"
+							"name" : "SavePlayerPrefsOnClick",
+							"closeOnClick" : false
 						},
 						{
 							"name" : "ClickableButton",
 							"enabledOnPause" : true,
-							"regularTexture" : "textures/ui/buttons/button_x.dds",
-							"highlightedTexture" : "textures/ui/buttons/button_x_h.dds"
+							"regularTexture" : "textures/ui/buttons/save_75x35.dds",
+							"highlightedTexture" : "textures/ui/buttons/save_h_75x35.dds"
 						}
 					],
-					"translate" : [575,275, 0.05],
+					"translate" : [545,245, 0.05],
 					"worldscale" : [75, 35, 1]
 				}
 			]

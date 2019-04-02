@@ -7,7 +7,7 @@
 //
 // @Ken
 
-#include "UI\TabMenu\ReturnToMainMenuButton.h"
+#include "UI\PauseMenu\ReturnToMainMenuButton.h"
 #include "kitten\event_system\EventManager.h"
 #include "kitten\K_Instance.h"
 #include "networking\ClientGame.h"
