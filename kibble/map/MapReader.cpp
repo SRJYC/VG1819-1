@@ -2,6 +2,7 @@
 #include <assert.h>
 #include "json.hpp"
 #include "kibble\json\jsonextra.hpp"
+#include "_Project\VictorumAnalyitics.h"
 
 #include <iostream>
 #include <fstream>

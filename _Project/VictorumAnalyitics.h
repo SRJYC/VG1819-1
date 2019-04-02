@@ -10,10 +10,14 @@ public:
 	VictorumAnalytics();
 	~VictorumAnalytics();
 
+	// Sending Analytics
 	static void sendDesignEvent(const std::string& p_event);
 	static void sendDesignEvent(const std::string& p_event, const double& p_value);
 
 	static void sendErrorEvent(const std::string& p_message);
 	static void sendInfoEvent(const std::string& p_message);
 	static void sendDebugEvent(const std::string& p_message);
+
+	// Game specific
+	static void onMultiplayerGameStart();
 };

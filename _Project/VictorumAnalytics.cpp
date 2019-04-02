@@ -54,3 +54,11 @@ void VictorumAnalytics::sendDebugEvent(const std::string& p_message)
 {
 	gameanalytics::GameAnalytics::addErrorEvent(gameanalytics::EGAErrorSeverity::Debug, p_message);
 }
+
+void VictorumAnalytics::onMultiplayerGameStart()
+{
+	sendDesignEvent("Multiplayer:Start");
+	
+	// Send information about deck
+
+}

@@ -6,6 +6,9 @@
 #include "kitten/K_ComponentManager.h"
 #include "kitten/K_GameObjectManager.h"
 #include "networking\ClientGame.h"
+#include "networking\ServerGame.h"
+
+#include "_Project\VictorumAnalyitics.h"
 
 BoardManager* BoardManager::sm_instance = nullptr;
 
@@ -18,7 +21,13 @@ void BoardManager::createBoard(int p_mapID, bool p_enableTileInfoDisplay)
 	{
 		mapId = networking::ClientGame::getInstance()->getMapId();
 	}
-	m_boardCreator->createBoard(mapId);
+	m_boardCreator->createBoard(mapId); //m_mapId is set here
+	
+	//Are we in a multiplayer game?
+	if (networking::ClientGame::isNetworkValid() || networking::ServerGame::isNetworkValid())
+	{
+		VictorumAnalytics::sendDesignEvent("Multiplayer:BoardCreated", m_mapId);
+	}
 
 	//it's done, delete it
 	delete m_boardCreator;

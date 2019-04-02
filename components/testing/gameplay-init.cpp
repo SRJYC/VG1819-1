@@ -8,6 +8,11 @@
 #include "AI/controller.h"
 #include "board/tile/GameMode/GameModeManager.h"
 
+#include "networking\ClientGame.h"
+#include "networking\ServerGame.h"
+
+#include "_Project\VictorumAnalyitics.h"
+
 GameplayInit::GameplayInit(bool p_testing)
 { 
 	m_testing = p_testing; 
@@ -41,5 +46,11 @@ void GameplayInit::start() {
 
 	if (AI::controller::AIPresent()) {
 		AI::controller::setupAIControllers();
+	}
+
+	// Are we in a multiplayer game? 
+	if (networking::ClientGame::isNetworkValid() || networking::ServerGame::isNetworkValid())
+	{
+		VictorumAnalytics::onMultiplayerGameStart();
 	}
 }
