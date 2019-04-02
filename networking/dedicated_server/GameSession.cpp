@@ -86,6 +86,22 @@ namespace networking
 
 					break;
 				}
+				case PacketTypes::MAP_DATA:
+				{
+					Buffer buffer;
+					buffer.m_data = &(m_networkData[i]);
+					buffer.m_size = MAP_DATA_PACKET_SIZE;
+
+					MapDataPacket packet;
+					packet.deserialize(buffer);
+
+					printf("[GameSession: %d] received MAP_DATA (map ID: %d) from [Client: %d]\n", m_sessionId, packet.m_mapId, sessionClientId);
+					
+					// Don't do anything with map ID for now
+
+					i += MAP_DATA_PACKET_SIZE;
+					break;
+				}
 				case ABILITY_PACKET:
 				{
 					printf("[GameSession: %d] received ABILITY_PACKET from [Client: %d]\n", m_sessionId, sessionClientId);
@@ -289,11 +305,15 @@ namespace networking
 				p_info->m_gameSessionClientId = m_sessionClientId;
 				p_info->m_gameSession = this;
 
-				// Tell the client that a GameSession has been found and they've been added
-				sendBasicPacketToClient(QUICKPLAY_FOUND_GAME, p_info);
+				// Tell them the map ID to load
+				sendMapDataToClient(p_info);
 
 				// Tell them their GameSession Client ID
 				sendBasicPacketToClient(SEND_CLIENT_ID, p_info);
+
+				// Tell the client that a GameSession has been found and they've been added
+				sendBasicPacketToClient(QUICKPLAY_FOUND_GAME, p_info);
+
 
 				m_sessionClientId++;
 				printf("Player added to GameSession:%d\n", m_sessionId);
@@ -394,6 +414,22 @@ namespace networking
 				break;
 			}
 		}
+	}
+
+	void GameSession::sendMapDataToClient(ServerNetwork::ClientInfo* p_info)
+	{
+		char packetData[MAP_DATA_PACKET_SIZE];
+		Buffer buffer;
+		buffer.m_data = packetData;
+		buffer.m_size = MAP_DATA_PACKET_SIZE;
+
+		MapDataPacket packet;
+		packet.m_packetType = MAP_DATA;
+		packet.m_clientId = p_info->m_gameSessionClientId;
+		packet.m_mapId = m_mapId;
+
+		packet.serialize(buffer);
+		m_network->sendToSocket(p_info, packetData, MAP_DATA_PACKET_SIZE);
 	}
 
 	void GameSession::sendBasicPacketToClient(PacketTypes p_packetType, ServerNetwork::ClientInfo* p_info)

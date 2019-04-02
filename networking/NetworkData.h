@@ -22,6 +22,7 @@
 #define STARTING_COMMANDERS_PACKET_SIZE sizeof(StartingCommandersPacket)
 #define SERVER_INFO_PACKET_SIZE sizeof(ServerInfoPacket)
 #define TEST_PACKET_SIZE sizeof(TestPacket)
+#define MAP_DATA_PACKET_SIZE sizeof(MapDataPacket)
 #define COUNT_SIZE sizeof(CardCountPacket)
 
 enum PacketTypes 
@@ -48,6 +49,8 @@ enum PacketTypes
 	QUICKPLAY_FOUND_GAME,
 	SESSION_ENDED,
 	CARD_DRAW
+	SESSION_ENDED,
+	MAP_DATA
 };
 
 struct UnitPrimitiveData
@@ -134,6 +137,23 @@ struct Packet {
 	void deserialize(Buffer& p_buffer) {
 		m_packetType = readInt(p_buffer);
 		m_clientId = readInt(p_buffer);
+	}
+};
+
+struct MapDataPacket : Packet
+{
+	int m_mapId = -1;
+
+	void serialize(Buffer& p_buffer)
+	{
+		Packet::serialize(p_buffer);
+		writeInt(p_buffer, m_mapId);
+	}
+
+	void deserialize(Buffer& p_buffer)
+	{
+		Packet::deserialize(p_buffer);
+		m_mapId = readInt(p_buffer);
 	}
 };
 

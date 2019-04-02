@@ -1,6 +1,6 @@
 {
 	"unit":{
-    "name": "Archer",
+		"name": "Archer",
 		"hp":8,
 		"mv":2,
 		"in":14,
@@ -47,7 +47,23 @@
 				"ad_value_0_0":1
 			}
 		],
-		"portrait_texture" : "textures/cards/500x500/Archer.tga"
+		"portrait_texture" : "textures/cards/500x500/Archer.tga",
+		"AI" : [
+
+			{
+				"ability" : "Shoot",
+				"behavior" : {
+					"name" : "NearestEnemy",
+					"attribute" : "hp"
+				}
+			},
+			{
+				"ability" : "mv",
+				"behavior" : {
+					"name" : "NearestEnemy"
+				}
+			}
+		]
 	},
 	"components" : [
 		{

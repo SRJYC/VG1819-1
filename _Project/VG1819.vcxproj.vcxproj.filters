@@ -1202,6 +1202,20 @@
     <ClCompile Include="DecreaseAmbientVolumeOnClick.cpp">
       <Filter>components\settings UI stuff</Filter>
     </ClCompile>
+    <ClCompile Include="..\board\component\tilePipeline\WaterFilter.cpp">
+      <Filter>board\component\tilePipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\AI\Extract\Deck.cpp">
+      <Filter>AI\Extract</Filter>
+    </ClCompile>
+    <ClCompile Include="..\AI\controller.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\AI\model.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\AI\Extract\Action.cpp" />
+    <ClCompile Include="..\AI\Extract\Behavior.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\kitten\K_Common.h">
@@ -2396,6 +2410,33 @@
     <ClInclude Include="DecreaseAmbientVolumeOnClick.h">
       <Filter>components\settings UI stuff</Filter>
     </ClInclude>
+    <ClInclude Include="..\AI\Extract\Action.h">
+      <Filter>AI\Extract</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AI\Extract\Board.h">
+      <Filter>AI\Extract</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AI\Extract\Deck.h">
+      <Filter>AI\Extract</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AI\Extract\Hand.h">
+      <Filter>AI\Extract</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AI\Extract\PowerTracker.h">
+      <Filter>AI\Extract</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AI\Extract\Unit.h">
+      <Filter>AI\Extract</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AI\controller.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AI\model.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AI\Extract\Behavior.h">
+      <Filter>AI\Extract</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="kitten">
@@ -2610,6 +2651,12 @@
     </Filter>
     <Filter Include="components\settings UI stuff">
       <UniqueIdentifier>{f96107fd-b0eb-4056-afa9-c0c205b1a8f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{dd1f902f-31e9-4b07-a0a1-2cb8caa040fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\Extract">
+      <UniqueIdentifier>{c643615d-cd2c-4c1e-a07a-671716e31d5f}</UniqueIdentifier>
     </Filter>
     <Filter Include="kibble\map">
       <UniqueIdentifier>{af4456d7-606c-4752-9dc0-034aef739823}</UniqueIdentifier>

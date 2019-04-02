@@ -51,5 +51,6 @@ namespace networking
 		std::vector<UnitPacket> m_commanders;
 
 		int m_clientsReadyChecked = 0;
+		int m_hostMapId = 0;
 	};
 }

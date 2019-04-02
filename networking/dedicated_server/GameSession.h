@@ -19,21 +19,16 @@ namespace networking
 		// Vector to hold the starting data of all player's Commanders
 		std::vector<UnitPacket> m_commanders;
 		int m_clientsReadyChecked = 0;
+		int m_mapId = 0;
 
 		void sendToClient(ServerNetwork::ClientInfo* p_client, char* p_packets, int p_totalSize);
 		void sendToOthers(ServerNetwork::ClientInfo* p_client, char* p_packets, int p_totalSize);
 		void sendToAll(char* p_packets, int p_totalSize);
 
+		void sendMapDataToClient(ServerNetwork::ClientInfo* p_info);
 		void sendBasicPacketToClient(PacketTypes p_packetType, ServerNetwork::ClientInfo* p_info);
 
 	public:
-		struct less_than_key
-		{
-			inline bool operator() (const GameSession p_session1, const GameSession p_session2)
-			{
-				return ((p_session1.m_state <= p_session2.m_state) && (p_session1.m_sessionId < p_session2.m_sessionId));
-			}
-		};
 		enum SessionState
 		{
 			Searching,
@@ -54,6 +49,9 @@ namespace networking
 		bool removePlayer(ServerNetwork::ClientInfo* p_info);
 		void removeAllPlayers();
 		void checkPlayers();
+
+		void setMapId(int p_mapId) { m_mapId = p_mapId; }
+		int getMapId() { return m_mapId; }
 		
 	};
 }

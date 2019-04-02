@@ -14,8 +14,9 @@
 				"name":"Manipulate Tile",
 				"min_range":1,
 				"max_range":1,
-				"filter":1,
+				"filter":2,
 				"filter0":"owned_tile",
+				"filter1":"water",
 				"Demonic Presence":1,
 				"description":" "
 			},

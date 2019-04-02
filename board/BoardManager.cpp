@@ -5,13 +5,20 @@
 
 #include "kitten/K_ComponentManager.h"
 #include "kitten/K_GameObjectManager.h"
+#include "networking\ClientGame.h"
 
 BoardManager* BoardManager::sm_instance = nullptr;
 
 void BoardManager::createBoard(int p_mapID, bool p_enableTileInfoDisplay)
 {
 	m_boardCreator->setTileInfoDisplay(p_enableTileInfoDisplay);
-	m_boardCreator->createBoard(p_mapID);
+
+	int mapId = p_mapID;
+	if (networking::ClientGame::getMapId() > -1)
+	{
+		mapId = networking::ClientGame::getInstance()->getMapId();
+	}
+	m_boardCreator->createBoard(mapId);
 
 	//it's done, delete it
 	delete m_boardCreator;
@@ -288,6 +295,7 @@ void BoardManager::autoClick(kitten::K_GameObject * p_tile)
 void BoardManager::resetComponents()
 {
 	m_area->removePattern();
+	m_range->clear();
 	m_highlighter->reset();
 	if (m_boardCreator == nullptr)
 		m_boardCreator = new BoardCreator();
@@ -306,7 +314,7 @@ BoardManager::BoardManager() :
 	m_pipeline(nullptr),
 	m_area(nullptr),
 	m_boardCreator(nullptr),
-	m_boradObject(nullptr),
+	m_boardObject(nullptr),
 	m_dimension(std::make_pair(0,0)),
 	m_isGridEnabled(true)
 {
@@ -393,6 +401,8 @@ bool BoardManager::isGridEnabled() const
 //high light
 void BoardManager::highlightTile(kitten::Event * p_data)
 {
+	m_range->clear();
+
 	kitten::Event::TileList list;
 	if (p_data->getString("mode") == "range")
 	{
@@ -416,30 +426,6 @@ void BoardManager::highlightTile(kitten::Event * p_data)
 	//apply filter
 	setFilter(FILTER, p_data);
 	applyFilter(&list);
-
-	//check path
-	if (p_data->getInt("path") == TRUE)
-	{
-		kitten::K_GameObject * tileAtOrigin = p_data->getGameObj("tileAtOrigin");
-		std::pair<int, int> start = tileAtOrigin->getComponent<TileInfo>()->getPos();
-		int len = p_data->getInt("max_range");
-
-		auto it = list.begin();
-		while (it != list.end())
-		{
-			PathFind p;
-			std::pair<int, int> end = *it;
-			kitten::Event::TileList l = p.getPath(start, end, len);
-			if (l.size() <= 0)//no path to target
-			{
-				it = list.erase(it);
-			}
-			else
-			{
-				it++;
-			}
-		}
-	}
 
 	m_rangeList = list;
 
@@ -535,7 +521,7 @@ void BoardManager::setMapID(int p_id)
 
 void BoardManager::setBoardGameObject(kitten::K_GameObject * p_go)
 {
-	m_boradObject = p_go;
+	m_boardObject = p_go;
 }
 
 

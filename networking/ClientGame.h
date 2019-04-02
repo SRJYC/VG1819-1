@@ -27,6 +27,7 @@ namespace networking
 		unit::Unit* m_commander;
 
 		static int sm_iClientId;
+		static int sm_mapId;
 		static bool sm_networkValid;
 		static std::string sm_playerName;
 		static ClientGame* sm_clientGameInstance;
@@ -61,7 +62,7 @@ namespace networking
 		void sendAbilityPacket(const std::string & p_strAbilityName, ability::AbilityInfoPackage * p_info);
 		void setCastTime(AbilityPacket& p_packet);
 		void sendCastTimeAbilityPacket(unit::AbilityDescription * p_ad, ability::AbilityInfoPackage * p_info);
-		void sendStartingData();
+		void sendStartingData(int p_mapId);
 		void boardLoadedListener(kitten::Event::EventType p_type, kitten::Event* p_event);
 		void cardDrawnListener(kitten::Event::EventType p_type, kitten::Event* p_event);
 
@@ -80,11 +81,15 @@ namespace networking
 		int sendDrawPacket(const int p_count);
 
 		unit::Unit* getCommander() { return m_commander; }
-
+		
+		static int getMapId() { return sm_mapId; }
+		
 		static int getClientId() { return sm_iClientId; }
+		static void setClientId(int p_id) { sm_iClientId = p_id; }
+    
 		bool isServerCalling() { return m_bServerCalling; }
 		void setServerCalling(bool p_value) { m_bServerCalling = p_value; }
-		bool isGameTurnStarted() { return m_bGameTurnStart; }
+		bool isGameTurnStarted() { return m_bGameTurnStart; }		
 
 		inline unit::Unit* getUnitFromPos(int p_x, int p_y)
 		{

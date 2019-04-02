@@ -53,6 +53,9 @@ void ItemSpawnArea::check()
 		{
 			//create one
 			item = kitten::K_GameObjectManager::getInstance()->createNewGameObject(m_itemPath);
+
+			//set spawner
+			item->getComponent<CaptureItemController>()->setSpawner(this);
 		}
 		else
 		{

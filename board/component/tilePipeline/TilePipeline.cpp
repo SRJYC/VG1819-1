@@ -40,6 +40,9 @@ TilePipeline::TilePipeline()
 
 	filter = new NonStructureFilter(this);
 	m_filterList[FILTER_NON_STRUCTURE] = filter;
+
+	filter = new WaterFilter(this);
+	m_filterList[FILTER_WATER] = filter;
 }
 
 TilePipeline::~TilePipeline()

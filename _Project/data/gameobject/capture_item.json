@@ -12,7 +12,7 @@
 		},
         {
             "name" : "CaptureItemController",
-            "tile_offset" : [0,1,0],
+            "tile_offset" : [0,1,0.75],
             "unit_offset" : [0,2,0.15]
         }
     ]

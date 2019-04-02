@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-SoundFader::SoundFader() : m_sound(nullptr), m_kTime(nullptr)
+SoundFader::SoundFader() : m_sound(nullptr), m_kTime(nullptr), m_isFading(false)
 {
 
 }
@@ -16,28 +16,42 @@ SoundFader::~SoundFader()
 void SoundFader::start()
 {
 	m_sound = m_attachedObject->getComponent<kitten::AudioSource>();
-	assert(m_sound != nullptr);
+	assert(m_sound != nullptr);	
 
 	m_kTime = kitten::K_Time::getInstance();
 	assert(m_kTime != nullptr);
 }
 
-void SoundFader::fadeIn(float p_time, float p_endVolume)
+void SoundFader::fadeIn(float p_time, float p_endVolume, bool p_startAtOriginalVolume)
 {
+	m_isFading = true;
 	m_isFadingOut = false;
 
 	m_timeToFade = p_time;
 	m_endVolume = p_endVolume;
 	m_currentTime = 0;
 
-	m_sound->setVolume(0);
-	m_sound->play();
+	if (!p_startAtOriginalVolume)
+	{
+		m_sound->setVolume(0);
+		m_originalVolume = 0;
+	}
+	else
+	{
+		m_originalVolume = m_sound->getVolume();
+	}
 
+	if (m_sound->isPaused() || m_sound->isFinished())
+	{
+		m_sound->play();
+	}
+	
 	setEnabled(true);
 }
 
 void SoundFader::fadeOut(float p_time)
 {
+	m_isFading = true;
 	m_isFadingOut = true;
 	
 	m_timeToFade = p_time;
@@ -48,9 +62,45 @@ void SoundFader::fadeOut(float p_time)
 	setEnabled(true);
 }
 
+bool SoundFader::isFading() const
+{
+	return m_isFading;
+}
+
+bool SoundFader::isFadingIn() const
+{
+	return isFading() && !m_isFadingOut;
+}
+
+bool SoundFader::isFadingOut() const
+{
+	return isFading() && m_isFadingOut;
+}
+
+float SoundFader::getProgress() const
+{
+	if (!isFading())
+	{
+		return 0;
+	}
+	//else
+
+	return (m_currentTime / m_timeToFade);
+}
+
+float SoundFader::getFadeTime() const
+{
+	if (!isFading())
+	{
+		return 0;
+	}
+
+	return m_timeToFade;
+}
+
 void SoundFader::update()
 {
-	if (m_timeToFade < m_currentTime)
+	if (!m_isFading)
 	{
 		std::cerr << "SoundFader is updating but shouldn't be ... disabling" << std::endl;
 		setEnabled(false);
@@ -79,12 +129,13 @@ void SoundFader::update()
 	}
 	else
 	{
-		float volume = LERP((m_currentTime / m_timeToFade), 0.0f, m_endVolume);
+		float volume = LERP((m_currentTime / m_timeToFade), m_originalVolume, m_endVolume);
 		m_sound->setVolume(volume);
 	}
 
 	if (isLastFrame)
 	{
 		setEnabled(false);
+		m_isFading = false;
 	}
 }

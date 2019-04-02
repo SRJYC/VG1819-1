@@ -46,10 +46,21 @@
     },
     {
       "filename": "debug_particle.json"
-    }
+    },
+	{
+		"name" : "AI",
+		"components" : [
+			{
+				"name" : "AIController"
+			},
+			{
+				"name" : "DisableAfterTime",
+				"time" : 0
+			}
+		]
+	}
   ],
 	"scenes" : [
-		"Game_Scene.json"
-		,"mountainForest.json"
+		"Game_Scene.json", "mountainForest.json"
 	]
 }

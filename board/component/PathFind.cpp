@@ -31,14 +31,17 @@ kitten::Event::TileList PathFind::getPath(std::pair<int, int> p_start, std::pair
 	while (!m_openList.empty())
 	{
 		node* last = getNodeInOpen();
+
+		getNeighbour(last);
+		m_closedList.push_back(last);
+
 		if (last->tile == m_target)
 		{
-			return getList(last);
-		}
-		else
-		{
-			getNeighbour(last);
-			m_closedList.push_back(last);
+			kitten::Event::TileList list = getList(last);
+
+			clear();
+
+			return list;
 		}
 	}
 
@@ -138,7 +141,7 @@ void PathFind::addNodeToOpen(std::pair<int, int> p_tile, int p_cost, node* p_par
 
 	for (int i = 0; i < m_closedList.size(); i++)
 	{
-		if (m_closedList[i]->tile == n->tile)//already in open list
+		if (m_closedList[i]->tile == n->tile)//already in closed list
 		{
 			//check weight
 			if (m_closedList[i]->weight < n->weight)
@@ -163,7 +166,7 @@ kitten::Event::TileList PathFind::getList(node* p_n)
 		n = n->parent;
 	}
 	std::reverse(list.begin(), list.end());
-	delete p_n;
+
 	return list;
 }
 

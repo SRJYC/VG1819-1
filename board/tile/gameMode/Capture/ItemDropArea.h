@@ -5,7 +5,7 @@
 class ItemDropArea : public GameModeComponent
 {
 public:
-	ItemDropArea(int p_id, ItemSpawnArea* p_area);
+	ItemDropArea(int p_id);
 	~ItemDropArea();
 
 	virtual void check() override;
@@ -16,7 +16,4 @@ private:
 
 	//point gain for each item
 	int m_pointPerItem;
-
-	//spawner
-	ItemSpawnArea* m_spawnArea;
 };

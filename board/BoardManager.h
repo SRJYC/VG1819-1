@@ -20,6 +20,7 @@ class TilePipeline;
 class BoardManager
 {
 	friend BoardCreator;
+	friend PathPattern;
 public:
 	static void createInstance() { assert(sm_instance == nullptr); sm_instance = new BoardManager(); };
 	static void destroyInstance() { assert(sm_instance != nullptr); delete(sm_instance); sm_instance = nullptr; };
@@ -31,6 +32,7 @@ public:
 	kitten::K_GameObject* getSpawnPoint(int m_clientId = -1);
 	std::pair<int, int> getDimension() const;
 	kitten::K_GameObject* getTile(int p_x, int p_z) const;
+	int getMapId() { return m_mapId; }
 
 	//power tracker
 	void setPowerTracker(PowerTracker* p_pt) { m_powerTracker = p_pt; };
@@ -69,8 +71,8 @@ private:
 
 	static BoardManager* sm_instance;
 
-	//borad
-	kitten::K_GameObject* m_boradObject;
+	//board
+	kitten::K_GameObject* m_boardObject;
 	int m_mapId;
 	std::pair<int, int> m_dimension;
 	kitten::Event::TileList m_spawnPointList;
@@ -79,10 +81,10 @@ private:
 	//components
 	kitten::K_GameObject* m_hlGO;
 	Range* m_range;
+	Area* m_area;
 	Highlighter* m_highlighter;
 	TilePipeline* m_pipeline;
 	PowerTracker* m_powerTracker;
-	Area* m_area;
 	BoardCreator* m_boardCreator;
 
 	//unit ability selected
@@ -116,4 +118,9 @@ private:
 	void setDimension(int p_x, int p_z);
 	void setMapID(int p_id);
 	void setBoardGameObject(kitten::K_GameObject* p_go);
+
+
+	Range* getRangeComponent() const {
+		return m_range;
+	};
 };

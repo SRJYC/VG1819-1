@@ -121,15 +121,12 @@ void AbilityPacket::serialize(Buffer& p_buffer)
 		// For each key, value pair in the map, we need to:
 		// Get the key, the length of the key, and then write each char in the key to the buffer
 		// Finally, write the value tied to the key to the buffer
-		std::string strKey = it->first;
-		char key[MAX_CHAR_BUFSIZE];
-		strcpy(key, strKey.c_str());
+		const std::string& strKey = it->first;
 		int keyLength = strKey.size();
-
 		writeInt(p_buffer, keyLength);
 		for (int i = 0; i < keyLength; ++i)
 		{
-			writeChar(p_buffer, key[i]);
+			writeChar(p_buffer, strKey[i]);
 		}
 		writeInt(p_buffer, it->second);
 	}
@@ -142,6 +139,30 @@ void AbilityPacket::serialize(Buffer& p_buffer)
 		int posY = tilePos.second;
 		writeInt(p_buffer, posX);
 		writeInt(p_buffer, posY);
+	}
+
+	// String Values
+	writeInt(p_buffer, this->m_numStringValues);
+	auto end = m_stringValue.end();
+	for (auto it = m_stringValue.begin(); it != end; ++it)
+	{
+		// Get the key, write the length of the key, and then write each char in the key to the buffer
+		const std::string& strKey = it->first;
+		int keyLength = strKey.size();
+		writeInt(p_buffer, keyLength);
+		for (int i = 0; i < keyLength; ++i)
+		{
+			writeChar(p_buffer, strKey[i]);
+		}
+
+		// Get the value, write the length of the value, and then write each char of the value to the buffer
+		const std::string& strValue = it->second;
+		int valueLength = strValue.size();
+		writeInt(p_buffer, valueLength);
+		for (int i = 0; i < valueLength; ++i)
+		{
+			writeChar(p_buffer, strValue[i]);
+		}
 	}
 
 	// AbilityName
@@ -206,6 +227,30 @@ void AbilityPacket::deserialize(Buffer& p_buffer)
 		m_targetTiles.push_back(std::make_pair(posX, posY));
 	}
 
+	m_numStringValues = readInt(p_buffer);
+	for (int i = 0; i < m_numStringValues; ++i)
+	{
+		// Read the length of the key from the buffer
+		int keyLength = readInt(p_buffer);
+		std::string key = "";
+		for (int j = 0; j < keyLength; ++j)
+		{
+			// Construct the key by reading each char
+			key += readChar(p_buffer);
+		}
+
+		// Read the length of the value from the buffer
+		int valueLength = readInt(p_buffer);
+		std::string value = "";
+		for (int j = 0; j < valueLength; ++j)
+		{
+			// Construct the value by reading each char
+			value += readChar(p_buffer);
+		}
+
+		m_stringValue.insert({ key, value });
+	}
+
 	m_abilityNameLength = readInt(p_buffer);	
 	for (int i = 0; i < m_abilityNameLength; ++i)
 	{
@@ -231,13 +276,14 @@ void AbilityPacket::deserialize(Buffer& p_buffer)
 int AbilityPacket::getSize()
 {
 	// sizeof all member int variables
-	int intVariablesSize = 
-		sizeof(m_packetType) 
-		+ sizeof(m_clientId) 
+	int intVariablesSize =
+		sizeof(m_packetType)
+		+ sizeof(m_clientId)
 		+ sizeof(m_sourceUnit)
-		+ sizeof(m_numTargetUnits) 
-		+ sizeof(m_numIntValues) 
+		+ sizeof(m_numTargetUnits)
+		+ sizeof(m_numIntValues)
 		+ sizeof(m_numTargetTiles)
+		+ sizeof(m_numStringValues)
 		+ sizeof(m_abilityNameLength)
 		+ sizeof(m_unit)
 		+ sizeof(m_clickedObjectPos);
@@ -249,12 +295,17 @@ int AbilityPacket::getSize()
 	int intValuesSize = (sizeof(int) * m_numIntValues) + ((sizeof(char) * m_sumKeysLength)) + (sizeof(int) * m_numIntValues);
 
 	// sizeof all int values in TargetTiles vector, note it's a vector of int pairs
-	int  targetTilesSize = sizeof(int) * 2 * m_numTargetTiles;
+	int targetTilesSize = sizeof(int) * 2 * m_numTargetTiles;
+
+	// sizeof all the keys and values in the StringValues map
+	// sizeof m_numStringValues int written to buffer + the integers written to buffer for each key and value length + the size of all values written
+	// note: sum of key lengths were added to m_sumKeysLength which have been calculated in intValuesSize above
+	int stringValuesSize = sizeof(int) + (2 * sizeof(int) * m_numStringValues) + (sizeof(char) * m_sumStringValuesLength);
 
 	// sizeof ability name
 	int abilityNameSize = m_abilityNameLength * sizeof(char);
 
-	m_totalBytes = intVariablesSize + targetUnitsSize + intValuesSize + targetTilesSize + abilityNameSize + sizeof(int);
+	m_totalBytes = intVariablesSize + targetUnitsSize + intValuesSize + targetTilesSize + stringValuesSize + abilityNameSize + sizeof(int);
 
 	return m_totalBytes;
 }

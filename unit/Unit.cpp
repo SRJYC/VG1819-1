@@ -2,6 +2,7 @@
 #include "unit/unitComponent/UnitMove.h"
 #include "kitten/K_GameObject.h"
 #include "unitInteraction/UnitInteractionManager.h"
+#include "AI/Extract/Behavior.h"
 #include "board/tile/gameMode/Capture/CaptureItemController.h"
 
 #include "_Project\UniversalPfx.h"
@@ -30,6 +31,22 @@ namespace unit
 		setJoinAD();
 	}
 
+	Unit::Unit(const unit::Unit* source) : unit::Unit(*source)
+	{
+		m_healthBarState = none;
+		m_healthBar = nullptr;
+		m_unitSelect = nullptr;
+		m_commander = nullptr;
+		m_turn = nullptr;
+
+		m_statusContainer = new StatusContainer(this);
+
+		m_cdRecorder = new CooldownRecorder();
+		m_ADList.clear();
+		m_castTimer = new CastTimer(this);
+
+		setJoinAD();
+	}
 
 	Unit::~Unit()
 	{
@@ -93,7 +110,9 @@ namespace unit
 	{
 		return m_statusContainer->getStatus(p_name);
 	}*/
+	
 
+	//status
 	StatusContainer * Unit::getStatusContainer()
 	{
 		return m_statusContainer;
@@ -116,13 +135,12 @@ namespace unit
 				m_commander->resetPower(m_clientId);
 		case ability::TimePointEvent::Turn_End:
 		case ability::TimePointEvent::New_Tile:
-			//pick up item
+			//check item
 			if (tileGO != nullptr)
 			{
 				TileInfo* info = tileGO->getComponent<TileInfo>();
-				//pick up item
-				if (info->hasItem())
-				{
+				if (info->hasItem() && !this->hasItem())
+				{//pick up item 
 					kitten::K_GameObject* item = info->getItem();
 					info->removeItem();
 
@@ -140,6 +158,7 @@ namespace unit
 		delete p_event;
 	}
 
+	//join action
 	void Unit::setJoinAD()
 	{
 		m_joinAD.m_stringValue["name"] = ACTION_JOIN;
@@ -176,6 +195,7 @@ namespace unit
 		}
 	}
 
+	//commander
 	void Unit::addCommander(Commander* p_c)
 	{
 		m_commander = p_c;
@@ -259,6 +279,8 @@ namespace unit
 		{
 			useAbility(m_autoAbility);
 		}
+		kitten::Event* eventData = new kitten::Event(kitten::Event::Next_Units_Turn_Start);
+		kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Next_Units_Turn_Start, eventData);
 	}
 
 	bool Unit::canMove()
@@ -297,6 +319,9 @@ namespace unit
 			if (moveDone && !m_lateDestroy)
 			{
 				m_turn->move = false;
+
+				kitten::EventManager::getInstance()->queueEvent(kitten::Event::Action_Complete, new kitten::Event(kitten::Event::Action_Complete));
+				std::cout << "movement Complete\n";
 			}
 		}
 
@@ -347,6 +372,7 @@ namespace unit
 		return m_attachedObject->getComponent<unit::UnitMove>()->getTile();
 	}
 
+	//move
 	void Unit::move()//move by instruction
 	{
 		if (!canMove())
@@ -390,6 +416,7 @@ namespace unit
 		moveComponet->move(p_tile);
 	}
 
+	//ability
 	int Unit::useAbility(const std::string& p_abilityName, bool p_autoClick)
 	{
 		//if (!canAct())
@@ -460,6 +487,7 @@ namespace unit
 		return m_cdRecorder->checkCD(ad);
 	}
 
+	//destroy
 	int Unit::destroyedByDamage()
 	{
 		//TO DO: send destroyed even
@@ -494,8 +522,28 @@ namespace unit
 	{
 		//remove from tile
 		auto info = getTile()->getComponent<TileInfo>();
-		if(info != nullptr)
+		if (info != nullptr)
+		{
 			info->removeUnit();
+
+			if (this->hasItem())//unit has item
+			{
+				//drop item on the tile if the tile doesn't have item
+				if (!info->hasItem())
+				{
+					//item is held by tile
+					m_itemGO->getComponent<CaptureItemController>()->setParent(info);
+					//remove item from unit
+					this->removeItem();
+				}
+				else//there can only be one item on the tile, so remove this item
+				{
+					m_itemGO->getComponent<CaptureItemController>()->remove();
+					this->removeItem();
+				}
+			}
+			
+		}
 
 		//trigger unit destroy event
 		triggerTP(ability::TimePointEvent::Unit_Destroy);
@@ -538,6 +586,7 @@ namespace unit
 		}
 	}
 
+	//item
 	const bool Unit::hasItem() const
 	{
 		return m_itemGO != nullptr;
@@ -558,6 +607,7 @@ namespace unit
 		return m_itemGO;
 	}
 
+	//hp bar
 	void Unit::onScaleLerpFinished(kitten::K_GameObject* p_obj) //Called when healthbar is done animating
 	{
 		switch (m_healthBarState)

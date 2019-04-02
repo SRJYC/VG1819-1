@@ -22,8 +22,8 @@ namespace puppy
 		bool m_usesColour = false;
 		const glm::vec4 m_colour;
 	public:
-		P_Mesh(std::vector<NormalVertex>& p_vertices, std::vector<unsigned int>& p_indices, const char* p_pathToTexture, bool p_useAlphaTest);
-		P_Mesh(std::vector<NormalVertex>& p_vertices, std::vector<unsigned int>& p_indices, glm::vec4& p_colour);
+		P_Mesh(std::vector<NormalVertex>& p_vertices, std::vector<unsigned int>& p_indices, const char* p_pathToTexture, bool p_useAlphaTest, const glm::vec4& p_matAmb);
+		P_Mesh(std::vector<NormalVertex>& p_vertices, std::vector<unsigned int>& p_indices, const glm::vec4& p_colour, const glm::vec4& p_matAmb);
 		~P_Mesh();
 
 		const std::vector<NormalVertex>& getVertices() const;

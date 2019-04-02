@@ -1184,7 +1184,13 @@ kitten::K_Component* getModelRenderable(nlohmann::json* p_jsonFile) {
 	bool useAlphaTest;
 	SETOPTDEF(useAlphaTest, "alpha_test", false);
 
-	return new ModelRenderable(modelPath.c_str(), flipUvs, isStatic, useAlphaTest);
+	glm::vec4 matAmb(0.4,0.4,0.4,1);
+	if (JSONHAS("mat_ambient"))
+	{
+		matAmb = glm::vec4(LOOKUP("mat_ambient")[0], LOOKUP("mat_ambient")[1], LOOKUP("mat_ambient")[2], LOOKUP("mat_ambient")[3]);
+	}
+
+	return new ModelRenderable(modelPath.c_str(), flipUvs, isStatic, useAlphaTest, matAmb);
 }
 
 #include "unit\unitComponent\UnitHealthBar.h"
@@ -1534,6 +1540,10 @@ kitten::K_Component* getLandContext(nlohmann::json* p_jsonFile) {
 #include "UI\StatusContext.h"
 kitten::K_Component* getStatusContext(nlohmann::json* p_jsonFile) {
 	return new StatusContext();
+}
+#include "AI/controller.h"
+kitten::K_Component* getAIController(nlohmann::json* p_jsonFile) {
+	return new AI::controller(AI::controller::getAIControllerSize()+1);
 }
 
 #include "UI\ContextMenu.h"
@@ -2269,6 +2279,7 @@ void setupComponentMap() {
 	jsonComponentMap["BGMManager"] = &getBGMManager;
 	jsonComponentMap["PlayBGMOnSceneChange"] = &getPlayBGMOnSceneChange;
 	jsonComponentMap["ToggleSiblingEnabledOnClick"] = &getToggleSiblingEnabledOnClick;
+	jsonComponentMap["AIController"] = &getAIController;
 	jsonComponentMap["CaptureItemController"] = &getCaptureItemController;
 	jsonComponentMap["Quickplay"] = &getQuickplay;
 	jsonComponentMap["TogglePhotoModeOnKeyPress"] = &getTogglePhotoModeOnKeyPress;

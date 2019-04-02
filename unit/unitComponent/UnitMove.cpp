@@ -39,8 +39,8 @@ unit::UnitMove::UnitMove(glm::vec3 p_offset, float p_speed) :
 
 	//filter
 	m_ad->m_intValue["need_unit"] = FALSE;
-	m_ad->m_intValue[FILTER] = 1;
-	m_ad->m_stringValue["filter0"] = FILTER_UNIT;
+	//m_ad->m_intValue[FILTER] = 1;
+	//m_ad->m_stringValue["filter0"] = FILTER_UNIT;
 	//area, in this case, path
 	m_ad->m_stringValue[AREA_MODE] = PATH;
 	m_ad->m_intValue[AREA_FIX] = FALSE;

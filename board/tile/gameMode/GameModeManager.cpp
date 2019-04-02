@@ -112,8 +112,8 @@ void GameModeManager::init()
 
 	ItemSpawnArea* area = new ItemSpawnArea();
 	m_modeComponentMap[GameModeComponent::ItemSpawn] = area;
-	m_modeComponentMap[GameModeComponent::ItemDrop0] = new ItemDropArea(0, area);
-	m_modeComponentMap[GameModeComponent::ItemDrop1] = new ItemDropArea(1, area);
+	m_modeComponentMap[GameModeComponent::ItemDrop0] = new ItemDropArea(0);
+	m_modeComponentMap[GameModeComponent::ItemDrop1] = new ItemDropArea(1);
 
 	//read json file
 	nlohmann::json jsonfile = jsonIn(GAME_MODE_DATA);

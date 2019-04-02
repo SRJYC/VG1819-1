@@ -4,7 +4,7 @@
 
 namespace puppy
 {
-	P_Model::P_Model(const char* p_pathToModel, bool p_flipUVs, bool p_useAlphaTest) : m_name(p_pathToModel)
+	P_Model::P_Model(const char* p_pathToModel, bool p_flipUVs, bool p_useAlphaTest, const glm::vec4& p_matAmb) : m_name(p_pathToModel)
 	{
 		Assimp::Importer importer;
 		
@@ -24,7 +24,7 @@ namespace puppy
 
 		aiNode* rootNode = scene->mRootNode;
 		
-		processNode(rootNode, scene, p_useAlphaTest);
+		processNode(rootNode, scene, p_useAlphaTest, p_matAmb);
 	}
 
 	P_Model::~P_Model()
@@ -35,21 +35,21 @@ namespace puppy
 		}
 	}
 
-	void P_Model::processNode(aiNode* p_node, const aiScene* p_scene, bool p_useAlphaTest)
+	void P_Model::processNode(aiNode* p_node, const aiScene* p_scene, bool p_useAlphaTest, const glm::vec4& p_matAmb)
 	{
 		for (unsigned int i = 0; i < p_node->mNumMeshes; ++i)
 		{
 			auto mesh = p_scene->mMeshes[p_node->mMeshes[i]];
-			processMesh(mesh, p_scene, p_useAlphaTest);
+			processMesh(mesh, p_scene, p_useAlphaTest, p_matAmb);
 		}
 
 		for (unsigned int i = 0; i < p_node->mNumChildren; ++i)
 		{
-			processNode(p_node->mChildren[i], p_scene, p_useAlphaTest);
+			processNode(p_node->mChildren[i], p_scene, p_useAlphaTest, p_matAmb);
 		}
 	}
 
-	void P_Model::processMesh(aiMesh* p_mesh, const aiScene* p_scene, bool p_useAlphaTest)
+	void P_Model::processMesh(aiMesh* p_mesh, const aiScene* p_scene, bool p_useAlphaTest, const glm::vec4& p_matAmb)
 	{
 		std::vector<NormalVertex> vertices;
 		std::vector<unsigned int> indices;
@@ -147,11 +147,11 @@ namespace puppy
 
 		if (!usesColour)
 		{
-			m_meshes.push_back(new P_Mesh(vertices, indices, tex, p_useAlphaTest));
+			m_meshes.push_back(new P_Mesh(vertices, indices, tex, p_useAlphaTest, p_matAmb));
 		}
 		else
 		{
-			m_meshes.push_back(new P_Mesh(vertices, indices, glm::vec4(color.r, color.g, color.b, 1)));
+			m_meshes.push_back(new P_Mesh(vertices, indices, glm::vec4(color.r, color.g, color.b, 1), p_matAmb));
 		}
 		
 	}

@@ -26,14 +26,15 @@ public:
 	virtual bool hasUpdate() const override { return true; };
 	virtual void update() override;
 	
-	void joinDirectAddress();
-	void pollForLocalhost();
-	void joinLocalhost();
-	void joinDedicatedServer();
-
 	void joinDirectAddressListener(kitten::Event::EventType p_type, kitten::Event* p_event);
+	void joinDirectAddress();
 	void pollForLocalhostListener(kitten::Event::EventType p_type, kitten::Event* p_event);
+	void pollForLocalhost();
 	void joinLocalhostListener(kitten::Event::EventType p_type, kitten::Event* p_event);
+	void joinLocalhost();
 	void quickplayListener(kitten::Event::EventType p_type, kitten::Event* p_event);
+	void joinDedicatedServer();
+	void startGameListener(kitten::Event::EventType p_type, kitten::Event* p_event);
+	void startGame();	
 	void lostConnectionListener(kitten::Event::EventType p_type, kitten::Event* p_event);
 };

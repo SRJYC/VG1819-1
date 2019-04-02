@@ -2,7 +2,7 @@
 
 namespace puppy
 {
-	P_Mesh::P_Mesh(std::vector<NormalVertex>& p_vertices, std::vector<unsigned int>& p_indices, const char* p_pathToTexture, bool p_useAlphaTest) :
+	P_Mesh::P_Mesh(std::vector<NormalVertex>& p_vertices, std::vector<unsigned int>& p_indices, const char* p_pathToTexture, bool p_useAlphaTest, const glm::vec4& p_matAmb) :
 		m_vao(p_vertices.data(), p_indices.data(), ShaderManager::getShaderProgram(ShaderType::basic_directional_light), p_vertices.size(), p_indices.size()), m_vertices(p_vertices),
 		m_indices(p_indices)
 	{
@@ -39,14 +39,15 @@ namespace puppy
 			m_mat.setTexture("textures/black.bmp");
 		}
 
-		m_mat.setMatAmbient(glm::vec4(0.4, 0.4, 0.4, 1));
+		m_mat.setMatAmbient(p_matAmb);
 	}
 
-	P_Mesh::P_Mesh(std::vector<NormalVertex>& p_vertices, std::vector<unsigned int>& p_indices, glm::vec4& p_colour) : m_mat(ShaderType::solid_color_directional_light),
+	P_Mesh::P_Mesh(std::vector<NormalVertex>& p_vertices, std::vector<unsigned int>& p_indices, const glm::vec4& p_colour, const glm::vec4& p_matAmb) : m_mat(ShaderType::solid_color_directional_light),
 		m_vao(p_vertices.data(), p_indices.data(), ShaderManager::getShaderProgram(ShaderType::solid_color_directional_light), p_vertices.size(), p_indices.size()), m_usesColour(true),
 		m_colour(p_colour), m_vertices(p_vertices), m_indices(p_indices)
 	{
 		m_mat.setColour(m_colour);
+		m_mat.setMatAmbient(p_matAmb);
 	}
 
 	P_Mesh::~P_Mesh()
@@ -73,7 +74,6 @@ namespace puppy
 	{
 		m_mat.apply();
 		m_mat.setUniform(WORLD_VIEW_PROJ_UNIFORM_NAME, p_worldViewProj);
-		m_mat.setUniform("matAmbient", glm::vec3(0.4, 0.4, 0.4));
 		m_mat.setUniform("worldIT", p_worldIT);
 		m_mat.setUniform("world", p_world);
 

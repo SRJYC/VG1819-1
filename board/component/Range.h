@@ -18,21 +18,43 @@ public:
 	~Range();
 
 	void setDimension(int p_x, int p_z);
+	void clear();
 
 	kitten::Event::TileList getTilesInRange(kitten::Event * p_data);
 
-	kitten::Event::TileList getTilesInRange
-	(kitten::K_GameObject* p_tileAtOrigin,
-		int p_minRange, int p_maxRange);
+	kitten::Event::TileList getTilesInRange(kitten::K_GameObject* p_tileAtOrigin,int p_minRange, int p_maxRange);
+
+	kitten::Event::TileList getPath(kitten::K_GameObject * p_target, kitten::K_GameObject * p_origin);
+
 private:
+	//board dimension
 	int m_x;
 	int m_z;
 
-	void findNeighbour
-	(std::map<std::pair<int, int>, int>* p_tilesAndRange, 
-		std::pair<int, int> p_currentTile, 
-		int p_distance, int p_minRange, int p_maxRange);
+	//range
+	int m_min;
+	int m_max;
 
-	//void removeUnit(kitten::Event::TileList* p_list);
-	//void removeOwned(kitten::Event::TileList* p_list);
+	kitten::K_GameObject* m_origin;
+	std::pair<int, int> m_originPos;
+
+	kitten::Event::TileList getList() const;
+	void addTile(kitten::Event::TileList* p_list, int p_tileX, int p_tileZ) const;
+
+	//path node
+	struct node
+	{
+		std::pair<int, int> tile;
+		int cost;
+		node* parent = nullptr;
+	};
+
+	std::map<std::pair<int, int>, node*> m_nodeMap;
+
+	std::map<std::pair<int, int>, node*> getPathRange() const;
+
+	void checkTile
+	(std::map<std::pair<int, int>, node*>* p_nodeMap,
+		node* p_parentNode,
+		std::pair<int, int> p_currentTile) const;
 };

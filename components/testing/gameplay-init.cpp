@@ -5,6 +5,7 @@
 #include "unitInteraction/UnitInteractionManager.h"
 #include "board/BoardManager.h"
 #include "components/initializers/DrawCardsFromDeckWithDelay.h"
+#include "AI/controller.h"
 #include "board/tile/GameMode/GameModeManager.h"
 
 GameplayInit::GameplayInit(bool p_testing)
@@ -36,5 +37,9 @@ void GameplayInit::start() {
 		unit::UnitTest::getInstanceSafe()->test();
 		DrawCardsFromDeckWithDelay::getActiveInstance()->setCardCountToDispense(5);
 		DrawCardsFromDeckWithDelay::getActiveInstance()->addDelayToStart(7);
+	}
+
+	if (AI::controller::AIPresent()) {
+		AI::controller::setupAIControllers();
 	}
 }

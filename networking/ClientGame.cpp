@@ -37,6 +37,7 @@ namespace networking
 	ClientGame* ClientGame::sm_clientGameInstance = nullptr;
 	bool ClientGame::sm_networkValid = false;
 	int ClientGame::sm_iClientId = -1;
+	int ClientGame::sm_mapId = -1;
 	std::string ClientGame::sm_playerName = "";
 
 	std::string ClientGame::sm_dedicatedServerAddress = "localhost";
@@ -94,6 +95,7 @@ namespace networking
 
 		sm_networkValid = false;
 		sm_iClientId = -1;
+		sm_mapId = -1;
 		sm_playerName = "";
 
 		kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Board_Loaded, this);
@@ -202,11 +204,34 @@ namespace networking
 
 				if (m_boardLoaded)
 				{
-					sendStartingData();
+					sendStartingData(BoardManager::getInstance()->getMapId());
 					m_boardLoaded = false;
 				}
 
 				i += BASIC_PACKET_SIZE;
+				break;
+			}
+			case PacketTypes::MAP_DATA:
+			{
+				Buffer buffer;
+				buffer.m_data = &(m_network_data[i]);
+				buffer.m_size = MAP_DATA_PACKET_SIZE;
+
+				MapDataPacket packet;
+				packet.deserialize(buffer);
+
+				std::stringstream message;
+				message << "Client:" << sm_iClientId << " received MAP_DATA (" << packet.m_mapId << ")";
+				m_log->logMessage(message.str());
+
+				printf("[Client: %d] received MAP_DATA (map ID: %d) packet from server\n", sm_iClientId, packet.m_mapId);
+
+				sm_mapId = packet.m_mapId;
+				kitten::Event* e = new kitten::Event(kitten::Event::P2P_Start_Game);
+				e->putInt(MAP_ID_KEY, packet.m_mapId);
+				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::P2P_Start_Game, e);
+
+				i += MAP_DATA_PACKET_SIZE;
 				break;
 			}
 			case PacketTypes::SERVER_SHUTDOWN:
@@ -625,7 +650,7 @@ namespace networking
 		m_log->logMessage(abilityInfo);
 	}
 
-	void ClientGame::sendStartingData()
+	void ClientGame::sendStartingData(int p_mapId)
 	{
 		char commanderData[UNIT_PACKET_SIZE];
 		Buffer commanderDataBuffer;
@@ -650,6 +675,23 @@ namespace networking
 		message << "Client:" << sm_iClientId << " sending STARTING_COMMANDER_DATA\n";
 		message << "\tUnit ID:" << commanderDataPacket.m_unitId << ", X:" << commanderDataPacket.m_posX << ", Y:" << commanderDataPacket.m_posY;
 		m_log->logMessage(message.str());
+
+		// Only the host map matters
+		if (sm_iClientId == 0)
+		{
+			char mapData[MAP_DATA_PACKET_SIZE];
+			Buffer mapDataBuffer;
+			mapDataBuffer.m_data = mapData;
+			mapDataBuffer.m_size = MAP_DATA_PACKET_SIZE;
+
+			MapDataPacket mapDataPacket;
+			mapDataPacket.m_packetType = MAP_DATA;
+			mapDataPacket.m_clientId = sm_iClientId;
+			mapDataPacket.m_mapId = p_mapId;
+
+			mapDataPacket.serialize(mapDataBuffer);
+			NetworkServices::sendMessage(m_network->m_connectSocket, mapData, MAP_DATA_PACKET_SIZE);
+		}
 	}
 
 	void ClientGame::cardDrawnListener(kitten::Event::EventType p_type, kitten::Event* p_event)
@@ -665,7 +707,8 @@ namespace networking
 		}
 		else
 		{
-			sendStartingData();
+			int mapId = p_event->getInt(MAP_ID_KEY);
+			sendStartingData(mapId);
 		}
 	}
 

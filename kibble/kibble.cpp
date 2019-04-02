@@ -6,6 +6,7 @@
 #include "kibble/json/JSONUnitDataParser.hpp"
 #include "kibble/custom/CustomDeckDataParser.hpp"
 #include "kibble\sprites\SpriteLoader.h"
+#include "AI/Extract/Behavior.h"
 #include "kibble/map/LandLoader.h"
 #include "kibble/map/MapReader.h"
 
@@ -25,6 +26,7 @@ void kibble::initializeKibbleRelatedComponents() {
 	landLoader = new LandLoader();
 	MapReader::createInstance();
 
+	setupBehaviors();
 	setupDatabank();
 }
 

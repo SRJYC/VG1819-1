@@ -194,6 +194,7 @@ std::vector<kitten::K_GameObject*> ability::Ability::getCardsInHand()
 void ability::Ability::triggerTPEvent(ability::TimePointEvent::TPEventType p_tp, unit::Unit * p_target, AbilityInfoPackage * p_info)
 {
 	unit::StatusContainer* sc = p_target->getStatusContainer();
+	if (sc == nullptr) return;
 	ability::TimePointEvent* t = new ability::TimePointEvent(p_tp);
 	t->putPackage(INFO_PACKAGE_KEY, p_info);
 	sc->triggerTP(p_tp, t);

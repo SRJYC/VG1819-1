@@ -1,5 +1,6 @@
 #include "UnitType.h"
 #include "ability/StatusManager.h"
+#include "AI/Extract/Behavior.h"
 
 unit::Unit * getUnitFrom(nlohmann::json & p_jsonfile)
 {
@@ -79,6 +80,13 @@ unit::Unit * getUnitFrom(nlohmann::json & p_jsonfile)
 	if (p_jsonfile.find("portrait_texture") != p_jsonfile.end()) {
 		std::string texturePath = p_jsonfile["portrait_texture"].get<std::string>();
 		unit->setPortraitTexturePath(texturePath);
+	}
+
+	// AI Behavior
+	if (p_jsonfile.find("AI") != p_jsonfile.end()) {
+		for (nlohmann::json::iterator it = p_jsonfile["AI"].begin(); it != p_jsonfile["AI"].end(); ++it) {
+			unit->m_AbilityBehavior[it->at("ability")] = generateBehavior(it->at("behavior"));
+		}
 	}
 
 	//client id for net working

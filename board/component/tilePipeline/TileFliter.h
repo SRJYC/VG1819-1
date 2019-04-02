@@ -142,3 +142,12 @@ protected:
 	bool shouldRemove(kitten::K_GameObject* p_tileGO);
 };
 
+class WaterFilter : public TileFilter
+{//remove water tiles
+public:
+	WaterFilter(TilePipeline* p_p) :TileFilter(p_p) {};
+
+protected:
+	bool shouldRemove(kitten::K_GameObject* p_tileGO);
+};
+

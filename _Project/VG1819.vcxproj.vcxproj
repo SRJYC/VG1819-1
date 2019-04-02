@@ -189,6 +189,11 @@
     <ClCompile Include="..\ability\status\Status_Temp_Change.cpp" />
     <ClCompile Include="..\ability\status\Status_Block.cpp" />
     <ClCompile Include="..\ability\status\Status_Vampiric_Curse.cpp" />
+    <ClCompile Include="..\AI\controller.cpp" />
+    <ClCompile Include="..\AI\Extract\Action.cpp" />
+    <ClCompile Include="..\AI\Extract\Behavior.cpp" />
+    <ClCompile Include="..\AI\Extract\Deck.cpp" />
+    <ClCompile Include="..\AI\model.cpp" />
     <ClCompile Include="..\board\component\area\AllPattern.cpp" />
     <ClCompile Include="..\board\component\area\Area.cpp" />
     <ClCompile Include="..\board\component\area\AreaPattern.cpp" />
@@ -214,6 +219,7 @@
     <ClCompile Include="..\board\component\tilePipeline\TilePipeline.cpp" />
     <ClCompile Include="..\board\component\tilePipeline\UnitFilter.cpp" />
     <ClCompile Include="..\board\component\tilePipeline\UnownedTileFilter.cpp" />
+    <ClCompile Include="..\board\component\tilePipeline\WaterFilter.cpp" />
     <ClCompile Include="..\board\tile\DecorationGenerator.cpp" />
     <ClCompile Include="..\board\tile\gameMode\AreaControl\ControlArea.cpp" />
     <ClCompile Include="..\board\tile\gameMode\AttackDefend\DefendArea.cpp" />
@@ -523,6 +529,15 @@
     <ClInclude Include="..\ability\status\Status.h" />
     <ClInclude Include="..\ability\status\statusEvent\TimePointEvent.h" />
     <ClInclude Include="..\ability\status\statusLV\Status_LV.h" />
+    <ClInclude Include="..\AI\controller.h" />
+    <ClInclude Include="..\AI\Extract\Action.h" />
+    <ClInclude Include="..\AI\Extract\Behavior.h" />
+    <ClInclude Include="..\AI\Extract\Board.h" />
+    <ClInclude Include="..\AI\Extract\Deck.h" />
+    <ClInclude Include="..\AI\Extract\Hand.h" />
+    <ClInclude Include="..\AI\Extract\PowerTracker.h" />
+    <ClInclude Include="..\AI\Extract\Unit.h" />
+    <ClInclude Include="..\AI\model.h" />
     <ClInclude Include="..\assimp\include\assimp\ai_assert.h" />
     <ClInclude Include="..\assimp\include\assimp\anim.h" />
     <ClInclude Include="..\assimp\include\assimp\BaseImporter.h" />

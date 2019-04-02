@@ -19,6 +19,7 @@
 #define STARTING_COMMANDERS_PACKET_SIZE sizeof(StartingCommandersPacket)
 #define SERVER_INFO_PACKET_SIZE sizeof(ServerInfoPacket)
 #define TEST_PACKET_SIZE sizeof(TestPacket)
+#define MAP_DATA_PACKET_SIZE sizeof(MapDataPacket)
 
 enum PacketTypes 
 {
@@ -42,7 +43,8 @@ enum PacketTypes
 	QUICKPLAY,
 	UPDATE_SERVER_INFO,
 	QUICKPLAY_FOUND_GAME,
-	SESSION_ENDED
+	SESSION_ENDED,
+	MAP_DATA
 };
 
 struct UnitPrimitiveData
@@ -129,6 +131,23 @@ struct Packet {
 	void deserialize(Buffer& p_buffer) {
 		m_packetType = readInt(p_buffer);
 		m_clientId = readInt(p_buffer);
+	}
+};
+
+struct MapDataPacket : Packet
+{
+	int m_mapId = -1;
+
+	void serialize(Buffer& p_buffer)
+	{
+		Packet::serialize(p_buffer);
+		writeInt(p_buffer, m_mapId);
+	}
+
+	void deserialize(Buffer& p_buffer)
+	{
+		Packet::deserialize(p_buffer);
+		m_mapId = readInt(p_buffer);
 	}
 };
 
@@ -279,6 +298,7 @@ class AbilityPacket
 	//typedef std::vector<unit::Unit*> TargetUnits; // Not used by server
 	typedef std::unordered_map<std::string, int> IntValues;
 	//typedef std::vector<kitten::K_GameObject*>  TargetTiles; // Not used by server
+	typedef std::unordered_map<std::string, std::string> StringValues;
 public:
 	int m_packetType = ABILITY_PACKET;
 	int m_clientId;
@@ -287,11 +307,29 @@ public:
 	int m_abilityNameLength;
 	std::string m_abilityName = "";
 
+	//void print() // Not used by server
 
 	std::string getFormattedAbilityInfo();
 
 	void serialize(Buffer& p_buffer);
 	void deserialize(Buffer& p_buffer);
+
+	/* Not used by server
+	void extractFromPackage(ability::AbilityInfoPackage* p_package);
+	void insertIntoPackage(ability::AbilityInfoPackage* p_package);
+
+	void addTargetUnits(const TargetUnits& p_targets);
+	void addIntValues(const IntValues& p_values);
+	void addTargetTiles(const TargetTiles& p_targetTilesGO);
+	void addStringValues(const StringValues& p_stringValues);
+	void addUnitData(unit::Unit* p_unit);
+
+	const TargetUnits& getTargetUnits() const;
+	const IntValues& getIntValues() const;
+	const TargetTiles& getTargetTiles() const;
+	const StringValues& getStringValues() const;
+	unit::Unit* getUnit();
+	*/
 
 	int getSize();
 	int getBytes() { return m_totalBytes; }
@@ -312,6 +350,12 @@ private:
 	int m_numTargetTiles;
 	std::vector<std::pair<int, int>> m_targetTiles;
 	//TargetTiles m_targetTilesGO; // Not used by server
+
+	// Number of entries in m_stringValue
+	int m_numStringValues = 0;
+	// Sum of the length of all values in m_stringValue
+	int m_sumStringValuesLength = 0;
+	StringValues m_stringValue;
 
 	std::pair<int, int> m_clickedObjectPos = { -1, -1 };
 

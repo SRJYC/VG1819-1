@@ -191,7 +191,12 @@ void UnitInteractionManager::send()
 	}
 
 	m_busy = false;
+
 	m_package = nullptr;
+	if (m_ad->m_stringValue[ABILITY_NAME] != ACTION_MOVE) {
+		kitten::EventManager::getInstance()->queueEvent(kitten::Event::Action_Complete, new kitten::Event(kitten::Event::Action_Complete));
+		std::cout << m_ad->m_stringValue[ABILITY_NAME] << " Complete\n";
+	}
 }
 
 void UnitInteractionManager::addPropertyFromADToPack()

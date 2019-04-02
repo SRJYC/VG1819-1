@@ -22,6 +22,9 @@ std::vector<std::vector<kitten::K_Component*>> unitSpecificComponentVector;
 // Basically the deconstructor
 void kibble::destroyDatabank() {
 	for (kibble::UnitFileStruct& unit : unitDataVector) {
+		for (auto behavior : unit.data->m_AbilityBehavior) {
+			delete behavior.second;
+		}
 		delete unit.data;
 	}
 	for (auto data : deckDataVector) {

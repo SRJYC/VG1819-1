@@ -14,6 +14,7 @@
 #define TEXTCHAT_MESSAGE_KEY "textchat_message_key"
 #define NEXT_SCENE_PATH_KEY "next_scene_path_key"
 #define UNIT_GO_KEY "unit_go_key"
+#define MAP_ID_KEY "map_id_key"
 
 #define PLAYER_ID "playerID"
 #define CARD_ID "cardID"
@@ -109,11 +110,14 @@ namespace kitten
 			New_Game_Turn,
 			New_Unit_Turn,
 			Put_Card_To_Hand,
+			Next_Units_Turn_Start,
+			Action_Complete,
 			Quickplay,
 			Quickplay_Find_Game,
 			Quickplay_Start_Game,
 			Update_Server_Info,
 			Board_Loaded,
+			P2P_Start_Game,
 			Enemy_Draw_Card,
 
 			Test_Event, 

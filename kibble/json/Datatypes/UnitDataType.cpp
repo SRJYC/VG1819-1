@@ -57,6 +57,7 @@ unit::UnitData* getUnitDataFrom(nlohmann::json& p_jsonfile) {
 		ud->m_spriteName = p_jsonfile["spritename"].get<std::string>();
 	}
 
+
 	//TODO portrait path (for commander)
 
 	return ud;

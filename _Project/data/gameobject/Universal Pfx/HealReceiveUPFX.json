@@ -11,6 +11,19 @@
 		{
 			"name" : "DisableAfterTime",
 			"time" : 5
+		},
+		{
+		  "name": "FadePointLightOverTime",
+		  "time": 5.0,
+		  "end_attenuation": [ 15, 0, 0 ]
+		},
+		{
+		  "name": "PointLight",
+		  "useCallbacks": false,
+		  "range": 20.0,
+		  "ambientColor": [ 0.7, 0.7, 0.7 ],
+		  "pointColor": [ 0.8, 0.8, 0.8 ],
+		  "attenuation": [ 0, 1, 0 ]
 		}
 	]
 }
