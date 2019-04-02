@@ -1,0 +1,17 @@
+{
+    "name":"map_selection_list",
+    "components" : [
+        {
+            "name" : "MapListController",
+            "image_for_random":"textures/map/question-mark.jpg",
+            "description_for_random":"Pick random map",
+            "up_button_data":"",
+            "down_button_data":"",
+            "map_button_data":"map_selection_scene/map_button.json",
+            "x":50,
+            "y":100,
+            "offset":100,
+            "button_num":4
+		}
+    ]
+}

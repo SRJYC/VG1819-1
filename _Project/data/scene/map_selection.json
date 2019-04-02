@@ -12,7 +12,7 @@
 			"filename" : "map_selection_scene/map_detail_frame.json"
 		},
 		{
-			"filename" : "map_selection_scene/map_selection.json"
+			"filename" : "map_selection_scene/map_selection_list.json"
 		}
     ]
 }

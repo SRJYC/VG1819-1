@@ -13,8 +13,11 @@ MapDetailController::~MapDetailController()
 
 void MapDetailController::start()
 {
+	//get texture or text box
 	m_uiObject = m_attachedObject->getComponent<userinterface::UIObject>();
 	m_textBox = m_attachedObject->getComponent<puppy::TextBox>();
+
+
 	registerEvent();
 }
 
@@ -35,12 +38,14 @@ void MapDetailController::listenEvent(kitten::Event::EventType p_type, kitten::E
 {
 	if (p_type == kitten::Event::EventType::Update_Map_Detail)
 	{
+		//update texture if it exists
 		if (m_uiObject != nullptr)
 		{
 			std::string img = p_data->getString("Image");
 			m_uiObject->setTexture(img.c_str());
 		}
 
+		//update description if it exists
 		if (m_textBox != nullptr)
 		{
 			std::string text = p_data->getString("Text");

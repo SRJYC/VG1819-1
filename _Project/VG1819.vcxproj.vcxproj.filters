@@ -1219,7 +1219,12 @@
     <ClCompile Include="..\components\MapSelectionScene\MapDetailController.cpp">
       <Filter>components\MapSelectionScene</Filter>
     </ClCompile>
-    <ClCompile Include="..\components\MapSelectionScene\MapListController.cpp" />
+    <ClCompile Include="..\components\MapSelectionScene\MapListController.cpp">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\components\MapSelectionScene\ChangeMapDetailOnClick.cpp">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\kitten\K_Common.h">
@@ -2445,6 +2450,15 @@
       <Filter>components\MapSelectionScene</Filter>
     </ClInclude>
     <ClInclude Include="..\components\MapSelectionScene\MapListController.h">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\components\MapSelectionScene\ChangeMapDetailOnClick.h">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\components\MapSelectionScene\ChangeModeDetailOnClick.h">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\components\MapSelectionScene\ChangeListOnClick.h">
       <Filter>components\MapSelectionScene</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,0 +1,28 @@
+{
+    "name" : "Map Button", 
+    "components" : [
+        {
+            "name" : "UIObject",
+            "texture" : "textures/ui/buttons/blank_button.tga"
+        },
+        {
+            "name" : "ClickableButton",
+            "regularTexture" : "textures/ui/buttons/blank_button.tga",
+            "highlightedTexture" : "textures/ui/buttons/blank_button_highlighted.tga"
+        },
+        {
+            "name" : "ClickableFrame"
+        },
+        {
+            "name" : "ChangeMapDetailOnClick"
+        },
+        {
+            "name" : "TextBox",
+            "alignment" : "center",
+            "width" : 200,
+            "height" : 30
+        }
+    ],
+	"translate" : [0,0,-0.3],
+    "scale2d": [200,30]
+}

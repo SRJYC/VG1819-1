@@ -119,6 +119,7 @@ namespace kitten
 			Board_Loaded,
 			P2P_Start_Game,
 			Update_Map_Detail,
+			Update_Mode_Detail,
 
 			Test_Event, 
 			MAX_VAL = Test_Event

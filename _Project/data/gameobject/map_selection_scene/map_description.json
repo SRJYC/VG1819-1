@@ -6,8 +6,9 @@
 			"font" : "../fonts/nsimsun_14pt.fnt",
 			"color" : [1,1,1],
             "alignment" : "left",
-            "width" : 314,
-            "height" : 14
+            "width" : 200,
+            "height" : 100,
+            "message":"Pick random map"
         },
         {
 			"name" : "MapDetailController"
