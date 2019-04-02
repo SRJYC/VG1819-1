@@ -37,6 +37,7 @@ void PauseMenuToggle::start()
 
 		if (m_sibling != m_attachedObject)
 		{
+			m_sibling->setEnabled(false);
 			return;
 		}
 	}

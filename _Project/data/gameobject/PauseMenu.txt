@@ -10,17 +10,14 @@
 					"name" : "PauseMenu"
 				}
 			],
-			"enabled" : false,
 			
 			"gameobjects" : 
 			[
 				{
-					"filename" : "UI/options_menu/options_menu_no_close.json",
-					"enabled" : false
+					"filename" : "UI/options_menu/options_menu_no_close.json"
 				},
 				{
-					"filename" : "return_to_main_menu_button.txt",
-					"enabled" : false
+					"filename" : "return_to_main_menu_button.txt"
 				}
 			]
 		},

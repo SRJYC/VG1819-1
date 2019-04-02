@@ -16,7 +16,7 @@
 					"texture" : "textures/ui/options_menu/options_background.dds"
 				}
 			],
-			"translate" : [350, 240, -0.2],
+			"translate" : [320, 240, -0.2],
 			"worldscale" : [640, 300, 1],
 			
 			"gameobjects" : 

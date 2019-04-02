@@ -87,9 +87,11 @@ void PauseMenu::onDisabled()
 
 void PauseMenu::enableEndGameScreen(kitten::Event::EventType p_type, kitten::Event* p_data)
 {
-	int gameResult = p_data->getInt(GAME_END_RESULT);
-	switch (gameResult)
+	if (!m_gameEnded)
 	{
+		int gameResult = p_data->getInt(GAME_END_RESULT);
+		switch (gameResult)
+		{
 		case HOST_COMMANDER_DIED:
 			m_endGameScreenObj->setTexture(DEFEAT_TEXTURE);
 			break;
@@ -102,15 +104,15 @@ void PauseMenu::enableEndGameScreen(kitten::Event::EventType p_type, kitten::Eve
 		case CLIENT_DESYNCED:
 			m_endGameScreenObj->setTexture(DESYNC_TEXTURE);
 			break;
-	}		
+		}
 
-	m_endGameScreenObj->setEnabled(true);	// Show UIObject with appropriate end game message
-	setEnabled(true); 
-	m_gameEnded = true; // Permanently show main menu button
-	m_opened = true;
-	printf("Pause menu open\n");
-	// Disables interacting with other game features
-	kitten::Event* eventData = new kitten::Event(kitten::Event::Pause_Menu_Open);
-	eventData->putInt(PAUSE_MENU_OPEN, m_opened);
-	kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Pause_Menu_Open, eventData);
+		m_endGameScreenObj->setEnabled(true);	// Show UIObject with appropriate end game message
+		m_gameEnded = true;
+		m_opened = true;
+
+		// Disables interacting with other game features
+		kitten::Event* eventData = new kitten::Event(kitten::Event::Pause_Menu_Open);
+		eventData->putInt(PAUSE_MENU_OPEN, m_opened);
+		kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Pause_Menu_Open, eventData);
+	}
 }
