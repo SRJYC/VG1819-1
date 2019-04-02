@@ -124,6 +124,8 @@ void BoardCreator::createBoard(int p_id)
 	bm->setDimension(dimX, dimZ);//dimension
 	bm->setMapID(mapId);//map id
 	bm->setBoardGameObject(borad);//board
+
+	kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Board_Loaded, nullptr);
 }
 /*
 void BoardCreator::start()

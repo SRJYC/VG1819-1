@@ -154,6 +154,7 @@ namespace userinterface
 		}
 
 		reorderAllCards();
+
 	}
 
 	void HandFrame::start()

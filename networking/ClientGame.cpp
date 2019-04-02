@@ -72,6 +72,11 @@ namespace networking
 			kitten::Event::EventType::Board_Loaded,
 			this,
 			std::bind(&ClientGame::boardLoadedListener, this, std::placeholders::_1, std::placeholders::_2));
+
+		kitten::EventManager::getInstance()->addListener(
+			kitten::Event::EventType::Card_Drawn,
+			this,
+			std::bind(&ClientGame::cardDrawnListener, this, std::placeholders::_1, std::placeholders::_2));
 	}
 	
 	ClientGame::~ClientGame()
@@ -647,6 +652,11 @@ namespace networking
 		m_log->logMessage(message.str());
 	}
 
+	void ClientGame::cardDrawnListener(kitten::Event::EventType p_type, kitten::Event* p_event)
+	{
+		sendDrawPacket(p_event->getInt(CARD_COUNT));
+	}
+
 	void ClientGame::boardLoadedListener(kitten::Event::EventType p_type, kitten::Event* p_event)
 	{
 		if (sm_iClientId < 0)
@@ -797,5 +807,24 @@ namespace networking
 		}
 
 		return NetworkServices::sendMessage(m_network->m_connectSocket, data, BASIC_PACKET_SIZE);
+	}
+
+	int ClientGame::sendDrawPacket(const int p_count)
+	{
+		char data[COUNT_SIZE];
+
+		Buffer buffer;
+		buffer.m_data = data;
+		buffer.m_size = COUNT_SIZE;
+
+		Packet packet;
+		packet.m_packetType = PacketTypes::CARD_DRAW;
+		packet.m_clientId = sm_iClientId;
+		packet.writeInt(buffer, p_count);
+
+
+		packet.serialize(buffer);
+
+		return NetworkServices::sendMessage(m_network->m_connectSocket, data, COUNT_SIZE);
 	}
 }
