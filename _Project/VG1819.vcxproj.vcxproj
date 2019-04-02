@@ -419,6 +419,7 @@
     <ClCompile Include="..\UI\LandContext.cpp" />
     <ClCompile Include="..\UI\MainMenu\MainMenu.cpp" />
     <ClCompile Include="..\UI\PauseMenu\PauseMenu.cpp" />
+    <ClCompile Include="..\UI\PauseMenu\PauseMenuToggle.cpp" />
     <ClCompile Include="..\UI\PauseMenu\ReturnToMainMenuButton.cpp" />
     <ClCompile Include="..\UI\StatusContext.cpp" />
     <ClCompile Include="..\UI\TriggerEventButton.cpp" />
@@ -828,6 +829,7 @@
     <ClInclude Include="..\UI\LandContext.h" />
     <ClInclude Include="..\UI\MainMenu\MainMenu.h" />
     <ClInclude Include="..\UI\PauseMenu\PauseMenu.h" />
+    <ClInclude Include="..\UI\PauseMenu\PauseMenuToggle.h" />
     <ClInclude Include="..\UI\PauseMenu\ReturnToMainMenuButton.h" />
     <ClInclude Include="..\UI\StatusContext.h" />
     <ClInclude Include="..\UI\TriggerEventButton.h" />

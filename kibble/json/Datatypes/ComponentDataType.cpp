@@ -2121,6 +2121,12 @@ kitten::K_Component* getAmbientSystemController(nlohmann::json* p_jsonFile) {
 	return new AmbientSystemController(events, persistentSounds);
 }
 
+#include "UI\PauseMenu\PauseMenuToggle.h"
+kitten::K_Component* getPauseMenuToggle(nlohmann::json* p_jsonFile) 
+{
+	return new PauseMenuToggle();
+}
+
 std::map<std::string, kitten::K_Component* (*)(nlohmann::json* p_jsonFile)> jsonComponentMap;
 void setupComponentMap() {
 	jsonComponentMap["MoveByMouseRightClickDrag"] = &getMoveByMouseRightClickDrag;
@@ -2292,6 +2298,7 @@ void setupComponentMap() {
 	jsonComponentMap["AmbientVolumeController"] = &getAmbientVolumeController;
 	jsonComponentMap["IncreaseAmbientVolumeOnClick"] = &getIncreaseAmbientVolumeOnClick;
 	jsonComponentMap["DecreaseAmbientVolumeOnClick"] = &getDecreaseAmbientVolumeOnClick;
+	jsonComponentMap["PauseMenuToggle"] = &getPauseMenuToggle;
 
 }
 

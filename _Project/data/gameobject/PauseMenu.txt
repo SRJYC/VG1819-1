@@ -1,8 +1,58 @@
 {
-    "name" : "Pause Menu",
-    "components" : [
+    "name" : "Pause Menu Root",
+	
+	"gameobjects" : 
+	[
 		{
-			"name" : "PauseMenu"
+			"name" : "Pause Menu",
+			"components" : [
+				{
+					"name" : "PauseMenu"
+				}
+			],
+			"enabled" : false,
+			
+			"gameobjects" : 
+			[
+				{
+					"filename" : "UI/options_menu/options_menu_no_close.json",
+					"enabled" : false
+				},
+				{
+					"filename" : "return_to_main_menu_button.txt",
+					"enabled" : false
+				}
+			]
+		},
+		{
+			"name" : "Pause Menu Toggle Components",
+			"components" : [
+				{
+					"name" : "PauseMenuToggle"
+				},
+				{
+					"name" : "UIObject",
+					"texture" : "textures/ui/buttons/button_gear.tga"
+				},
+				{
+					"name" : "ClickableButton",
+					"enabledOnPause" : true,
+					"regularTexture" : "textures/ui/buttons/button_gear.tga",
+					"highlightedTexture" : "textures/ui/buttons/button_gear_h.tga"
+				},
+				{
+					"name" : "ClickableFrame"
+				},
+				{
+					"name" : "PlayUniversalSoundOnUIClick",
+					"sound_name" : "click"
+				},
+				{
+					"name" : "ToggleSiblingEnabledOnClick"
+				}
+			],
+			"translate2d" : [5, 540],
+			"scale2d" : [50, 50]
 		}
-    ]
+	]
 }

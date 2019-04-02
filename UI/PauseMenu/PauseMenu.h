@@ -15,14 +15,12 @@ private:
 
 	userinterface::UIObject* m_endGameScreenObj = nullptr;
 
-	void setEnabledUI(bool p_enabled);
+	virtual void start() override;
+	virtual void onEnabled();
+	virtual void onDisabled();
+
 	void enableEndGameScreen(kitten::Event::EventType p_type, kitten::Event* p_data);
 public:
 	PauseMenu(const char* p_pathToTex);
 	~PauseMenu();
-
-	virtual void start() override;
-
-	virtual bool hasUpdate() const override { return true; };
-	virtual void update() override;
 };

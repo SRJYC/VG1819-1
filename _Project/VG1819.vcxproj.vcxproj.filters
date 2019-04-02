@@ -1216,6 +1216,9 @@
     <ClCompile Include="..\UI\PauseMenu\ReturnToMainMenuButton.cpp">
       <Filter>UI\PauseMenu</Filter>
     </ClCompile>
+    <ClCompile Include="..\UI\PauseMenu\PauseMenuToggle.cpp">
+      <Filter>UI\PauseMenu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\kitten\K_Common.h">
@@ -2435,6 +2438,9 @@
       <Filter>UI\PauseMenu</Filter>
     </ClInclude>
     <ClInclude Include="..\UI\PauseMenu\ReturnToMainMenuButton.h">
+      <Filter>UI\PauseMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UI\PauseMenu\PauseMenuToggle.h">
       <Filter>UI\PauseMenu</Filter>
     </ClInclude>
   </ItemGroup>
