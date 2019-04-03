@@ -2464,6 +2464,9 @@
     <ClInclude Include="..\components\MapSelectionScene\ChangeListOnClick.h">
       <Filter>components\MapSelectionScene</Filter>
     </ClInclude>
+    <ClInclude Include="..\components\MapSelectionScene\ModeDetailController.h">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="kitten">

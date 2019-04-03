@@ -13,6 +13,9 @@
 		},
 		{
 			"filename" : "map_selection_scene/map_selection_list.json"
+		},
+		{
+			"filename" : "map_selection_scene/mode_explain_frame.json"
 		}
     ]
 }

@@ -666,6 +666,7 @@
     <ClInclude Include="..\components\MapSelectionScene\ChangeModeDetailOnClick.h" />
     <ClInclude Include="..\components\MapSelectionScene\MapDetailController.h" />
     <ClInclude Include="..\components\MapSelectionScene\MapListController.h" />
+    <ClInclude Include="..\components\MapSelectionScene\ModeDetailController.h" />
     <ClInclude Include="..\components\PromptPopUp.h" />
     <ClInclude Include="..\components\RenameDeckComponent.h" />
     <ClInclude Include="..\components\scene change\StartGameOnClick.h" />
