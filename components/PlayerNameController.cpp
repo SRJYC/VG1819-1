@@ -33,22 +33,17 @@ void PlayerNameController::start()
 	const auto children = getTransform().getChildren();
 
 	kitten::K_GameObject* controllerInput = &children[0]->getAttachedGameObject();
+	m_inputTextbox = controllerInput->getComponent<puppy::TextBox>();
 	m_stringInputDisplay = controllerInput->getComponent<StringInputDisplay>();
 	m_stringInputDisplay->setCharLimit(m_nameMaxLimit);
-
-	m_inputTextbox = controllerInput->getComponent<puppy::TextBox>();
-
-	kitten::K_GameObject* nameStatus = kitten::K_GameObjectManager::getInstance()->createNewGameObject("enter_name_status_textbox.json");
-	m_nameStatusTextBox = nameStatus->getComponent<puppy::TextBox>();
-	m_nameStatusTextBox->getGameObject().getTransform().setParent(&m_attachedObject->getTransform());
 
 	kitten::K_GameObject* confirmButtonGO = &children[3]->getAttachedGameObject();
 	m_confirmButton = confirmButtonGO->getComponent<userinterface::ClickableButton>();
 	m_confirmButtonFrame = confirmButtonGO->getComponent<kitten::ClickableFrame>();
 
-	//kitten::K_GameObject* confirmButtonGO = kitten::K_GameObjectManager::getInstance()->createNewGameObject("UI/name_confirm_button.json");
-	//m_confirmButton = confirmButtonGO->getComponent<userinterface::ClickableButton>();
-	//m_confirmButtonFrame = confirmButtonGO->getComponent<kitten::ClickableFrame>();
+	kitten::K_GameObject* nameStatus = &children[4]->getAttachedGameObject();
+	m_nameStatusTextBox = nameStatus->getComponent<puppy::TextBox>();
+	m_nameStatusTextBox->setText("");
 
 	std::string savedName = PlayerPrefs::getPlayerName();
 	if (savedName != "")
@@ -80,7 +75,7 @@ void PlayerNameController::update()
 		int nameLength = name.length();
 		if (nameLength < m_nameMinLimit || nameLength > m_nameMaxLimit || name == ENTER_NAME_MSG)
 		{
-			m_nameStatusTextBox->setText("Name should be between " + std::to_string(m_nameMinLimit)
+			m_nameStatusTextBox->setText("Name must be between " + std::to_string(m_nameMinLimit)
 				+ " and " + std::to_string(m_nameMaxLimit) + " characters.");
 			setConfirmButtonEnabled(false);
 		}
@@ -97,6 +92,7 @@ void PlayerNameController::update()
 			if (name.length() >= m_nameMinLimit && name.length() <= m_nameMaxLimit)
 			{
 				confirmPlayerName();
+				m_inputTextbox->setText(m_playerName);
 			}
 			else
 			{
@@ -119,7 +115,7 @@ void PlayerNameController::confirmPlayerName()
 
 	m_playerName = m_stringInputDisplay->getString();
 	PlayerPrefs::setPlayerName(m_playerName);
-	m_inputTextbox->setText(m_playerName);
+	//m_inputTextbox->setText(m_playerName);
 	m_nameStatusTextBox->setText("");
 
 	input::InputManager::getInstance()->setPollMode(true);

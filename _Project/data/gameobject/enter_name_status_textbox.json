@@ -6,9 +6,8 @@
 			"font" : "../fonts/nsimsun_18pt.fnt",
 			"color" : [1,1,1],
             "alignment" : "center",
-            "width" : 235,
+            "width" : 570,
             "height" : 100
         }
-    ],
-	"translate2d" : [527, 314, -0.1]
+    ]
 }

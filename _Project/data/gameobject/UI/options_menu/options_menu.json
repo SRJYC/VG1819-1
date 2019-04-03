@@ -17,7 +17,7 @@
 				}
 			],
 			"translate" : [350, 150, -0.2],
-			"worldscale" : [640, 340, 1],
+			"worldscale" : [640, 350, 1],
 			
 			"gameobjects" : 
 			[
@@ -30,7 +30,7 @@
 							"texture" : "textures/ui/options_menu/options_header.dds"
 						}
 					],
-					"translate" : [75, 255, 0.1],
+					"translate" : [75, 265, 0.1],
 					"worldscale" : [500, 75 , 1]
 				},
 				{
@@ -45,7 +45,7 @@
 							"name" : "SFXVolumeController"
 						}
 					],
-					"translate" : [35, 200, 0.1],
+					"translate" : [35, 210, 0.1],
 					"worldscale" : [100, 50 , 1],
 					"gameobjects" : 
 					[
@@ -134,7 +134,7 @@
 							"name" : "BGMVolumeController"
 						}
 					],
-					"translate" : [35, 140, 0.1],
+					"translate" : [35, 150, 0.1],
 					"worldscale" : [100, 50 , 1],
 					"gameobjects" : 
 					[
@@ -223,7 +223,7 @@
 							"name" : "AmbientVolumeController"
 						}
 					],
-					"translate" : [35, 80, 0.1],
+					"translate" : [35, 90, 0.1],
 					"worldscale" : [100, 50 , 1],
 					"gameobjects" : 
 					[
@@ -314,7 +314,7 @@
 							"name_max_limit" : 15
 						}
 					],
-					"translate" : [35, 20, 0.1],
+					"translate" : [35, 30, 0.1],
 					"worldscale" : [100, 50 , 1],
 					
 					"gameobjects" : 
@@ -398,10 +398,15 @@
 									"name" : "ClickableButton",
 									"enabledOnPause" : true,
 									"regularTexture" : "textures/ui/buttons/button_confirm_100x50.dds",
-									"highlightedTexture" : "textures/ui/buttons/button_confirm_h_100x50.dds"
+									"highlightedTexture" : "textures/ui/buttons/button_confirm_h_100x50.dds",
+									"inactiveTexture" : "textures/ui/buttons/button_confirm_i_100x50.dds"
 								}
 							],
 							"translate" : [425, 0, 0]
+						},
+						{
+							"filename" : "enter_name_status_textbox.json",
+							"translate" : [0, 0, 0]
 						}
 						
 					]
@@ -427,7 +432,7 @@
 							"highlightedTexture" : "textures/ui/buttons/button_x_h.dds"
 						}
 					],
-					"translate" : [575,315, 0.05],
+					"translate" : [575,325, 0.05],
 					"worldscale" : [75, 35, 1]
 				}
 			]
