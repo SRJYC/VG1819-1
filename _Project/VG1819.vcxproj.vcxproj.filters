@@ -1178,9 +1178,6 @@
     <ClCompile Include="SoundFader.cpp">
       <Filter>components\sound</Filter>
     </ClCompile>
-    <ClCompile Include="..\components\EnterNameScreen.cpp">
-      <Filter>components</Filter>
-    </ClCompile>
     <ClCompile Include="PlaySoundOnClick.cpp">
       <Filter>components\sound</Filter>
     </ClCompile>
@@ -1218,6 +1215,9 @@
     </ClCompile>
     <ClCompile Include="..\UI\PauseMenu\PauseMenuToggle.cpp">
       <Filter>UI\PauseMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\components\EnterNameScreen.cpp">
+      <Filter>components\settings UI stuff</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2389,9 +2389,6 @@
     <ClInclude Include="SoundFader.h">
       <Filter>components\sound</Filter>
     </ClInclude>
-    <ClInclude Include="..\components\EnterNameScreen.h">
-      <Filter>components</Filter>
-    </ClInclude>
     <ClInclude Include="PlaySoundOnClick.h">
       <Filter>components\sound</Filter>
     </ClInclude>
@@ -2442,6 +2439,9 @@
     </ClInclude>
     <ClInclude Include="..\UI\PauseMenu\PauseMenuToggle.h">
       <Filter>UI\PauseMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\components\EnterNameScreen.h">
+      <Filter>components\settings UI stuff</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

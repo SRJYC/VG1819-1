@@ -16,8 +16,8 @@
 					"texture" : "textures/ui/options_menu/options_background.dds"
 				}
 			],
-			"translate" : [350, 240, -0.2],
-			"worldscale" : [640, 300, 1],
+			"translate" : [350, 150, -0.2],
+			"worldscale" : [640, 340, 1],
 			
 			"gameobjects" : 
 			[
@@ -30,7 +30,7 @@
 							"texture" : "textures/ui/options_menu/options_header.dds"
 						}
 					],
-					"translate" : [75, 215, 0.1],
+					"translate" : [75, 255, 0.1],
 					"worldscale" : [500, 75 , 1]
 				},
 				{
@@ -45,7 +45,7 @@
 							"name" : "SFXVolumeController"
 						}
 					],
-					"translate" : [35, 160, 0.1],
+					"translate" : [35, 200, 0.1],
 					"worldscale" : [100, 50 , 1],
 					"gameobjects" : 
 					[
@@ -134,7 +134,7 @@
 							"name" : "BGMVolumeController"
 						}
 					],
-					"translate" : [35, 100, 0.1],
+					"translate" : [35, 140, 0.1],
 					"worldscale" : [100, 50 , 1],
 					"gameobjects" : 
 					[
@@ -217,13 +217,13 @@
 					[
 						{
 							"name" : "UIElement",
-							"texture" : "textures/ui/options_menu/options_ambient.tga"
+							"texture" : "textures/ui/options_menu/options_ambient.dds"
 						},
 						{
 							"name" : "AmbientVolumeController"
 						}
 					],
-					"translate" : [35, 40, 0.1],
+					"translate" : [35, 80, 0.1],
 					"worldscale" : [100, 50 , 1],
 					"gameobjects" : 
 					[
@@ -301,6 +301,83 @@
 					]
 				},
 				{
+					"name" : "Name Label",
+					"components" : 
+					[
+						{
+							"name" : "UIElement",
+							"texture" : "textures/ui/options_menu/options_player_name.dds"
+						}
+					],
+					"translate" : [35, 20, 0.1],
+					"worldscale" : [100, 50 , 1],
+					"gameobjects" : 
+					[
+					{
+							"name" : "Change Name Button",
+							"components" : 
+							[
+								{
+									"name" : "UIObject",
+									"texture" : "textures/ui/buttons/button_edit.dds"
+								},
+								{
+									"name" : "ClickableFrame"
+								},
+								{
+									"name" : "PlayUniversalSoundOnUIClick",
+									"sound_name" : "click_2"
+								},
+								{
+									"name" : "ClickableButton",
+									"enabledOnPause" : true,
+									"regularTexture" : "textures/ui/buttons/button_edit.dds",
+									"highlightedTexture" : "textures/ui/buttons/button_edit_h.dds"
+								}
+							],
+							"worldscale" : [50, 50, 1],
+							"translate" : [125, 0, 0]
+						},
+						{
+							"name" : "Name Input Box",
+							"components" : 
+							[
+								{
+									"name" : "UIObject",
+									"texture" : "textures/ui/options_menu/input_box.dds"
+								}
+							],
+							"worldscale" : [250, 50, 1],
+							"translate" : [175, 0, 0]
+						},
+						{
+							"name" : "Increase Ambient",
+							"components" : 
+							[
+								{
+									"name" : "UIObject",
+									"texture" : "textures/ui/buttons/button_confirm_100x50.dds"
+								},
+								{
+									"name" : "ClickableFrame"
+								},
+								{
+									"name" : "PlayUniversalSoundOnUIClick",
+									"sound_name" : "click_2"
+								},
+								{
+									"name" : "ClickableButton",
+									"enabledOnPause" : true,
+									"regularTexture" : "textures/ui/buttons/button_confirm_100x50.dds",
+									"highlightedTexture" : "textures/ui/buttons/button_confirm_h_100x50.dds"
+								}
+							],
+							"translate" : [425, 0, 0]
+						}
+						
+					]
+				},
+				{
 					"name" : "Back Button",
 					"components" : 
 					[
@@ -321,7 +398,7 @@
 							"highlightedTexture" : "textures/ui/buttons/button_x_h.dds"
 						}
 					],
-					"translate" : [575,275, 0.05],
+					"translate" : [575,315, 0.05],
 					"worldscale" : [75, 35, 1]
 				}
 			]
