@@ -301,19 +301,42 @@
 					]
 				},
 				{
-					"name" : "Name Label",
+					"name" : "Name Controller",
 					"components" : 
 					[
 						{
 							"name" : "UIElement",
 							"texture" : "textures/ui/options_menu/options_player_name.dds"
+						},
+						{
+							"name" : "PlayerNameController",
+							"name_min_limit" : 1,
+							"name_max_limit" : 15
 						}
 					],
 					"translate" : [35, 20, 0.1],
 					"worldscale" : [100, 50 , 1],
+					
 					"gameobjects" : 
 					[
-					{
+						{
+							"name" : "Player Name Controller Input",
+							"components" : 
+							[
+								{
+									"name" : "TextBox",
+									"font" : "../fonts/common_consolas.fnt",
+									"width" : 300 , 
+									"height" : 100 ,
+									"color" : [1,1,1]
+								},
+								{
+									"name" : "StringInputDisplay"
+								}
+							],
+							"translate" : [187, 40, 0.1]
+						},
+						{
 							"name" : "Change Name Button",
 							"components" : 
 							[
@@ -327,6 +350,9 @@
 								{
 									"name" : "PlayUniversalSoundOnUIClick",
 									"sound_name" : "click_2"
+								},
+								{
+									"name" : "ChangeNameOnClick"
 								},
 								{
 									"name" : "ClickableButton",
@@ -351,7 +377,7 @@
 							"translate" : [175, 0, 0]
 						},
 						{
-							"name" : "Increase Ambient",
+							"name" : "ConfirmNameOnClick",
 							"components" : 
 							[
 								{
@@ -364,6 +390,9 @@
 								{
 									"name" : "PlayUniversalSoundOnUIClick",
 									"sound_name" : "click_2"
+								},
+								{
+									"name" : "ConfirmNameOnClick"
 								},
 								{
 									"name" : "ClickableButton",

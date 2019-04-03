@@ -12,7 +12,8 @@
 
 PlayerPrefs* PlayerPrefs::sm_instance = nullptr;
 
-PlayerPrefs::PlayerPrefs() : m_bgmVolume(100), m_sfxVolume(100), m_ambientVolume(100), m_fullscreen(false), m_resolution(1280,720), m_hasUnsavedChanges(false)
+PlayerPrefs::PlayerPrefs() : m_bgmVolume(100), m_sfxVolume(100), m_ambientVolume(100), m_fullscreen(false), m_resolution(1280,720), 
+	m_playerName(""), m_hasUnsavedChanges(false)
 {
 	assert(sm_instance == nullptr);
 	sm_instance = this;
@@ -47,6 +48,7 @@ void PlayerPrefs::start()
 		auto foundAmbient = jsonFile.find("Ambient_Volume");
 		auto foundFullscreen = jsonFile.find("Fullscreen");
 		auto foundRes = jsonFile.find("Resolution");
+		auto foundPlayerName = jsonFile.find("PlayerName");
 
 		if (foundBGM != jsonFile.end())
 		{
@@ -85,10 +87,16 @@ void PlayerPrefs::start()
 
 			glfwSetWindowSize(windowX, windowY);
 		}
+
+		if (foundPlayerName != jsonFile.end())
+		{
+			std::string name = (*foundPlayerName);
+			m_playerName = name;
+		}
 	}
 	else 
 	{
-		// No file to open, make a default one
+		// No file to open, make a default one 
 		privateSaveAllSettings();
 	}
 
@@ -152,6 +160,22 @@ void PlayerPrefs::privateSetAmbientVolume(int p_volume)
 int PlayerPrefs::getAmbientVolume()
 {
 	return sm_instance->m_ambientVolume;
+}
+
+void PlayerPrefs::setPlayerName(const std::string& p_name)
+{
+	sm_instance->privateSetPlayerName(p_name);
+}
+
+void PlayerPrefs::privateSetPlayerName(const std::string& p_name)
+{
+	m_playerName = p_name;
+	m_hasUnsavedChanges = true;
+}
+
+const std::string& PlayerPrefs::getPlayerName()
+{
+	return sm_instance->m_playerName;
 }
 
 // Doesn't do anything yet --
@@ -238,7 +262,8 @@ std::string PlayerPrefs::toJsonString()
 			st("\t\"SFX_Volume\" : ") + ts(m_sfxVolume) + st(",\n") +
 			st("\t\"Ambient_Volume\" : ") + ts(m_ambientVolume) + st(",\n") +
 			st("\t\"Fullscreen\" : ") + (m_fullscreen ? st("true") : st("false")) + st(",\n") +
-			st("\t\"Resolution\" : [") + ts(m_resolution.first) + ", " + ts(m_resolution.second) + "]\n" +
+			st("\t\"Resolution\" : [") + ts(m_resolution.first) + ", " + ts(m_resolution.second) + "],\n" +
+			st("\t\"PlayerName\" : \"") + m_playerName + st("\"\n") +
 		st("}\n");
 
 	return jsonString;

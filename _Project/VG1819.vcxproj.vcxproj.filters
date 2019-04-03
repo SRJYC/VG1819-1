@@ -1216,7 +1216,13 @@
     <ClCompile Include="..\UI\PauseMenu\PauseMenuToggle.cpp">
       <Filter>UI\PauseMenu</Filter>
     </ClCompile>
-    <ClCompile Include="..\components\EnterNameScreen.cpp">
+    <ClCompile Include="..\components\PlayerNameController.cpp">
+      <Filter>components\settings UI stuff</Filter>
+    </ClCompile>
+    <ClCompile Include="ChangeNameOnClick.cpp">
+      <Filter>components\settings UI stuff</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfirmNameOnClick.cpp">
       <Filter>components\settings UI stuff</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2440,7 +2446,13 @@
     <ClInclude Include="..\UI\PauseMenu\PauseMenuToggle.h">
       <Filter>UI\PauseMenu</Filter>
     </ClInclude>
-    <ClInclude Include="..\components\EnterNameScreen.h">
+    <ClInclude Include="..\components\PlayerNameController.h">
+      <Filter>components\settings UI stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangeNameOnClick.h">
+      <Filter>components\settings UI stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfirmNameOnClick.h">
       <Filter>components\settings UI stuff</Filter>
     </ClInclude>
   </ItemGroup>

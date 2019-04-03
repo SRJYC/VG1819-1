@@ -19,7 +19,7 @@
 					"color" : [1,1,1]
 				},
 				{
-					"name" : "EnterNameScreen",
+					"name" : "PlayerNameController",
 					"name_min_limit" : 1,
 					"name_max_limit" : 15
 				},

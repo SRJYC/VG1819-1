@@ -2072,11 +2072,11 @@ kitten::K_Component* getSoundFader(nlohmann::json* p_jsonFile) {
 	return new SoundFader();
 }
 
-#include "components\EnterNameScreen.h"
+#include "components\PlayerNameController.h"
 kitten::K_Component* getEnterNameScreen(nlohmann::json* p_jsonFile) {
 	int minNameLength = p_jsonFile->operator[]("name_min_limit");
 	int maxNameLength = p_jsonFile->operator[]("name_max_limit");
-	return new EnterNameScreen(minNameLength, maxNameLength);
+	return new PlayerNameController(minNameLength, maxNameLength);
 }
 
 #include "_Project\PlaySoundOnClick.h"
@@ -2125,6 +2125,16 @@ kitten::K_Component* getAmbientSystemController(nlohmann::json* p_jsonFile) {
 kitten::K_Component* getPauseMenuToggle(nlohmann::json* p_jsonFile) 
 {
 	return new PauseMenuToggle();
+}
+
+#include "_Project\ChangeNameOnClick.h"
+kitten::K_Component* getChangeNameOnClick(nlohmann::json* p_jsonFile) {
+	return new ChangeNameOnClick();
+}
+
+#include "_Project\ConfirmNameOnClick.h"
+kitten::K_Component* getConfirmNameOnClick(nlohmann::json* p_jsonFile) {
+	return new ConfirmNameOnClick();
 }
 
 std::map<std::string, kitten::K_Component* (*)(nlohmann::json* p_jsonFile)> jsonComponentMap;
@@ -2292,13 +2302,15 @@ void setupComponentMap() {
 	jsonComponentMap["Quickplay"] = &getQuickplay;
 	jsonComponentMap["TogglePhotoModeOnKeyPress"] = &getTogglePhotoModeOnKeyPress;
 	jsonComponentMap["SoundFader"] = &getSoundFader;
-	jsonComponentMap["EnterNameScreen"] = &getEnterNameScreen;
+	jsonComponentMap["PlayerNameController"] = &getEnterNameScreen;
 	jsonComponentMap["PlaySoundOnClick"] = &getPlaySoundOnClick;
 	jsonComponentMap["AmbientSystemController"] = &getAmbientSystemController;
 	jsonComponentMap["AmbientVolumeController"] = &getAmbientVolumeController;
 	jsonComponentMap["IncreaseAmbientVolumeOnClick"] = &getIncreaseAmbientVolumeOnClick;
 	jsonComponentMap["DecreaseAmbientVolumeOnClick"] = &getDecreaseAmbientVolumeOnClick;
 	jsonComponentMap["PauseMenuToggle"] = &getPauseMenuToggle;
+	jsonComponentMap["ChangeNameOnClick"] = &getChangeNameOnClick;
+	jsonComponentMap["ConfirmNameOnClick"] = &getConfirmNameOnClick;
 
 }
 
