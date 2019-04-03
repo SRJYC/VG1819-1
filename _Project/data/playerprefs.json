@@ -3,5 +3,6 @@
 	"SFX_Volume" : 100,
 	"Ambient_Volume" : 100,
 	"Fullscreen" : false,
-	"Resolution" : [1280, 720]
+	"Resolution" : [1280, 720],
+	"PlayerName" : ""
 }

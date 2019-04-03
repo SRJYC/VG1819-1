@@ -13,17 +13,11 @@
 			"components" : 
 			[
 				{
-					"name" : "UIElement",
-					"texture" : "textures/ui/options_menu/options_player_name.dds"
-				},
-				{
 					"name" : "PlayerNameController",
 					"name_min_limit" : 1,
 					"name_max_limit" : 15
 				}
-			],
-			"translate" : [35, 30, 0.1],
-			"worldscale" : [100, 50 , 1],
+			],			
 			
 			"gameobjects" : 
 			[
@@ -42,47 +36,7 @@
 							"name" : "StringInputDisplay"
 						}
 					],
-					"translate" : [187, 40, 0.1]
-				},
-				{
-					"name" : "Change Name Button",
-					"components" : 
-					[
-						{
-							"name" : "UIObject",
-							"texture" : "textures/ui/buttons/button_edit.dds"
-						},
-						{
-							"name" : "ClickableFrame"
-						},
-						{
-							"name" : "PlayUniversalSoundOnUIClick",
-							"sound_name" : "click_2"
-						},
-						{
-							"name" : "ChangeNameOnClick"
-						},
-						{
-							"name" : "ClickableButton",
-							"enabledOnPause" : true,
-							"regularTexture" : "textures/ui/buttons/button_edit.dds",
-							"highlightedTexture" : "textures/ui/buttons/button_edit_h.dds"
-						}
-					],
-					"worldscale" : [50, 50, 1],
-					"translate" : [125, 0, 0]
-				},
-				{
-					"name" : "Name Input Box",
-					"components" : 
-					[
-						{
-							"name" : "UIObject",
-							"texture" : "textures/ui/options_menu/input_box.dds"
-						}
-					],
-					"worldscale" : [250, 50, 1],
-					"translate" : [175, 0, 0]
+					"translate" : [527, 355, 0.1]
 				},
 				{
 					"name" : "ConfirmNameOnClick",
@@ -103,6 +57,11 @@
 							"name" : "ConfirmNameOnClick"
 						},
 						{
+							"name" : "ChangeSceneOnClick",
+							"scene" : "deck_menu.json"
+
+						},
+						{
 							"name" : "ClickableButton",
 							"enabledOnPause" : true,
 							"regularTexture" : "textures/ui/buttons/button_confirm_100x50.dds",
@@ -110,12 +69,13 @@
 							"inactiveTexture" : "textures/ui/buttons/button_confirm_i_100x50.dds"
 						}
 					],
-					"translate" : [425, 0, 0]
+					"translate" : [590, 250, 0],
+					"worldscale" : [100, 50 , 1]
 				},
 				{
 					"filename" : "enter_name_status_textbox.json",
 					"translate" : [0, 0, 0]
-				}				
+				}
 			]
 		},
 		{
