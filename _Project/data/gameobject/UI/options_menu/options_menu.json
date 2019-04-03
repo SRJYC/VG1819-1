@@ -337,6 +337,38 @@
 							"translate" : [187, 40, 0.1]
 						},
 						{
+							"name" : "ConfirmNameOnClick",
+							"components" : 
+							[
+								{
+									"name" : "UIObject",
+									"texture" : "textures/ui/buttons/button_confirm_100x50.dds"
+								},
+								{
+									"name" : "ClickableFrame"
+								},
+								{
+									"name" : "PlayUniversalSoundOnUIClick",
+									"sound_name" : "click_2"
+								},
+								{
+									"name" : "ConfirmNameOnClick"
+								},
+								{
+									"name" : "ClickableButton",
+									"enabledOnPause" : true,
+									"regularTexture" : "textures/ui/buttons/button_confirm_100x50.dds",
+									"highlightedTexture" : "textures/ui/buttons/button_confirm_h_100x50.dds",
+									"inactiveTexture" : "textures/ui/buttons/button_confirm_i_100x50.dds"
+								}
+							],
+							"translate" : [425, 0, 0]
+						},
+						{
+							"filename" : "enter_name_status_textbox.json",
+							"translate" : [0, 0, 0]
+						},
+						{
 							"name" : "Change Name Button",
 							"components" : 
 							[
@@ -375,40 +407,7 @@
 							],
 							"worldscale" : [250, 50, 1],
 							"translate" : [175, 0, 0]
-						},
-						{
-							"name" : "ConfirmNameOnClick",
-							"components" : 
-							[
-								{
-									"name" : "UIObject",
-									"texture" : "textures/ui/buttons/button_confirm_100x50.dds"
-								},
-								{
-									"name" : "ClickableFrame"
-								},
-								{
-									"name" : "PlayUniversalSoundOnUIClick",
-									"sound_name" : "click_2"
-								},
-								{
-									"name" : "ConfirmNameOnClick"
-								},
-								{
-									"name" : "ClickableButton",
-									"enabledOnPause" : true,
-									"regularTexture" : "textures/ui/buttons/button_confirm_100x50.dds",
-									"highlightedTexture" : "textures/ui/buttons/button_confirm_h_100x50.dds",
-									"inactiveTexture" : "textures/ui/buttons/button_confirm_i_100x50.dds"
-								}
-							],
-							"translate" : [425, 0, 0]
-						},
-						{
-							"filename" : "enter_name_status_textbox.json",
-							"translate" : [0, 0, 0]
-						}
-						
+						}				
 					]
 				},
 				{

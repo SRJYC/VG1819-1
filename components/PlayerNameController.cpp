@@ -37,11 +37,11 @@ void PlayerNameController::start()
 	m_stringInputDisplay = controllerInput->getComponent<StringInputDisplay>();
 	m_stringInputDisplay->setCharLimit(m_nameMaxLimit);
 
-	kitten::K_GameObject* confirmButtonGO = &children[3]->getAttachedGameObject();
+	kitten::K_GameObject* confirmButtonGO = &children[1]->getAttachedGameObject();
 	m_confirmButton = confirmButtonGO->getComponent<userinterface::ClickableButton>();
 	m_confirmButtonFrame = confirmButtonGO->getComponent<kitten::ClickableFrame>();
 
-	kitten::K_GameObject* nameStatus = &children[4]->getAttachedGameObject();
+	kitten::K_GameObject* nameStatus = &children[2]->getAttachedGameObject();
 	m_nameStatusTextBox = nameStatus->getComponent<puppy::TextBox>();
 	m_nameStatusTextBox->setText("");
 
