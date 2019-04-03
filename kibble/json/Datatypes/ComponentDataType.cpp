@@ -2141,8 +2141,20 @@ kitten::K_Component* getMapListController(nlohmann::json* p_jsonFile) {
 
 #include "components/MapSelectionScene/ChangeMapDetailOnClick.h"
 kitten::K_Component* getChangeMapDetailOnClick(nlohmann::json* p_jsonFile) {
+	std::string data;
 
-	return new ChangeMapDetailOnClick();
+	SETOPT(data, "textBox_data");
+
+	return new ChangeMapDetailOnClick(data);
+}
+
+#include "components/MapSelectionScene/ChangeListOnClick.h"
+kitten::K_Component* getChangeListOnClick(nlohmann::json* p_jsonFile) {
+	int move;
+
+	SETOPT(move, "move");
+
+	return new ChangeListOnClick(move);
 }
 
 std::map<std::string, kitten::K_Component* (*)(nlohmann::json* p_jsonFile)> jsonComponentMap;
@@ -2319,6 +2331,7 @@ void setupComponentMap() {
 	jsonComponentMap["MapDetailController"] = &getMapDetailController;
 	jsonComponentMap["MapListController"] = &getMapListController;
 	jsonComponentMap["ChangeMapDetailOnClick"] = &getChangeMapDetailOnClick;
+	jsonComponentMap["ChangeListOnClick"] = &getChangeListOnClick;
 }
 
 kitten::K_Component* getRelatedComponentBy(nlohmann::json* p_jsonFile) {

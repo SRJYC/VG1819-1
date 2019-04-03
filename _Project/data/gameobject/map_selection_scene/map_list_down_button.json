@@ -1,5 +1,5 @@
 {
-    "name" : "Map Button", 
+    "name" : "Map Down Button", 
     "components" : [
         {
             "name" : "UIObject",
@@ -7,15 +7,15 @@
         },
         {
             "name" : "ClickableButton",
-            "regularTexture" : "textures/ui/buttons/blank_button.tga",
-            "highlightedTexture" : "textures/ui/buttons/blank_button_highlighted.tga"
+            "regularTexture" : "textures/ui/buttons/button_arrow_down.tga",
+            "highlightedTexture" : "textures/ui/buttons/button_arrow_down_h.tga"
         },
         {
             "name" : "ClickableFrame"
         },
         {
-            "name" : "ChangeMapDetailOnClick",
-            "textBox_data" : "map_selection_scene/map_button_text.json"
+            "name" : "ChangeListOnClick",
+            "move" : -1
         }
     ],
     "scale2d": [200,30]

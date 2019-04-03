@@ -267,6 +267,7 @@
     <ClCompile Include="..\components\EnterNameScreen.cpp" />
     <ClCompile Include="..\components\initializers\DrawCardsFromDeckWithDelay.cpp" />
     <ClCompile Include="..\components\MainMenuBoard.cpp" />
+    <ClCompile Include="..\components\MapSelectionScene\ChangeListOnClick.cpp" />
     <ClCompile Include="..\components\MapSelectionScene\ChangeMapDetailOnClick.cpp" />
     <ClCompile Include="..\components\MapSelectionScene\MapDetailController.cpp" />
     <ClCompile Include="..\components\MapSelectionScene\MapListController.cpp" />

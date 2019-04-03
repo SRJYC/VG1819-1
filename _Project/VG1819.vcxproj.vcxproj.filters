@@ -1225,6 +1225,9 @@
     <ClCompile Include="..\components\MapSelectionScene\ChangeMapDetailOnClick.cpp">
       <Filter>components\MapSelectionScene</Filter>
     </ClCompile>
+    <ClCompile Include="..\components\MapSelectionScene\ChangeListOnClick.cpp">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\kitten\K_Common.h">

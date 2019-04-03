@@ -8,7 +8,7 @@
 		},
 		{
             "filename" : "map_selection_scene/map_description.json",
-            "translate2d" : [680, 520]
+            "translate2d" : [680, 500]
 		}
     ]
 }

@@ -3,6 +3,7 @@
 #include "kitten/event_system/EventManager.h"
 #include "ChangeMapDetailOnClick.h"
 #include "kitten/K_GameObjectManager.h"
+#include "ChangeListOnClick.h"
 
 MapListController::MapListController(const std::string & p_randomImgPath, const std::string & p_randomDes, const std::string & p_upData, const std::string & p_downData, const std::string & p_mapData, float p_startX, float p_startY, float p_offsetY, int p_limitNum)
 	:m_randomMapImagePath(p_randomImgPath),
@@ -30,7 +31,19 @@ void MapListController::start()
 	//get map list
 	m_mapList = kibble::MapReader::getInstance()->getMapList();
 
+	//create up button
+	//create game object
+	m_upButton = kitten::K_GameObjectManager::getInstance()->createNewGameObject(m_upButtonData);
+	//get component
+	ChangeListOnClick* cloc = m_upButton->getComponent<ChangeListOnClick>();
+	//set controller
+	cloc->setController(this);
+	//move position
+	m_upButton->getTransform().place2D(m_startX, m_startY);
+
 	//create map buttons
+	m_firstId = -1;
+	m_lastId = -1;
 	for (int i = 1; i <= m_limit; i++)
 	{
 		//if out of range, don't have enough map to fill list, so no more buttons
@@ -41,6 +54,9 @@ void MapListController::start()
 
 		//create game object
 		kitten::K_GameObject* go = kitten::K_GameObjectManager::getInstance()->createNewGameObject(m_mapButtonData);
+		
+		//add to list
+		m_mapButtonList.push_back(go);
 
 		//get component
 		ChangeMapDetailOnClick* oc = go->getComponent<ChangeMapDetailOnClick>();
@@ -49,7 +65,7 @@ void MapListController::start()
 		oc->setController(this);
 
 		//move position
-		go->getTransform().place2D(m_startX, m_startY+i*m_offsetY);
+		go->getTransform().place2D(m_startX, m_startY - i * m_offsetY);
 
 		//set info
 		//get map
@@ -67,7 +83,19 @@ void MapListController::start()
 
 		//change info
 		oc->setInfo(m.name, index);
+
+		m_lastId++;
 	}
+
+	//create down button
+	//create game object
+	m_downButton = kitten::K_GameObjectManager::getInstance()->createNewGameObject(m_downButtonData);
+	//get component
+	cloc = m_downButton->getComponent<ChangeListOnClick>();
+	//set controller
+	cloc->setController(this);
+	//move position
+	m_downButton->getTransform().place2D(m_startX, m_startY - (m_limit+1)*m_offsetY);
 }
 
 void MapListController::updateMapDetail(int p_mapId)
@@ -111,14 +139,14 @@ void MapListController::changeButton(int p_move)
 	{
 		if (m_lastId == m_mapList.size())//already show last map
 			return;
-		else if (m_lastId + p_move > m_mapList.size())//out of range, move as much as possible
+		else if (m_lastId - p_move > m_mapList.size())//out of range, move as much as possible
 		{
 			int first = m_mapList.size() - m_limit;
 			resetButton(first);
 		}
 		else//can move down
 		{
-			int first = m_lastId + p_move - m_limit;
+			int first = m_lastId - p_move - m_limit;
 			resetButton(first);
 		}
 	}
