@@ -88,6 +88,8 @@ namespace puppy
 		{
 			return false;
 		}
+
+		return false;
 	}
 
 	void Material::apply() const

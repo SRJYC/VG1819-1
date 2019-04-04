@@ -232,6 +232,8 @@ kitten::K_GameObject * unit::InitiativeTracker::getUnitByIndex(int p_index)
 		int index = p_index - size;
 		return m_waitUnitObjectList[index];
 	}
+
+	return nullptr;
 }
 
 int unit::InitiativeTracker::getUnitNumber()

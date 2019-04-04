@@ -107,6 +107,8 @@ unit::AbilityDescription* getAbilityDescriptionFrom(nlohmann::json& p_jsonfile) 
 		}
 		return ad;
 	}
+
+	return nullptr;
 }
 
 unit::StatusDescription* getStatusDescriptionFrom(nlohmann::json& p_jsonfile) {

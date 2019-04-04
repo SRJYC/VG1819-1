@@ -5,6 +5,7 @@
 #include "puppy\StaticRenderables.h"
 #include "puppy\Renderer.h"
 
+#include <iostream>
 
 namespace kitten
 {
@@ -71,6 +72,7 @@ namespace kitten
 			m_cachedRenderNode = nullptr;
 		}
 	}
+
 	void K_UIRenderable::removeFromDynamicTransparentUIRender()
 	{
 		if (m_cachedRenderNode != nullptr)

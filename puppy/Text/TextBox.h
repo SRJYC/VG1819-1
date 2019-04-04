@@ -53,8 +53,8 @@ namespace puppy
 		void setAlignment(Alignment p_alignment);
 
 		const std::string& getText() const;
-		const int& getBoxWidth() const;
-		const int& getBoxHeight() const;
+		int getBoxWidth() const;
+		int getBoxHeight() const;
 		int getLastLineUsedWidth();
 		int getUsedHeight();
 

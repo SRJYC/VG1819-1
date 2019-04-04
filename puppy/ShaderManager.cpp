@@ -44,6 +44,8 @@ namespace puppy
 			//apply 
 			return applyShader(m_createdPresetShaders[p_st]);
 		}
+
+		return false;
 	}
 
 	bool ShaderManager::getShaderPaths(ShaderType p_st, std::string* p_vertexShaderPath, std::string* p_pixelShaderPath)

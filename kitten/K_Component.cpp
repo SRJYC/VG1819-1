@@ -2,9 +2,11 @@
 #include "K_GameObject.h"
 #include "K_ComponentManager.h"
 
+#include <iostream>
+
 namespace kitten
 {
-	K_Component::K_Component()
+	K_Component::K_Component() : m_isEnabled(true)
 	{
 
 	}

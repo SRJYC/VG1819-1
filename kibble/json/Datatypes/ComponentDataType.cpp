@@ -1466,16 +1466,15 @@ kitten::K_Component* getPivotTextBox(nlohmann::json* p_jsonFile) {
 		{
 			pivot = userinterface::UIElement::piv_BotLeft;
 		}
+	}
 
-		textbox = new puppy::PivotTextBox(puppy::FontTable::getInstance()->getFont(font.c_str()), message.c_str(), width, height, pivot, align);
-
+	textbox = new puppy::PivotTextBox(puppy::FontTable::getInstance()->getFont(font.c_str()), message.c_str(), width, height, pivot, align);
 
 	if (JSONHAS("color")) {
 		textbox->setColor(LOOKUP("color")[0], LOOKUP("color")[1], LOOKUP("color")[2]);
 	}
 
 	return textbox;
-	}
 }
 
 #include "_Project\DisableAfterTime.h"

@@ -121,6 +121,8 @@ const glm::vec3 sprites::SpriteGroup::getSubTranslation(int p_n)
 			return glm::vec3(-0.25, 0, -0.25);
 		}
 	}
+
+	return glm::vec3();
 }
 
 void sprites::SpriteGroup::changeEnable()

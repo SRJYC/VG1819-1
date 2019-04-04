@@ -98,5 +98,7 @@ namespace kitten
 		kitten::Event* eventData = new kitten::Event(kitten::Event::Scene_Change);
 		eventData->putString(NEXT_SCENE_PATH_KEY, p_nextScene);
 		kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Scene_Change, eventData);
+
+		std::cout << "change scene event sent" << std::endl;
 	}
 }

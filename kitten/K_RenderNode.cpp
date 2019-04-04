@@ -4,6 +4,8 @@
 #include "puppy\Renderer.h"
 #include "kitten\K_ComponentManager.h"
 
+#include <iostream>
+
 namespace kitten
 {
 	K_RenderNode::K_RenderNode() : m_parentRenderNode(nullptr), m_disabledCalled(false), m_isRendering(false)
@@ -113,7 +115,15 @@ namespace kitten
 
 	void K_RenderNode::removeUIRenderable(K_UIRenderable* p_toRemove)
 	{
-		m_uiRenderables.erase(p_toRemove);
+		auto found = m_uiRenderables.find(p_toRemove);
+		if (found != m_uiRenderables.end())
+		{
+			m_uiRenderables.erase(found);
+		}
+		else
+		{
+			std::cout << "removeUIRenderable: could not find thing being removed!" << std::endl;
+		}
 	}
 
 	void K_RenderNode::addTransparentUIRenderable(K_UIRenderable * p_toAdd)
