@@ -591,12 +591,6 @@
     <ClCompile Include="..\networking\menu\NetworkJoinButton.cpp">
       <Filter>networking\networking_menu</Filter>
     </ClCompile>
-    <ClCompile Include="..\UI\TabMenu\ReturnToMainMenuButton.cpp">
-      <Filter>UI\TabMenu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\UI\TabMenu\TabMenu.cpp">
-      <Filter>UI\TabMenu</Filter>
-    </ClCompile>
     <ClCompile Include="..\UI\ClickableCard.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -1184,9 +1178,6 @@
     <ClCompile Include="SoundFader.cpp">
       <Filter>components\sound</Filter>
     </ClCompile>
-    <ClCompile Include="..\components\EnterNameScreen.cpp">
-      <Filter>components</Filter>
-    </ClCompile>
     <ClCompile Include="PlaySoundOnClick.cpp">
       <Filter>components\sound</Filter>
     </ClCompile>
@@ -1233,6 +1224,27 @@
     </ClCompile>
     <ClCompile Include="..\components\MapSelectionScene\ModeDetailController.cpp">
       <Filter>components\MapSelectionScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UI\PauseMenu\PauseMenu.cpp">
+      <Filter>UI\PauseMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UI\PauseMenu\ReturnToMainMenuButton.cpp">
+      <Filter>UI\PauseMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\UI\PauseMenu\PauseMenuToggle.cpp">
+      <Filter>UI\PauseMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\components\PlayerNameController.cpp">
+      <Filter>components\settings UI stuff</Filter>
+    </ClCompile>
+    <ClCompile Include="ChangeNameOnClick.cpp">
+      <Filter>components\settings UI stuff</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfirmNameOnClick.cpp">
+      <Filter>components\settings UI stuff</Filter>
+    </ClCompile>
+    <ClCompile Include="..\components\NameScreenSceneChanger.cpp">
+      <Filter>components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1775,12 +1787,6 @@
     </ClInclude>
     <ClInclude Include="..\networking\menu\NetworkJoinButton.h">
       <Filter>networking\networking_menu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\UI\TabMenu\ReturnToMainMenuButton.h">
-      <Filter>UI\TabMenu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\UI\TabMenu\TabMenu.h">
-      <Filter>UI\TabMenu</Filter>
     </ClInclude>
     <ClInclude Include="..\UI\ClickableCard.h">
       <Filter>UI</Filter>
@@ -2410,9 +2416,6 @@
     <ClInclude Include="SoundFader.h">
       <Filter>components\sound</Filter>
     </ClInclude>
-    <ClInclude Include="..\components\EnterNameScreen.h">
-      <Filter>components</Filter>
-    </ClInclude>
     <ClInclude Include="PlaySoundOnClick.h">
       <Filter>components\sound</Filter>
     </ClInclude>
@@ -2472,6 +2475,27 @@
     </ClInclude>
     <ClInclude Include="..\components\MapSelectionScene\ModeDetailController.h">
       <Filter>components\MapSelectionScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UI\PauseMenu\PauseMenu.h">
+      <Filter>UI\PauseMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UI\PauseMenu\ReturnToMainMenuButton.h">
+      <Filter>UI\PauseMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\UI\PauseMenu\PauseMenuToggle.h">
+      <Filter>UI\PauseMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\components\PlayerNameController.h">
+      <Filter>components\settings UI stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangeNameOnClick.h">
+      <Filter>components\settings UI stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfirmNameOnClick.h">
+      <Filter>components\settings UI stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="..\components\NameScreenSceneChanger.h">
+      <Filter>components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2610,9 +2634,6 @@
     <Filter Include="components\decksdisplay">
       <UniqueIdentifier>{cc3644fd-64c1-472c-9553-f5208238bec6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI\TabMenu">
-      <UniqueIdentifier>{f65abade-0ab9-4b14-b9fa-06c669a75895}</UniqueIdentifier>
-    </Filter>
     <Filter Include="components\scene changers">
       <UniqueIdentifier>{39f54870-107c-4390-9169-e4df493df3e9}</UniqueIdentifier>
     </Filter>
@@ -2711,6 +2732,9 @@
     </Filter>
     <Filter Include="components\MapSelectionScene">
       <UniqueIdentifier>{3aaa8947-3585-4a49-8ab4-daa2c91044cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\PauseMenu">
+      <UniqueIdentifier>{f65abade-0ab9-4b14-b9fa-06c669a75895}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

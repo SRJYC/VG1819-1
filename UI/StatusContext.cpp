@@ -75,7 +75,11 @@ void StatusContext::onEnabled()
 
 void StatusContext::onDisabled()
 {
-	getTransform().place(m_disabledPos.x, m_disabledPos.y, m_disabledPos.z);
+	if (m_displayed)
+	{
+		getTransform().place(m_disabledPos.x, m_disabledPos.y, m_disabledPos.z);
+		m_displayed = false;
+	}
 }
 
 void StatusContext::updateContext(const std::unordered_set<ability::Status*>& p_statusList)

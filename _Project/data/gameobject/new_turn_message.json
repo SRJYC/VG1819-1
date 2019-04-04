@@ -3,13 +3,13 @@
     "components":[
         {
             "name" : "UIObject",
-            "texture" : "textures/ui/new_turn_message.png"
+            "texture" : "textures/ui/new_turn_message_0.dds"
         },
         {
             "name":"NewTurnMessageController",
             "time":2
         }
     ],
-    "translate2d":[340,160],
-    "scale2d": [600,400]
+    "translate2d":[320,200],
+    "scale2d": [640,240]
 }

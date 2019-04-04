@@ -4,6 +4,7 @@
 #include "lights\P_LightList.h"
 
 #define NO_AMBIENT_LIGHT_VAL glm::vec4(0.5, 0.5, 0.5, 1)
+#define MAX_POINT_LIGHTS 2
 
 namespace puppy
 {
@@ -86,18 +87,23 @@ namespace puppy
 					glUniform4fv(getUniformPlace("lightAmbientColor"), 1, glm::value_ptr(NO_AMBIENT_LIGHT_VAL));
 				}
 
-				if (pointLights.empty())
-				{
-					glUniform1f(getUniformPlace("lightRange"), 0);	
-				}
-				else
-				{
-					auto firstLight = *(pointLights.begin());
+				unsigned int lightsToEnum = MIN(pointLights.size(), MAX_POINT_LIGHTS);
+				int missingLights = MAX_POINT_LIGHTS - pointLights.size();
 
-					glUniform4fv(getUniformPlace("lightDiffuse"), 1, glm::value_ptr(firstLight->getPointColor()));
-					glUniform3fv(getUniformPlace("lightPos"), 1, glm::value_ptr(firstLight->getPosition()));
-					glUniform3fv(getUniformPlace("lightAttenuation"), 1, glm::value_ptr(firstLight->getAttenuation()));
-					glUniform1f(getUniformPlace("lightRange"), firstLight->getRange());
+				auto it = pointLights.begin();
+				for (unsigned int i = 1; i < lightsToEnum+1; ++i)
+				{
+					auto light = (*it);
+					glUniform4fv(getUniformPlace("light" + std::to_string(i) + "Diffuse"), 1, glm::value_ptr(light->getPointColor()));
+					glUniform3fv(getUniformPlace("light" + std::to_string(i) + "Pos"), 1, glm::value_ptr(light->getPosition()));
+					glUniform3fv(getUniformPlace("light" + std::to_string(i) + "Attenuation"), 1, glm::value_ptr(light->getAttenuation()));
+					glUniform1f(getUniformPlace("light"  + std::to_string(i) + "Range"), light->getRange());
+					++it;
+				}
+
+				for (int i = lightsToEnum+1; i < lightsToEnum + missingLights + 1; ++i)
+				{
+					glUniform1f(getUniformPlace("light" + std::to_string(i) + "Range"), 0);
 				}
 			}
 		}

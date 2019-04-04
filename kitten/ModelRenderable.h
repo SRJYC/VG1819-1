@@ -17,7 +17,7 @@ private:
 	virtual void onDisabled() override;
 
 public:
-	ModelRenderable(const char* p_pathToModel, bool p_flipUVS, bool p_isStatic, bool p_useAlphaTest);
+	ModelRenderable(const char* p_pathToModel, bool p_flipUVS, bool p_isStatic, bool p_useAlphaTest, const glm::vec4& p_matAmb = glm::vec4(0.4,0.4,0.4,1));
 	~ModelRenderable();
 
 	virtual void render(kitten::Camera* p_cam) override;

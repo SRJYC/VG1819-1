@@ -96,8 +96,31 @@ void BGMManager::privateSetVolume(float p_volume)
 	auto end = m_tracks.cend();
 	for (auto it = m_tracks.cbegin(); it != end; ++it)
 	{
-		auto& entry = (*it).second;
-		entry.source->setVolume(p_volume * entry.originalVolume);
+		const auto& entry = (*it).second;
+		
+		SoundFader* fader = entry.source->getGameObject().getComponent<SoundFader>();
+		
+		if (!fader->isFading())
+		{
+			entry.source->setVolume(p_volume * entry.originalVolume);
+		}
+		else
+		{
+			float progress = fader->getProgress();
+			float fadeTime = fader->getFadeTime();
+			float timeLeft = fadeTime - (progress * fadeTime);
+			
+			if (fader->isFadingOut())
+			{
+				fader->fadeOut(timeLeft);
+			}
+			else // Fading in
+			{
+				float volume = entry.originalVolume * p_volume;
+
+				fader->fadeIn(timeLeft, volume, true);
+			}
+		}
 	}
 
 	m_volume = p_volume;

@@ -38,7 +38,6 @@ namespace networking
 	bool ClientGame::sm_networkValid = false;
 	int ClientGame::sm_iClientId = -1;
 	int ClientGame::sm_mapId = -1;
-	std::string ClientGame::sm_playerName = "";
 
 	std::string ClientGame::sm_dedicatedServerAddress = "localhost";
 
@@ -91,7 +90,6 @@ namespace networking
 		sm_networkValid = false;
 		sm_iClientId = -1;
 		sm_mapId = -1;
-		sm_playerName = "";
 
 		kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Board_Loaded, this);
 	}

@@ -29,7 +29,6 @@ namespace networking
 		static int sm_iClientId;
 		static int sm_mapId;
 		static bool sm_networkValid;
-		static std::string sm_playerName;
 		static ClientGame* sm_clientGameInstance;
 		static std::string sm_dedicatedServerAddress;
 
@@ -46,8 +45,6 @@ namespace networking
 		static void destroyInstance();
 		static ClientGame* getInstance();
 		static bool isNetworkValid() { return sm_networkValid; }
-		static void setPlayerName(const std::string& p_name) { sm_playerName = p_name; }
-		static const std::string& getPlayerName() { return sm_playerName; }
 
 		static void setDedicatedServerAddress(const std::string& p_address) { sm_dedicatedServerAddress = p_address; }
 		static const std::string& getDedicatedServerAddress() { return sm_dedicatedServerAddress; }

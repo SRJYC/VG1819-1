@@ -57,9 +57,7 @@
 			"translate" : [959, 22, -0.1]
 		},
 		{
-			"filename" : "netmenu_ui.txt",
-			"translate" : [0.0, 0.0, -0.1],
-			"translate2d" : [999, 76]
+			"filename" : "netmenu_console.txt"
 		},
 		{
 			"filename" : "UI/map_button.json",

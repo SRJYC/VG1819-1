@@ -57,7 +57,7 @@ void Quickplay::start()
 	m_loadingScreen->setEnabled(false);
 
 	m_debugInput = m_attachedObject->getComponent<puppy::TextBox>();
-	//m_debugInput->setText("TESTING");
+	m_debugInput->setText("");
 	m_stringInputDisplay = m_attachedObject->getComponent<StringInputDisplay>();
 
 	pollForServer();

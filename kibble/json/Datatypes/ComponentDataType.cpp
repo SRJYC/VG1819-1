@@ -954,12 +954,12 @@ kitten::K_Component* getTriggerEventButton(nlohmann::json* p_jsonFile) {
 	return button;
 }
 
-#include "UI\TabMenu\TabMenu.h"
-kitten::K_Component* getTabMenu(nlohmann::json* p_jsonFile) {
+#include "UI\PauseMenu\PauseMenu.h"
+kitten::K_Component* getPauseMenu(nlohmann::json* p_jsonFile) {
 	std::string texture;
 
 	SETOPTDEF(texture, "texture", "textures/ui/blankFrame.tga");
-	return new TabMenu(texture.c_str());
+	return new PauseMenu(texture.c_str());
 }
 
 #include "ui/UIObject.h"
@@ -971,7 +971,7 @@ kitten::K_Component* getUIObject(nlohmann::json* p_jsonFile) {
 	return new userinterface::UIObject(texture.c_str());
 }
 
-#include "UI\TabMenu\ReturnToMainMenuButton.h"
+#include "UI\PauseMenu\ReturnToMainMenuButton.h"
 kitten::K_Component* getReturnToMainMenuButton(nlohmann::json* p_jsonFile) {
 	std::string regularTexture, highlightedTexture;
 	bool isEnabledOnPause;
@@ -1184,7 +1184,13 @@ kitten::K_Component* getModelRenderable(nlohmann::json* p_jsonFile) {
 	bool useAlphaTest;
 	SETOPTDEF(useAlphaTest, "alpha_test", false);
 
-	return new ModelRenderable(modelPath.c_str(), flipUvs, isStatic, useAlphaTest);
+	glm::vec4 matAmb(0.4,0.4,0.4,1);
+	if (JSONHAS("mat_ambient"))
+	{
+		matAmb = glm::vec4(LOOKUP("mat_ambient")[0], LOOKUP("mat_ambient")[1], LOOKUP("mat_ambient")[2], LOOKUP("mat_ambient")[3]);
+	}
+
+	return new ModelRenderable(modelPath.c_str(), flipUvs, isStatic, useAlphaTest, matAmb);
 }
 
 #include "unit\unitComponent\UnitHealthBar.h"
@@ -1930,7 +1936,9 @@ kitten::K_Component* getPlayerPrefs(nlohmann::json* p_jsonFile) {
 
 #include "_Project\SavePlayerPrefsOnClick.h"
 kitten::K_Component* getSavePlayerPrefsOnClick(nlohmann::json* p_jsonFile) {
-	return new SavePlayerPrefsOnClick();
+	bool closeOnClick;
+	SETOPTDEF(closeOnClick, "closeOnClick", true);
+	return new SavePlayerPrefsOnClick(closeOnClick);
 }
 
 #include "_Project\DisableParentOnClick.h"
@@ -2064,11 +2072,11 @@ kitten::K_Component* getSoundFader(nlohmann::json* p_jsonFile) {
 	return new SoundFader();
 }
 
-#include "components\EnterNameScreen.h"
+#include "components\PlayerNameController.h"
 kitten::K_Component* getEnterNameScreen(nlohmann::json* p_jsonFile) {
 	int minNameLength = p_jsonFile->operator[]("name_min_limit");
 	int maxNameLength = p_jsonFile->operator[]("name_max_limit");
-	return new EnterNameScreen(minNameLength, maxNameLength);
+	return new PlayerNameController(minNameLength, maxNameLength);
 }
 
 #include "_Project\PlaySoundOnClick.h"
@@ -2181,6 +2189,27 @@ kitten::K_Component* getChangeModeDetailOnClick(nlohmann::json* p_jsonFile) {
 	return new ChangeModeDetailOnClick();
 }
 
+#include "UI\PauseMenu\PauseMenuToggle.h"
+kitten::K_Component* getPauseMenuToggle(nlohmann::json* p_jsonFile) 
+{
+	return new PauseMenuToggle();
+}
+
+#include "_Project\ChangeNameOnClick.h"
+kitten::K_Component* getChangeNameOnClick(nlohmann::json* p_jsonFile) {
+	return new ChangeNameOnClick();
+}
+
+#include "_Project\ConfirmNameOnClick.h"
+kitten::K_Component* getConfirmNameOnClick(nlohmann::json* p_jsonFile) {
+	return new ConfirmNameOnClick();
+}
+
+#include "components/NameScreenSceneChanger.h"
+kitten::K_Component* getNameScreenSceneChanger(nlohmann::json* p_jsonFile) {
+	return new NameScreenSceneChanger();
+}
+
 std::map<std::string, kitten::K_Component* (*)(nlohmann::json* p_jsonFile)> jsonComponentMap;
 void setupComponentMap() {
 	jsonComponentMap["MoveByMouseRightClickDrag"] = &getMoveByMouseRightClickDrag;
@@ -2254,7 +2283,7 @@ void setupComponentMap() {
 	jsonComponentMap["NetworkHostButton"] = &getNetworkHostButton;	
 	jsonComponentMap["NetworkConnectButton"] = &getNetworkConnectButton;
 	jsonComponentMap["TriggerEventButton"] = &getTriggerEventButton;
-	jsonComponentMap["TabMenu"] = &getTabMenu;
+	jsonComponentMap["PauseMenu"] = &getPauseMenu;
 	jsonComponentMap["UIObject"] = &getUIObject;
 	jsonComponentMap["ReturnToMainMenuButton"] = &getReturnToMainMenuButton;
 	jsonComponentMap["UnitAura"] = &getUnitAura;
@@ -2346,7 +2375,7 @@ void setupComponentMap() {
 	jsonComponentMap["Quickplay"] = &getQuickplay;
 	jsonComponentMap["TogglePhotoModeOnKeyPress"] = &getTogglePhotoModeOnKeyPress;
 	jsonComponentMap["SoundFader"] = &getSoundFader;
-	jsonComponentMap["EnterNameScreen"] = &getEnterNameScreen;
+	jsonComponentMap["PlayerNameController"] = &getEnterNameScreen;
 	jsonComponentMap["PlaySoundOnClick"] = &getPlaySoundOnClick;
 	jsonComponentMap["AmbientSystemController"] = &getAmbientSystemController;
 	jsonComponentMap["AmbientVolumeController"] = &getAmbientVolumeController;
@@ -2358,6 +2387,11 @@ void setupComponentMap() {
 	jsonComponentMap["ChangeListOnClick"] = &getChangeListOnClick;
 	jsonComponentMap["ModeDetailController"] = &getModeDetailController;
 	jsonComponentMap["ChangeModeDetailOnClick"] = &getChangeModeDetailOnClick;
+	jsonComponentMap["PauseMenuToggle"] = &getPauseMenuToggle;
+	jsonComponentMap["ChangeNameOnClick"] = &getChangeNameOnClick;
+	jsonComponentMap["ConfirmNameOnClick"] = &getConfirmNameOnClick;
+	jsonComponentMap["NameScreenSceneChanger"] = &getNameScreenSceneChanger;
+
 }
 
 kitten::K_Component* getRelatedComponentBy(nlohmann::json* p_jsonFile) {

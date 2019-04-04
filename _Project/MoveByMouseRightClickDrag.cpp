@@ -27,8 +27,8 @@ void MoveByMouseRightClickDrag::update()
 	input::InputManager* inputMan = input::InputManager::getInstance();
 	if (inputMan->mouseDown(GLFW_MOUSE_BUTTON_RIGHT))
 	{
-		float xChange = inputMan->getMouseXChange();
-		float yChange = inputMan->getMouseYChange();
+		float xChange = -(inputMan->getMouseXChange());
+		float yChange = -(inputMan->getMouseYChange());
 
 		kitten::Transform& transform = getTransform();
 		
