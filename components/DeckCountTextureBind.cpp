@@ -5,7 +5,7 @@
 
 void DeckCountTextureBind::deckEventReceiver(kitten::Event::EventType p_type, kitten::Event * p_data)
 {
-	int deckCount = p_data->getInt(DECK_CARD_COUNT_LEFT);
+	int deckCount = p_data->getInt("count");
 	if (m_deckCount > deckCount)
 	{
 		if (m_currentTexPair->first > deckCount)
