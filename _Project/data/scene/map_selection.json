@@ -5,33 +5,31 @@
             "translate" : [7, 7.0, 2.0],
             "rotate" : [-70,0,0]
         },
-        {
-            "name" : "Deck Display Frame",
-            "components" : [
-                {
-                    "name":"DecksDisplayFrame",
-                    "marginX": 10,
-					"marginY" : 10
-                }
-            ],
-			"translate2d" : [143, 0],
-            "scale2d" : [1015,400]
-        },
 		{
 			"filename" : "mainmenu_background.json"
 		},
 		{
-			"filename" : "quad_repeat.txt"
+			"filename" : "map_selection_scene/map_detail_frame.json"
+		},
+		{
+			"filename" : "map_selection_scene/map_selection_list.json"
+		},
+		{
+			"filename" : "map_selection_scene/mode_explain_frame.json"
 		},
         {
-            "name" : "ReturnToMainMenu",
+            "name" : "Back Button",
             "components" : [
+				{
+					"name" : "ChangeSceneOnClick",
+					"scene" : "deck_menu.json"					
+				},
                 {
                     "name" : "UIObject",
                     "texture" : "textures/ui/buttons/button_return.tga"
                 },
 				{
-					"name" : "ReturnToMainMenuButton",
+					"name" : "ClickableButton",
 					"regularTexture" : "textures/ui/buttons/button_return.tga",
 					"highlightedTexture" : "textures/ui/buttons/button_return_highlighted.tga"
 				},
@@ -45,24 +43,6 @@
             ],
             "translate2d" : [71, 21],
             "scale2d" : [125, 80]
-        },
-		{
-			"filename" : "netmenu_host_button.txt",
-			"scale2d" : [250, 80],
-			"translate" : [565, 22, -0.1]
-		},
-		{
-			"filename" : "netmenu_join_button.txt",
-			"scale2d" : [250, 80],
-			"translate" : [959, 22, -0.1]
-		},
-		{
-			"filename" : "netmenu_console.txt"
-		},
-		{
-			"filename" : "UI/map_button.json",
-			"scale2d" : [250, 80],
-			"translate" : [275, 22, -0.1]
-		}
+        }
     ]
 }

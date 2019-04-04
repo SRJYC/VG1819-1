@@ -1,0 +1,22 @@
+{
+    "name" : "Map Up Button", 
+    "components" : [
+        {
+            "name" : "UIObject",
+            "texture" : "textures/ui/buttons/blank_button.tga"
+        },
+        {
+            "name" : "ClickableButton",
+            "regularTexture" : "textures/ui/buttons/button_arrow_up.tga",
+            "highlightedTexture" : "textures/ui/buttons/button_arrow_up_h.tga"
+        },
+        {
+            "name" : "ClickableFrame"
+        },
+        {
+            "name" : "ChangeListOnClick",
+            "move" : 1
+        }
+    ],
+    "scale2d": [200,30]
+}

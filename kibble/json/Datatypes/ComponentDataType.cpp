@@ -2121,6 +2121,74 @@ kitten::K_Component* getAmbientSystemController(nlohmann::json* p_jsonFile) {
 	return new AmbientSystemController(events, persistentSounds);
 }
 
+#include "components/MapSelectionScene/MapDetailController.h"
+kitten::K_Component* getMapDetailController(nlohmann::json* p_jsonFile) {
+
+	return new MapDetailController();
+}
+
+#include "components/MapSelectionScene/MapListController.h"
+kitten::K_Component* getMapListController(nlohmann::json* p_jsonFile) {
+
+	std::string randomImg, randomDes, upButton, downButton, mapButton;
+	float x, y, offset;
+	int limit;
+
+	SETOPT(randomImg, "image_for_random");
+	SETOPT(randomDes, "description_for_random");
+	SETOPT(upButton, "up_button_data");
+	SETOPT(downButton, "down_button_data");
+	SETOPT(mapButton, "map_button_data");
+	SETOPT(x, "x");
+	SETOPT(y, "y");
+	SETOPT(offset, "offset");
+	SETOPT(limit, "button_num");
+
+	return new MapListController(randomImg,randomDes,upButton,downButton,mapButton,x,y,offset,limit);
+}
+
+#include "components/MapSelectionScene/ChangeMapDetailOnClick.h"
+kitten::K_Component* getChangeMapDetailOnClick(nlohmann::json* p_jsonFile) {
+	std::string data;
+
+	SETOPT(data, "textBox_data");
+
+	return new ChangeMapDetailOnClick(data);
+}
+
+#include "components/MapSelectionScene/ChangeListOnClick.h"
+kitten::K_Component* getChangeListOnClick(nlohmann::json* p_jsonFile) {
+	int move;
+
+	SETOPT(move, "move");
+
+	return new ChangeListOnClick(move);
+}
+
+#include "components/MapSelectionScene/ModeDetailController.h"
+kitten::K_Component* getModeDetailController(nlohmann::json* p_jsonFile) {
+
+	std::string modeData, buttonData;
+	float x, y, offsetX, offsetY;
+	int num;
+
+	SETOPT(modeData, "mode_data");
+	SETOPT(buttonData, "button_data");
+	SETOPT(x, "start_x");
+	SETOPT(y, "start_y");
+	SETOPT(offsetX, "offset_x");
+	SETOPT(offsetY, "offset_y");
+	SETOPT(num, "num_per_row");
+
+	return new ModeDetailController(modeData,buttonData,x,y,offsetX,offsetY,num);
+}
+
+#include "components/MapSelectionScene/ChangeModeDetailOnClick.h"
+kitten::K_Component* getChangeModeDetailOnClick(nlohmann::json* p_jsonFile) {
+
+	return new ChangeModeDetailOnClick();
+}
+
 #include "UI\PauseMenu\PauseMenuToggle.h"
 kitten::K_Component* getPauseMenuToggle(nlohmann::json* p_jsonFile) 
 {
@@ -2313,6 +2381,12 @@ void setupComponentMap() {
 	jsonComponentMap["AmbientVolumeController"] = &getAmbientVolumeController;
 	jsonComponentMap["IncreaseAmbientVolumeOnClick"] = &getIncreaseAmbientVolumeOnClick;
 	jsonComponentMap["DecreaseAmbientVolumeOnClick"] = &getDecreaseAmbientVolumeOnClick;
+	jsonComponentMap["MapDetailController"] = &getMapDetailController;
+	jsonComponentMap["MapListController"] = &getMapListController;
+	jsonComponentMap["ChangeMapDetailOnClick"] = &getChangeMapDetailOnClick;
+	jsonComponentMap["ChangeListOnClick"] = &getChangeListOnClick;
+	jsonComponentMap["ModeDetailController"] = &getModeDetailController;
+	jsonComponentMap["ChangeModeDetailOnClick"] = &getChangeModeDetailOnClick;
 	jsonComponentMap["PauseMenuToggle"] = &getPauseMenuToggle;
 	jsonComponentMap["ChangeNameOnClick"] = &getChangeNameOnClick;
 	jsonComponentMap["ConfirmNameOnClick"] = &getConfirmNameOnClick;

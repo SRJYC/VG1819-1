@@ -59,6 +59,9 @@ namespace unit
 		//uNEWDUMMY->getComponent<unit::UnitMove>()->setTile(6, 6);
 		//uNEWDUMMY->getComponent<Unit>()->m_clientId = 1;
 
+		//kitten::K_GameObject* uNEWDUMMY2 = UnitSpawn::getInstance()->spawnUnitObject(14); // queen !!!
+		//uNEWDUMMY2->getComponent<unit::UnitMove>()->setTile(BoardManager::getInstance()->getSpawnPoint(0));
+		//uNEWDUMMY2->getComponent<unit::Unit>()->m_clientId = 0;
 		kitten::K_GameObject* uNEWDUMMY2 = UnitSpawn::getInstance()->spawnUnitObject(14); // queen !!!
 		uNEWDUMMY2->getComponent<unit::UnitMove>()->setTile(BoardManager::getInstance()->getSpawnPoint(0));
 		uNEWDUMMY2->getComponent<unit::Unit>()->m_clientId = 0;

@@ -20,40 +20,11 @@ void GameModeManager::registerTile(kitten::K_GameObject * p_tileGO, GameModeComp
 
 void GameModeManager::listenEvent(kitten::Event::EventType p_type, kitten::Event * p_data)
 {
-	if (p_type == kitten::Event::New_Game_Turn)
+	if (p_type == kitten::Event::Game_Turn_End)
 	{
-		//init all component when first turn start
-		if (!m_isInit)
+		for (auto component : m_modeComponentMap)
 		{
-			for (auto component : m_modeComponentMap)
-			{
-				component.second->init();
-			}
-
-			//clear removed component
-			auto end = m_modeComponentMap.cend();
-			auto comp = m_modeComponentMap.begin();
-			while (comp != end)
-			{
-				if (comp->second == nullptr)
-				{
-					comp = m_modeComponentMap.erase(comp);
-				}
-				else
-				{
-					comp++;
-				}
-			}
-			m_isInit = true;
-		}
-		else
-		{	//then check all component when other turns start
-			//they are actually checking result of last turn
-			//so start at turn 2
-			for (auto component : m_modeComponentMap)
-			{
-				component.second->check();
-			}
+			component.second->check();
 		}
 
 		checkPoints();
@@ -64,6 +35,29 @@ void GameModeManager::gainPoint(int p_clientId, int p_points)
 {
 	if (p_clientId >= 0)
 		m_points[p_clientId] += p_points;
+}
+
+void GameModeManager::initComponents()
+{//init components called by board creator after creating board
+	for (auto component : m_modeComponentMap)
+	{
+		component.second->init();
+	}
+
+	//clear removed component
+	auto end = m_modeComponentMap.cend();
+	auto comp = m_modeComponentMap.begin();
+	while (comp != end)
+	{
+		if (comp->second == nullptr)
+		{
+			comp = m_modeComponentMap.erase(comp);
+		}
+		else
+		{
+			comp++;
+		}
+	}
 }
 
 void GameModeManager::removeModeComponent(GameModeComponent * p_comp)
@@ -86,8 +80,7 @@ void GameModeManager::removeModeComponent(GameModeComponent * p_comp)
 }
 
 GameModeManager::GameModeManager()
-	:m_points(std::vector<int>({0,0})),
-	m_isInit(false)
+	:m_points(std::vector<int>({0,0}))
 {
 	registerEvent();
 
@@ -143,14 +136,14 @@ void GameModeManager::init()
 void GameModeManager::registerEvent()
 {
 	kitten::EventManager::getInstance()->addListener(
-		kitten::Event::EventType::New_Game_Turn,
+		kitten::Event::EventType::Game_Turn_End,
 		this,
 		std::bind(&GameModeManager::listenEvent, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void GameModeManager::deregisterEvent()
 {
-	kitten::EventManager::getInstance()->removeListener(kitten::Event::New_Game_Turn, this);
+	kitten::EventManager::getInstance()->removeListener(kitten::Event::Game_Turn_End, this);
 }
 
 void GameModeManager::checkPoints()

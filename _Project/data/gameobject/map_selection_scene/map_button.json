@@ -1,0 +1,22 @@
+{
+    "name" : "Map Button", 
+    "components" : [
+        {
+            "name" : "UIObject",
+            "texture" : "textures/ui/buttons/blank_button.tga"
+        },
+        {
+            "name" : "ClickableButton",
+            "regularTexture" : "textures/ui/buttons/blank_button.tga",
+            "highlightedTexture" : "textures/ui/buttons/blank_button_highlighted.tga"
+        },
+        {
+            "name" : "ClickableFrame"
+        },
+        {
+            "name" : "ChangeMapDetailOnClick",
+            "textBox_data" : "map_selection_scene/map_button_text.json"
+        }
+    ],
+    "scale2d": [200,30]
+}

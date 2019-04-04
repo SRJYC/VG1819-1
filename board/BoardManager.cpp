@@ -7,6 +7,8 @@
 #include "kitten/K_GameObjectManager.h"
 #include "networking\ClientGame.h"
 
+#include "kibble/map/MapReader.h"
+
 BoardManager* BoardManager::sm_instance = nullptr;
 
 void BoardManager::createBoard(int p_mapID, bool p_enableTileInfoDisplay)
@@ -14,9 +16,19 @@ void BoardManager::createBoard(int p_mapID, bool p_enableTileInfoDisplay)
 	m_boardCreator->setTileInfoDisplay(p_enableTileInfoDisplay);
 
 	int mapId = p_mapID;
-	if (networking::ClientGame::getMapId() > -1)
+
+	//get player selected map id
+	int selectedId = kibble::MapReader::getInstance()->getSelectedMap();
+	if (selectedId > -1)
 	{
-		mapId = networking::ClientGame::getInstance()->getMapId();
+		mapId = selectedId;
+	}
+
+	//get host map id
+	int hostId = networking::ClientGame::getMapId();
+	if ( hostId > -1)
+	{
+		mapId = hostId;
 	}
 	m_boardCreator->createBoard(mapId);
 

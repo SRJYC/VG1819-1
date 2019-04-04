@@ -1207,6 +1207,24 @@
     </ClCompile>
     <ClCompile Include="..\AI\Extract\Action.cpp" />
     <ClCompile Include="..\AI\Extract\Behavior.cpp" />
+    <ClCompile Include="..\components\MapSelectionScene\MapDetailController.cpp">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\components\MapSelectionScene\MapListController.cpp">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\components\MapSelectionScene\ChangeMapDetailOnClick.cpp">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\components\MapSelectionScene\ChangeListOnClick.cpp">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\components\MapSelectionScene\ChangeModeDetailOnClick.cpp">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\components\MapSelectionScene\ModeDetailController.cpp">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClCompile>
     <ClCompile Include="..\UI\PauseMenu\PauseMenu.cpp">
       <Filter>UI\PauseMenu</Filter>
     </ClCompile>
@@ -2440,6 +2458,24 @@
     <ClInclude Include="..\AI\Extract\Behavior.h">
       <Filter>AI\Extract</Filter>
     </ClInclude>
+    <ClInclude Include="..\components\MapSelectionScene\MapDetailController.h">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\components\MapSelectionScene\MapListController.h">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\components\MapSelectionScene\ChangeMapDetailOnClick.h">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\components\MapSelectionScene\ChangeModeDetailOnClick.h">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\components\MapSelectionScene\ChangeListOnClick.h">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\components\MapSelectionScene\ModeDetailController.h">
+      <Filter>components\MapSelectionScene</Filter>
+    </ClInclude>
     <ClInclude Include="..\UI\PauseMenu\PauseMenu.h">
       <Filter>UI\PauseMenu</Filter>
     </ClInclude>
@@ -2693,6 +2729,9 @@
     </Filter>
     <Filter Include="board\tile\gameMode\AttackDefendMode">
       <UniqueIdentifier>{ff19a59d-90b3-496b-ba7a-6dfc9e88a4ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="components\MapSelectionScene">
+      <UniqueIdentifier>{3aaa8947-3585-4a49-8ab4-daa2c91044cb}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\PauseMenu">
       <UniqueIdentifier>{f65abade-0ab9-4b14-b9fa-06c669a75895}</UniqueIdentifier>
