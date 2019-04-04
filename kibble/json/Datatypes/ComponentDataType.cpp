@@ -2137,6 +2137,11 @@ kitten::K_Component* getConfirmNameOnClick(nlohmann::json* p_jsonFile) {
 	return new ConfirmNameOnClick();
 }
 
+#include "components/NameScreenSceneChanger.h"
+kitten::K_Component* getNameScreenSceneChanger(nlohmann::json* p_jsonFile) {
+	return new NameScreenSceneChanger();
+}
+
 std::map<std::string, kitten::K_Component* (*)(nlohmann::json* p_jsonFile)> jsonComponentMap;
 void setupComponentMap() {
 	jsonComponentMap["MoveByMouseRightClickDrag"] = &getMoveByMouseRightClickDrag;
@@ -2311,6 +2316,7 @@ void setupComponentMap() {
 	jsonComponentMap["PauseMenuToggle"] = &getPauseMenuToggle;
 	jsonComponentMap["ChangeNameOnClick"] = &getChangeNameOnClick;
 	jsonComponentMap["ConfirmNameOnClick"] = &getConfirmNameOnClick;
+	jsonComponentMap["NameScreenSceneChanger"] = &getNameScreenSceneChanger;
 
 }
 

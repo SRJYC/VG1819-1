@@ -264,6 +264,7 @@
     <ClCompile Include="..\components\DisplayFrame\UnitDisplayFrame.cpp" />
     <ClCompile Include="..\components\DragNDrop\SpawnUnitOnDrop.cpp" />
     <ClCompile Include="..\components\DrawCardOnClickUI.cpp" />
+    <ClCompile Include="..\components\NameScreenSceneChanger.cpp" />
     <ClCompile Include="..\components\PlayerNameController.cpp" />
     <ClCompile Include="..\components\initializers\DrawCardsFromDeckWithDelay.cpp" />
     <ClCompile Include="..\components\MainMenuBoard.cpp" />
@@ -656,6 +657,7 @@
     <ClInclude Include="..\components\DisplayFrame\UnitDisplayFrame.h" />
     <ClInclude Include="..\components\DragNDrop\SpawnUnitOnDrop.h" />
     <ClInclude Include="..\components\DrawCardOnClickUI.h" />
+    <ClInclude Include="..\components\NameScreenSceneChanger.h" />
     <ClInclude Include="..\components\PlayerNameController.h" />
     <ClInclude Include="..\components\ExitGameButton.h" />
     <ClInclude Include="..\components\initializers\DrawCardsFromDeckWithDelay.h" />

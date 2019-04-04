@@ -34,4 +34,5 @@ public:
 	void changePlayerName();
 	void confirmPlayerName();
 	const std::string& getCurrentPlayerName() const { return m_playerName; }
+	void setUpdate(bool p_update) { m_update = p_update; }
 };

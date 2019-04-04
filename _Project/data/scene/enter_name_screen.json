@@ -75,6 +75,15 @@
 				{
 					"filename" : "enter_name_status_textbox.json",
 					"translate" : [0, 0, 0]
+				},
+				{
+					"name" : "Name Screen Scene Changer",
+					"components" :
+					[
+						{
+							"name" : "NameScreenSceneChanger"
+						}
+					]
 				}
 			]
 		},

@@ -1225,6 +1225,9 @@
     <ClCompile Include="ConfirmNameOnClick.cpp">
       <Filter>components\settings UI stuff</Filter>
     </ClCompile>
+    <ClCompile Include="..\components\NameScreenSceneChanger.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\kitten\K_Common.h">
@@ -2454,6 +2457,9 @@
     </ClInclude>
     <ClInclude Include="ConfirmNameOnClick.h">
       <Filter>components\settings UI stuff</Filter>
+    </ClInclude>
+    <ClInclude Include="..\components\NameScreenSceneChanger.h">
+      <Filter>components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

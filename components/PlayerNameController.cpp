@@ -50,6 +50,8 @@ void PlayerNameController::start()
 	{
 		m_playerName = savedName;
 	}
+
+	setConfirmButtonEnabled(false);
 }
 
 void PlayerNameController::onEnabled()
