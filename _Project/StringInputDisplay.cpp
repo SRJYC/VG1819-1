@@ -43,3 +43,13 @@ void StringInputDisplay::onStringChanged(const std::string& p_string)
 	m_textBox->setText(string);
 	m_strEnteredString = string;
 }
+
+void StringInputDisplay::setCharLimit(unsigned int p_limit)
+{
+	m_charLimit = p_limit;
+
+	if (m_strEnteredString.length() > m_charLimit)
+	{
+		m_strEnteredString = m_strEnteredString.substr(p_limit);
+	}
+}

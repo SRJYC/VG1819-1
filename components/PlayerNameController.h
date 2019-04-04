@@ -7,6 +7,8 @@
 class PlayerNameController : public kitten::K_Component
 {
 private:
+	input::InputManager* m_input = nullptr;
+
 	puppy::TextBox* m_inputTextbox;
 	puppy::TextBox* m_nameStatusTextBox;
 	StringInputDisplay* m_stringInputDisplay;

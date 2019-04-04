@@ -20,6 +20,6 @@ public:
 
 	const std::string& getString() { return m_strEnteredString; }
 
-	void setCharLimit(unsigned int p_limit) { m_charLimit = p_limit; }
+	void setCharLimit(unsigned int p_limit);
 	unsigned int getCharLimit() { return m_charLimit; }
 };

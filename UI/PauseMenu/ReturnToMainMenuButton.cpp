@@ -20,6 +20,7 @@ namespace userinterface
 
 	void ReturnToMainMenuButton::onClick()
 	{
+		kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Return_to_Main_Menu, nullptr);
 		if (networking::ClientGame::getInstance() != nullptr)
 		{
 			networking::ClientGame::destroyInstance();

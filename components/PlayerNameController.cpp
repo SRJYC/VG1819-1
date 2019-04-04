@@ -3,8 +3,6 @@
 #include "kitten\K_Instance.h"
 #include "settings_menu\PlayerPrefs.h"
 
-#define ENTER_NAME_MSG "Enter new name"
-
 PlayerNameController::PlayerNameController(int p_nameMinLimit, int p_nameMaxLimit) 
 	: 
 	m_nameMinLimit(p_nameMinLimit),
@@ -21,6 +19,7 @@ PlayerNameController::~PlayerNameController()
 
 void PlayerNameController::start()
 {
+	m_input = input::InputManager::getInstance();
 	const auto children = getTransform().getChildren();
 
 	kitten::K_GameObject* controllerInput = &children[0]->getAttachedGameObject();
@@ -52,11 +51,13 @@ void PlayerNameController::onEnabled()
 	{
 		m_inputTextbox->setText(m_playerName);
 	}
+	m_nameStatusTextBox->setText("");
 	setConfirmButtonEnabled(false);
 }
 
 void PlayerNameController::onDisabled()
 {
+	m_update = false;
 	input::InputManager::getInstance()->setPollMode(true);
 }
 
@@ -65,9 +66,9 @@ void PlayerNameController::update()
 	// Using flag to update since setEnabled(false) will stop rendering text
 	if (m_update)
 	{
-		std::string name = m_inputTextbox->getText();
+		std::string name = m_stringInputDisplay->getString();
 		int nameLength = name.length();
-		if (nameLength < m_nameMinLimit || nameLength > m_nameMaxLimit || name == ENTER_NAME_MSG)
+		if (nameLength < m_nameMinLimit || nameLength > m_nameMaxLimit)
 		{
 			m_nameStatusTextBox->setText("Name must be between " + std::to_string(m_nameMinLimit)
 				+ " and " + std::to_string(m_nameMaxLimit) + " characters.");
@@ -79,8 +80,7 @@ void PlayerNameController::update()
 			setConfirmButtonEnabled(true);
 		}
 
-		input::InputManager* inputMan = input::InputManager::getInstance();
-		if (inputMan->keyDown(GLFW_KEY_ENTER) && !inputMan->keyDownLast(GLFW_KEY_ENTER))
+		if (m_input->keyDown(GLFW_KEY_ENTER) && !m_input->keyDownLast(GLFW_KEY_ENTER))
 		{
 			std::string name = m_stringInputDisplay->getString();
 			if (name.length() >= m_nameMinLimit && name.length() <= m_nameMaxLimit)
@@ -90,11 +90,11 @@ void PlayerNameController::update()
 			}
 			else
 			{
-				inputMan->setPollMode(false);
+				m_input->setPollMode(false);
 			}
 		}
 
-		if (inputMan->keyDown(GLFW_KEY_ESC) && !inputMan->keyDownLast(GLFW_KEY_ESC))
+		if (m_input->keyDown(GLFW_KEY_ESC) && !m_input->keyDownLast(GLFW_KEY_ESC))
 		{
 			reset();
 		}
@@ -104,8 +104,11 @@ void PlayerNameController::update()
 void PlayerNameController::changePlayerName()
 {
 	m_update = true;
-	m_inputTextbox->setText(ENTER_NAME_MSG);
-	input::InputManager::getInstance()->setPollMode(false);
+
+	// Resets the buffer
+	m_input->setPollMode(true);
+	m_input->setPollMode(false);
+	m_stringInputDisplay->onStringChanged("");
 }
 
 void PlayerNameController::confirmPlayerName()
@@ -129,6 +132,7 @@ void PlayerNameController::setConfirmButtonEnabled(bool p_enabled)
 void PlayerNameController::reset()
 {
 	m_inputTextbox->setText(m_playerName);
+	m_stringInputDisplay->onStringChanged("");
 	setConfirmButtonEnabled(false);
 	m_update = false;
 }

@@ -182,9 +182,6 @@ void NetworkingConsoleMenu::stopHostingListener(kitten::Event::EventType p_type,
 				disconnectFromHost();
 		}
 	}
-
-	if (p_type == kitten::Event::Return_to_Main_Menu)
-		kitten::K_Instance::changeScene("mainmenu.json");
 }
 
 void NetworkingConsoleMenu::hostGame()
