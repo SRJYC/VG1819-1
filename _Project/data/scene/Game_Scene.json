@@ -10,7 +10,7 @@
 			"translate2d" : [950, 100]
 		},
 		{
-			"filename" : "TabMenu.txt"
+			"filename" : "PauseMenu.txt"
 		},
 		{
 			"filename" : "UniversalPfx.txt"
@@ -73,9 +73,6 @@
 		},
 		{
 			"filename" : "TurnCounter.json"
-		},
-		{
-			"filename" : "UI/options_menu/options_menu_gameplay_button.json"
 		}
     ]
 }

@@ -40,8 +40,8 @@
 #include "components\SelectAbility.h"
 #include "networking\SpawnUnitOnKeyPress.h"
 #include "networking\NetworkingConsoleMenu.h"
-#include "UI\TabMenu\TabMenu.h"
-#include "UI\TabMenu\ReturnToMainMenuButton.h"
+#include "UI\PauseMenu\PauseMenu.h"
+#include "UI\PauseMenu\ReturnToMainMenuButton.h"
 #include "_Project\StringInputDisplay.h"
 #include "kibble/json/Datatypes/ComponentDataType.hpp"
 
@@ -264,9 +264,9 @@ namespace kitten
 		{
 			comp = new userinterface::ReturnToMainMenuButton();
 		}
-		else if (p_componentName == "TabMenu")
+		else if (p_componentName == "PauseMenu")
 		{
-			comp = new TabMenu("textures/ui/blankFrame.tga");
+			comp = new PauseMenu("textures/ui/blankFrame.tga");
 		}
 		else if (p_componentName == "NetworkHostButton")
 		{

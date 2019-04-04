@@ -15,6 +15,7 @@
 #include "networking\ClientGame.h"
 
 #include "_Project\UniversalSounds.h"
+#include "settings_menu/PlayerPrefs.h"
 
 #define MESSAGE_LOG_LIMIT 100
 #define MESSAGE_DISPLAY_LIMIT 10
@@ -88,10 +89,6 @@ void TextChat::start()
 	m_typingTextBox->setBoxBounds(MAX_TYPABLE_LINES * TEXTCHAT_TEXTBOX_WIDTH, m_typingTextBox->getBoxHeight());
 	m_stringInputDisplay = messageInput->getComponent<StringInputDisplay>();
 
-	// Format the player name and subtract the length from the input char limit
-	m_playerName = "[" + networking::ClientGame::getPlayerName() + "]: ";
-	m_stringInputDisplay->setCharLimit(MAX_TEXTCHAT_MSG_SIZE - m_playerName.length());
-
 	kitten::K_GameObject* chatButton = kitten::K_GameObjectManager::getInstance()->createNewGameObject("text_chat/chat_button.json");
 	glm::vec2 buttonScale2D = chatButton->getTransform().getScale2D();
 	chatButton->getTransform().place(origin.x, origin.y - buttonScale2D.y, origin.z);
@@ -131,18 +128,23 @@ void TextChat::start()
 void TextChat::update()
 {
 	input::InputManager* input = input::InputManager::getInstance();
-	if (input->keyDown(GLFW_KEY_ESC) && !input->keyDownLast(GLFW_KEY_ESC))
-	{
-		m_attachedObject->setEnabled(!m_attachedObject->isEnabled());
-		input->setPollMode(true);
-	}
 
 	if (input->keyDown(GLFW_KEY_ENTER) && !input->keyDownLast(GLFW_KEY_ENTER) && !m_gamePaused)
 	{
+		std::string savedName = PlayerPrefs::getPlayerName();
+		if (savedName != m_playerName)
+		{
+			m_playerName = "[" + savedName + "]: ";
+			m_stringInputDisplay->setCharLimit(MAX_TEXTCHAT_MSG_SIZE - m_playerName.length());
+		}
+
 		std::string message = m_stringInputDisplay->getString();
-		message.insert(0, m_playerName);
-		addMessage(networking::ClientGame::getClientId(), message);
-		networking::ClientGame::getInstance()->sendTextChatMessagePacket(message);
+		if (message.length() > 0)
+		{
+			message.insert(0, m_playerName);
+			addMessage(networking::ClientGame::getClientId(), message);
+			networking::ClientGame::getInstance()->sendTextChatMessagePacket(message);
+		}		
 
 		// InputManager sets poll mode to true when enter is hit, set back to false to continue typing
 		input->setPollMode(false);
@@ -304,11 +306,11 @@ void TextChat::onEnabled()
 	m_scrollDownButton->getGameObject().setEnabled(true);
 	m_newMessageIcon->setEnabled(false);
 	setMessageTextBoxes();
+	m_typingTextBox->setText("");
 }
 
 void TextChat::onDisabled()
 {
-	m_typingTextBox->setText("");
 	m_textInputLastText = "";
 	resetInputTextBoxPos();
 	m_scrollUpButton->getGameObject().setEnabled(false);
@@ -387,8 +389,9 @@ void TextChat::pauseMenuOpenedListener(kitten::Event::EventType p_type, kitten::
 {
 	m_gamePaused = p_data->getInt(PAUSE_MENU_OPEN);
 
-	if (m_gamePaused && m_attachedObject->isEnabled()) // If menu opened and chat is open, disable typing
+	if (m_gamePaused && m_attachedObject->isEnabled()) // If menu opened and chat is open, close window
 	{
+		m_attachedObject->setEnabled(!m_attachedObject->isEnabled());
 		input::InputManager::getInstance()->setPollMode(true);
 	}
 	else if (!m_gamePaused && m_attachedObject->isEnabled()) // If menu closed and chat is open, enable typing

@@ -7,7 +7,7 @@
 //
 // @Ken
 
-#include "UI\TabMenu\ReturnToMainMenuButton.h"
+#include "UI\PauseMenu\ReturnToMainMenuButton.h"
 #include "kitten\event_system\EventManager.h"
 #include "kitten\K_Instance.h"
 #include "networking\ClientGame.h"
@@ -21,7 +21,10 @@ namespace userinterface
 	void ReturnToMainMenuButton::onClick()
 	{
 		kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Return_to_Main_Menu, nullptr);
-		if (networking::ClientGame::getInstance() == nullptr)
-			kitten::K_Instance::changeScene("mainmenu.json");
+		if (networking::ClientGame::getInstance() != nullptr)
+		{
+			networking::ClientGame::destroyInstance();
+		}
+		kitten::K_Instance::changeScene("mainmenu.json");
 	}
 }

@@ -9,40 +9,93 @@
 			"filename" : "quad_repeat.txt"
 		},
 		{
-			"name" : "Enter Name Components",
-			"components" : [
+			"name" : "Name Controller",
+			"components" : 
+			[
 				{
-					"name" : "TextBox",
-					"font" : "../fonts/common_consolas.fnt",
-					"width" : 300 , 
-					"height" : 100 ,
-					"color" : [1,1,1]
-				},
-				{
-					"name" : "EnterNameScreen",
+					"name" : "PlayerNameController",
 					"name_min_limit" : 1,
 					"name_max_limit" : 15
 				},
 				{
-					"name" : "StringInputDisplay"
-				}
-			],
-			"translate2d" : [527, 355, -0.1]
-		},
-		{
-			"filename" : "mainmenu_background.json"
-		},
-		{
-            "name" : "Enter IP Window",
-            "components" : [
-                {
                     "name" : "UIObject",
                     "texture" : "textures/ui/name_window.dds"
                 }
             ],
             "translate" : [280, 160, -0.9],
-            "scale2d" : [720, 360]
-        },
+            "worldscale" : [720, 360, 1],
+			
+			"gameobjects" : 
+			[
+				{
+					"name" : "Player Name Controller Input",
+					"components" : 
+					[
+						{
+							"name" : "TextBox",
+							"font" : "../fonts/common_consolas.fnt",
+							"width" : 300 , 
+							"height" : 100 ,
+							"color" : [1,1,1]
+						},
+						{
+							"name" : "StringInputDisplay"
+						}
+					],
+					"translate" : [247, 195, 0.1]
+				},
+				{
+					"name" : "ConfirmNameOnClick",
+					"components" : 
+					[
+						{
+							"name" : "UIObject",
+							"texture" : "textures/ui/buttons/button_confirm_100x50.dds"
+						},
+						{
+							"name" : "ClickableFrame"
+						},
+						{
+							"name" : "PlayUniversalSoundOnUIClick",
+							"sound_name" : "click_2"
+						},
+						{
+							"name" : "ConfirmNameOnClick"
+						},
+						{
+							"name" : "ChangeSceneOnClick",
+							"scene" : "deck_menu.json"
+
+						},
+						{
+							"name" : "ClickableButton",
+							"enabledOnPause" : true,
+							"regularTexture" : "textures/ui/buttons/button_confirm_100x50.dds",
+							"highlightedTexture" : "textures/ui/buttons/button_confirm_h_100x50.dds",
+							"inactiveTexture" : "textures/ui/buttons/button_confirm_i_100x50.dds"
+						}
+					],
+					"translate" : [310, 90, 0.1],
+					"worldscale" : [100, 50 , 1]
+				},
+				{
+					"filename" : "enter_name_status_textbox.json",
+					"translate" : [75, 70, 0.1]
+				},
+				{
+					"name" : "Name Screen Scene Changer",
+					"components" :
+					[
+						{
+							"name" : "NameScreenSceneChanger"
+						}
+					]
+				}
+			]
+		},
+		{
+			"filename" : "mainmenu_background.json"
+		},
         {
             "name" : "Back Button",
             "components" : [

@@ -20,6 +20,7 @@ private:
 	int m_sfxVolume, m_bgmVolume, m_ambientVolume;
 	bool m_fullscreen;
 	std::pair<int, int> m_resolution;
+	std::string m_playerName;
 
 	bool m_hasUnsavedChanges;
 
@@ -30,6 +31,7 @@ private:
 	void privateSetSFXVolume(int p_volume);
 	void privateSetBGMVolume(int p_volume);
 	void privateSetAmbientVolume(int p_volume);
+	void privateSetPlayerName(const std::string& p_name);
 
 	void privateSetFullscreen(bool p_isFullscreen);
 	void privateSetResolution(int p_winX, int p_winY);
@@ -48,6 +50,9 @@ public:
 
 	static void setAmbientVolume(int p_volume);
 	static int getAmbientVolume();
+
+	static void setPlayerName(const std::string& p_name);
+	const static std::string& getPlayerName();
 
 	//This doesn't do anything, glfw version does not support
 	static void setFullscreen(bool p_isFullscreen);

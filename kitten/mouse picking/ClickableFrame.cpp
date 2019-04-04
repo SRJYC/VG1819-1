@@ -195,7 +195,7 @@ namespace kitten
 
 	void ClickableFrame::toggleGamePausedListener(kitten::Event::EventType p_type, kitten::Event* p_data)
 	{
-		m_gamePaused = !m_gamePaused;
+		m_gamePaused = p_data->getInt(PAUSE_MENU_OPEN);;
 
 		auto end = m_listeners.cend();
 		for (auto it = m_listeners.begin(); it != end; it++)
