@@ -45,4 +45,10 @@ void NameScreenSceneChanger::update()
 			m_input->setPollMode(false);
 		}
 	}
+
+	if (m_input->keyDown(GLFW_KEY_ESC) && !m_input->keyDownLast(GLFW_KEY_ESC))
+	{
+		m_input->setPollMode(false);
+		m_controller->setUpdate(true);
+	}
 }

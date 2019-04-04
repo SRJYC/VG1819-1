@@ -25,14 +25,14 @@ private:
 	virtual bool hasUpdate() const override { return true; };
 	virtual void update() override;
 
-	void sceneChangeListener(kitten::Event::EventType p_type, kitten::Event* p_event);
-	void setConfirmButtonEnabled(bool p_enabled);
 public:
 	PlayerNameController(int p_nameMinLimit, int p_nameMaxLimit);
 	~PlayerNameController();
 
 	void changePlayerName();
 	void confirmPlayerName();
+	void setConfirmButtonEnabled(bool p_enabled);
+	void reset();
 	const std::string& getCurrentPlayerName() const { return m_playerName; }
 	void setUpdate(bool p_update) { m_update = p_update; }
 };

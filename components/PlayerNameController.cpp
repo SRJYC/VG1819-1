@@ -1,7 +1,4 @@
 #include "PlayerNameController.h"
-#include "kitten\K_GameObjectManager.h"
-#include "kitten\event_system\EventManager.h"
-#include "networking\ClientGame.h"
 #include "kitten\InputManager.h"
 #include "kitten\K_Instance.h"
 #include "settings_menu\PlayerPrefs.h"
@@ -19,21 +16,16 @@ PlayerNameController::PlayerNameController(int p_nameMinLimit, int p_nameMaxLimi
 
 PlayerNameController::~PlayerNameController()
 {
-	kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Scene_Change, this);
 	input::InputManager::getInstance()->setPollMode(true);
 }
 
 void PlayerNameController::start()
 {
-	kitten::EventManager::getInstance()->addListener(
-		kitten::Event::EventType::Scene_Change,
-		this,
-		std::bind(&PlayerNameController::sceneChangeListener, this, std::placeholders::_1, std::placeholders::_2));
-
 	const auto children = getTransform().getChildren();
 
 	kitten::K_GameObject* controllerInput = &children[0]->getAttachedGameObject();
 	m_inputTextbox = controllerInput->getComponent<puppy::TextBox>();
+	m_inputTextbox->setText("");
 	m_stringInputDisplay = controllerInput->getComponent<StringInputDisplay>();
 	m_stringInputDisplay->setCharLimit(m_nameMaxLimit);
 
@@ -101,6 +93,11 @@ void PlayerNameController::update()
 				inputMan->setPollMode(false);
 			}
 		}
+
+		if (inputMan->keyDown(GLFW_KEY_ESC) && !inputMan->keyDownLast(GLFW_KEY_ESC))
+		{
+			reset();
+		}
 	}
 }
 
@@ -117,25 +114,21 @@ void PlayerNameController::confirmPlayerName()
 
 	m_playerName = m_stringInputDisplay->getString();
 	PlayerPrefs::setPlayerName(m_playerName);
-	//m_inputTextbox->setText(m_playerName);
 	m_nameStatusTextBox->setText("");
 
 	input::InputManager::getInstance()->setPollMode(true);
 	setConfirmButtonEnabled(false);
 }
 
-void PlayerNameController::sceneChangeListener(kitten::Event::EventType p_type, kitten::Event* p_event)
-{
-	std::string scene = p_event->getString(NEXT_SCENE_PATH_KEY);
-
-	if (scene == DECK_MENU_SCENE)
-	{
-		networking::ClientGame::setPlayerName(m_stringInputDisplay->getString());
-	}
-}
-
 void PlayerNameController::setConfirmButtonEnabled(bool p_enabled)
 {
 	m_confirmButton->setActive(p_enabled);
 	m_confirmButtonFrame->setEnabled(p_enabled);
+}
+
+void PlayerNameController::reset()
+{
+	m_inputTextbox->setText(m_playerName);
+	setConfirmButtonEnabled(false);
+	m_update = false;
 }
