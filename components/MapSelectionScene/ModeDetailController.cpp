@@ -46,8 +46,8 @@ void ModeDetailController::start()
 		oc->setInfo(m_imgList[i], i);
 
 		//set to child
-		go->getTransform().setIgnoreParent(false);
-		go->getTransform().setParent(&getTransform());
+		//go->getTransform().setIgnoreParent(false);
+		//go->getTransform().setParent(&getTransform());
 
 		//move position
 		go->getTransform().place2D(m_startX + col * m_offsetX, m_startY - row * m_offsetY);

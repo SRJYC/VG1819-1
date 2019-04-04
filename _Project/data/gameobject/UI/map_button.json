@@ -21,7 +21,5 @@
 			"name" : "ChangeSceneOnClick",
 			"scene" : "map_selection.json"
 		}
-	],
-	"translate2d" : [35, 100],
-	"scale2d" : [250, 80]
+	]
 }

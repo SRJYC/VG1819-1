@@ -326,6 +326,10 @@ void unit::InitiativeTracker::gameTurnEnd()
 	//clear extra turn list
 	m_extraTurnUnitList.clear();
 
+	//trigger game turn end event
+	kitten::EventManager::getInstance()->queueEvent(kitten::Event::Game_Turn_End, nullptr);
+
+
 	//start of new turn
 	gameTurnStart();
 
