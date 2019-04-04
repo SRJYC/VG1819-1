@@ -21,17 +21,14 @@ extern "C" FILE * __cdecl __iob_func(void)
 }
 //========================================================================
 
-
-//@TODO move this somewhere not in main lol
-void lerp(const float& amount, const glm::vec3& min, const glm::vec3& max, glm::vec3& out)
-{
-	out = (1 - amount)*min + amount * max;
-}
-
 int main( void )
 {
+
+#ifndef DEBUG
+	FreeConsole();
+#endif
+
     int width, height, x;
-    
     
     // Initialise GLFW
     if( !glfwInit() )
@@ -39,7 +36,7 @@ int main( void )
         fprintf( stderr, "Failed to initialize GLFW\n" );
         exit( EXIT_FAILURE );
     }
-
+	
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MAJOR, 3);
     glfwOpenWindowHint(GLFW_OPENGL_VERSION_MINOR, 2);
     glfwOpenWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);

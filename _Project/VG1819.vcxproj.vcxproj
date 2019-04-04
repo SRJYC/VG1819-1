@@ -77,7 +77,6 @@
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <FloatingPointModel>Fast</FloatingPointModel>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -264,7 +263,8 @@
     <ClCompile Include="..\components\DisplayFrame\UnitDisplayFrame.cpp" />
     <ClCompile Include="..\components\DragNDrop\SpawnUnitOnDrop.cpp" />
     <ClCompile Include="..\components\DrawCardOnClickUI.cpp" />
-    <ClCompile Include="..\components\EnterNameScreen.cpp" />
+    <ClCompile Include="..\components\NameScreenSceneChanger.cpp" />
+    <ClCompile Include="..\components\PlayerNameController.cpp" />
     <ClCompile Include="..\components\initializers\DrawCardsFromDeckWithDelay.cpp" />
     <ClCompile Include="..\components\MainMenuBoard.cpp" />
     <ClCompile Include="..\components\PromptPopUp.cpp" />
@@ -418,9 +418,10 @@
     <ClCompile Include="..\UI\InterfaceBuilder.cpp" />
     <ClCompile Include="..\UI\LandContext.cpp" />
     <ClCompile Include="..\UI\MainMenu\MainMenu.cpp" />
+    <ClCompile Include="..\UI\PauseMenu\PauseMenu.cpp" />
+    <ClCompile Include="..\UI\PauseMenu\PauseMenuToggle.cpp" />
+    <ClCompile Include="..\UI\PauseMenu\ReturnToMainMenuButton.cpp" />
     <ClCompile Include="..\UI\StatusContext.cpp" />
-    <ClCompile Include="..\UI\TabMenu\ReturnToMainMenuButton.cpp" />
-    <ClCompile Include="..\UI\TabMenu\TabMenu.cpp" />
     <ClCompile Include="..\UI\TriggerEventButton.cpp" />
     <ClCompile Include="..\UI\TurnCounterController.cpp" />
     <ClCompile Include="..\UI\UIElement.cpp" />
@@ -464,8 +465,10 @@
     <ClCompile Include="AmbientVolumeController.cpp" />
     <ClCompile Include="BGMManager.cpp" />
     <ClCompile Include="BGMVolumeController.cpp" />
+    <ClCompile Include="ChangeNameOnClick.cpp" />
     <ClCompile Include="ClickableBoxRenderable.cpp" />
     <ClCompile Include="CombatText.cpp" />
+    <ClCompile Include="ConfirmNameOnClick.cpp" />
     <ClCompile Include="DebugPrintOnce.cpp" />
     <ClCompile Include="DecreaseAmbientVolumeOnClick.cpp" />
     <ClCompile Include="DecreaseBGMVolumeOnClick.cpp" />
@@ -653,7 +656,8 @@
     <ClInclude Include="..\components\DisplayFrame\UnitDisplayFrame.h" />
     <ClInclude Include="..\components\DragNDrop\SpawnUnitOnDrop.h" />
     <ClInclude Include="..\components\DrawCardOnClickUI.h" />
-    <ClInclude Include="..\components\EnterNameScreen.h" />
+    <ClInclude Include="..\components\NameScreenSceneChanger.h" />
+    <ClInclude Include="..\components\PlayerNameController.h" />
     <ClInclude Include="..\components\ExitGameButton.h" />
     <ClInclude Include="..\components\initializers\DrawCardsFromDeckWithDelay.h" />
     <ClInclude Include="..\components\MainMenuBoard.h" />
@@ -827,9 +831,10 @@
     <ClInclude Include="..\UI\InterfaceBuilder.h" />
     <ClInclude Include="..\UI\LandContext.h" />
     <ClInclude Include="..\UI\MainMenu\MainMenu.h" />
+    <ClInclude Include="..\UI\PauseMenu\PauseMenu.h" />
+    <ClInclude Include="..\UI\PauseMenu\PauseMenuToggle.h" />
+    <ClInclude Include="..\UI\PauseMenu\ReturnToMainMenuButton.h" />
     <ClInclude Include="..\UI\StatusContext.h" />
-    <ClInclude Include="..\UI\TabMenu\ReturnToMainMenuButton.h" />
-    <ClInclude Include="..\UI\TabMenu\TabMenu.h" />
     <ClInclude Include="..\UI\TriggerEventButton.h" />
     <ClInclude Include="..\UI\TurnCounterController.h" />
     <ClInclude Include="..\UI\UIElement.h" />
@@ -876,8 +881,10 @@
     <ClInclude Include="AmbientVolumeController.h" />
     <ClInclude Include="BGMManager.h" />
     <ClInclude Include="BGMVolumeController.h" />
+    <ClInclude Include="ChangeNameOnClick.h" />
     <ClInclude Include="ClickableBoxRenderable.h" />
     <ClInclude Include="CombatText.h" />
+    <ClInclude Include="ConfirmNameOnClick.h" />
     <ClInclude Include="DebugPrintOnce.h" />
     <ClInclude Include="DecreaseAmbientVolumeOnClick.h" />
     <ClInclude Include="DecreaseBGMVolumeOnClick.h" />

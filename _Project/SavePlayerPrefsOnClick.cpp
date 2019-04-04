@@ -3,7 +3,7 @@
 #include "settings_menu\PlayerPrefs.h"
 #include "UniversalSounds.h"
 
-SavePlayerPrefsOnClick::SavePlayerPrefsOnClick()
+SavePlayerPrefsOnClick::SavePlayerPrefsOnClick(bool p_closeOnClick) : m_closeOnClick(p_closeOnClick)
 {
 	m_enabledOnPause = true;
 }
@@ -17,15 +17,18 @@ void SavePlayerPrefsOnClick::onClick()
 {
 	PlayerPrefs::saveAllSettings();
 
-	kitten::Transform* parent = getTransform().getParent();
-
-	if (parent != nullptr)
+	if (m_closeOnClick)
 	{
-		kitten::Transform* parentParent = parent->getParent();
+		kitten::Transform* parent = getTransform().getParent();
 
-		if (parentParent != nullptr)
+		if (parent != nullptr)
 		{
-			parentParent->getAttachedGameObject().setEnabled(false);
+			kitten::Transform* parentParent = parent->getParent();
+
+			if (parentParent != nullptr)
+			{
+				parentParent->getAttachedGameObject().setEnabled(false);
+			}
 		}
 	}
 

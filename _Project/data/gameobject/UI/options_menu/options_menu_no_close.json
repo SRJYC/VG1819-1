@@ -16,7 +16,7 @@
 					"texture" : "textures/ui/options_menu/options_background.dds"
 				}
 			],
-			"translate" : [350, 150, -0.2],
+			"translate" : [320, 150, -0.2],
 			"worldscale" : [640, 350, 1],
 			
 			"gameobjects" : 
@@ -411,27 +411,28 @@
 					]
 				},
 				{
-					"name" : "Back Button",
+					"name" : "Save Button",
 					"components" : 
 					[
 						{
 							"name" : "UIObject",
-							"texture" : "textures/ui/buttons/button_x.dds"
+							"texture" : "textures/ui/buttons/save_75x35.dds"
 						},
 						{
 							"name" : "ClickableFrame"
 						},
 						{
-							"name" : "SavePlayerPrefsOnClick"
+							"name" : "SavePlayerPrefsOnClick",
+							"closeOnClick" : false
 						},
 						{
 							"name" : "ClickableButton",
 							"enabledOnPause" : true,
-							"regularTexture" : "textures/ui/buttons/button_x.dds",
-							"highlightedTexture" : "textures/ui/buttons/button_x_h.dds"
+							"regularTexture" : "textures/ui/buttons/save_75x35.dds",
+							"highlightedTexture" : "textures/ui/buttons/save_h_75x35.dds"
 						}
 					],
-					"translate" : [575,325, 0.05],
+					"translate" : [545,285, 0.05],
 					"worldscale" : [75, 35, 1]
 				}
 			]

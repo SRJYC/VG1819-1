@@ -1,0 +1,38 @@
+{
+	"name" : "Enter Name Button",
+	
+	"gameobjects" : 
+	[
+		{
+			"name" : "Change Name Button",
+			"components" : [
+				{
+					"name" : "UIObject",
+					"texture" : "textures/ui/buttons/button_gear.tga"
+				},
+				{
+					"name" : "ClickableButton",
+					"enabledOnPause" : true,
+					"regularTexture" : "textures/ui/buttons/button_gear.tga",
+					"highlightedTexture" : "textures/ui/buttons/button_gear_h.tga"
+				},
+				{
+					"name" : "ClickableFrame"
+				},
+				{
+					"name" : "PlayUniversalSoundOnUIClick",
+					"sound_name" : "click"
+				},
+				{
+					"name" : "ToggleSiblingEnabledOnClick"
+				}
+			],
+			"translate2d" : [70, 540],
+			"scale2d" : [50, 50]
+		},
+		{
+			"filename" : "UI/enter_name_window.json",
+			"enabled" : false
+		}
+	]
+}
