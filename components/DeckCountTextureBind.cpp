@@ -56,19 +56,20 @@ void DeckCountTextureBind::start()
 	m_currentTexPair = m_texPairs.rbegin();
 	m_attachedObject->getComponent<userinterface::UIFrame>()->setTexture(m_currentTexPair->second.c_str());
 
+	const glm::vec2 deckScale = getTransform().getScale2D();
+	const glm::vec3 deckTrans = getTransform().getTranslation();
+
 	kitten::K_GameObject* counter = kitten::K_GameObjectManager::getInstance()->createNewGameObject("ui/deck/deck_counter_textbox.json");
 	puppy::TextBox* txtBoxComp = counter->getComponent<puppy::TextBox>();
 	txtBoxComp->setText("Loading...");
-	const glm::vec2 deckScale = getTransform().getScale2D();
-	const glm::vec3 deckTrans = getTransform().getTranslation();
 	counter->getTransform().place2D(deckTrans.x + 20, deckTrans.y + deckScale.y);
 	m_countText = txtBoxComp;
 
 	kitten::K_GameObject* enemyCounter = kitten::K_GameObjectManager::getInstance()->createNewGameObject("ui/deck/deck_counter_textbox.json");
 	puppy::TextBox* entxtBoxComp = enemyCounter->getComponent<puppy::TextBox>();
-	enemyCounter->getTransform().place2D(deckTrans.x + 30, deckTrans.y + deckScale.y);
-	m_enemyCountText = txtBoxComp;
-
+	enemyCounter->getTransform().place2D(deckTrans.x + 40, deckTrans.y + deckScale.y);
+	m_enemyCountText = entxtBoxComp;
+	entxtBoxComp->setText("?");
 
 }
 
