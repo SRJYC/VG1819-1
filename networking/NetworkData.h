@@ -48,8 +48,8 @@ enum PacketTypes
 	UPDATE_SERVER_INFO,
 	QUICKPLAY_FOUND_GAME,
 	SESSION_ENDED,
-	CARD_DRAW,
-	MAP_DATA
+	MAP_DATA,
+	CARD_DRAW
 };
 
 struct UnitPrimitiveData
