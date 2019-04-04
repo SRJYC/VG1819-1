@@ -2157,6 +2157,30 @@ kitten::K_Component* getChangeListOnClick(nlohmann::json* p_jsonFile) {
 	return new ChangeListOnClick(move);
 }
 
+#include "components/MapSelectionScene/ModeDetailController.h"
+kitten::K_Component* getModeDetailController(nlohmann::json* p_jsonFile) {
+
+	std::string modeData, buttonData;
+	float x, y, offsetX, offsetY;
+	int num;
+
+	SETOPT(modeData, "mode_data");
+	SETOPT(buttonData, "button_data");
+	SETOPT(x, "start_x");
+	SETOPT(y, "start_y");
+	SETOPT(offsetX, "offset_x");
+	SETOPT(offsetY, "offset_y");
+	SETOPT(num, "num_per_row");
+
+	return new ModeDetailController(modeData,buttonData,x,y,offsetX,offsetY,num);
+}
+
+#include "components/MapSelectionScene/ChangeModeDetailOnClick.h"
+kitten::K_Component* getChangeModeDetailOnClick(nlohmann::json* p_jsonFile) {
+
+	return new ChangeModeDetailOnClick();
+}
+
 std::map<std::string, kitten::K_Component* (*)(nlohmann::json* p_jsonFile)> jsonComponentMap;
 void setupComponentMap() {
 	jsonComponentMap["MoveByMouseRightClickDrag"] = &getMoveByMouseRightClickDrag;
@@ -2332,6 +2356,8 @@ void setupComponentMap() {
 	jsonComponentMap["MapListController"] = &getMapListController;
 	jsonComponentMap["ChangeMapDetailOnClick"] = &getChangeMapDetailOnClick;
 	jsonComponentMap["ChangeListOnClick"] = &getChangeListOnClick;
+	jsonComponentMap["ModeDetailController"] = &getModeDetailController;
+	jsonComponentMap["ChangeModeDetailOnClick"] = &getChangeModeDetailOnClick;
 }
 
 kitten::K_Component* getRelatedComponentBy(nlohmann::json* p_jsonFile) {

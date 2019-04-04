@@ -9,6 +9,10 @@
 		{
             "filename" : "map_selection_scene/mode_base_rule.json",
             "translate2d" : [900, 480]
+        },
+        {
+            "filename" : "map_selection_scene/mode_tile_description.json",
+            "translate2d" : [900, 330]
 		}
     ]
 }

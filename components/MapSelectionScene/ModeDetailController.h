@@ -11,10 +11,13 @@ Apr 3
 class ModeDetailController : public kitten::K_Component
 {
 public:
-	ModeDetailController();
+	ModeDetailController(const std::string& p_modeData, const std::string& p_buttonData,
+		float p_x,float p_y, float p_offsetX, float p_offsetY, int p_numPerRow);
 	~ModeDetailController();
 
 	void start() override;
+
+	void changeDescription(int p_id);
 
 private:
 	//the text box that explains each mode tile
@@ -22,7 +25,22 @@ private:
 
 	//the list of buttons of each mode tile
 	std::vector<kitten::K_GameObject*> m_modeButtonList;
+	//button data
+	const std::string m_buttonData;
 
-	//the file path of mode explain
+	//data of mode explain
 	const std::string m_modeData;
+	std::vector<std::string> m_imgList;
+	std::vector<std::string> m_desList;
+
+	int m_currentId;
+
+	//pos of button
+	const float m_startX;
+	const float m_startY;
+	const float m_offsetX;
+	const float m_offsetY;
+	const int m_limitPerRow;
+
+	void readData();
 };

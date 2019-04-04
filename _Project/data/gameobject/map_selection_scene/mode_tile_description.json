@@ -1,17 +1,24 @@
 {
-    "name":"map_image",
+    "name":"mode description",
     "components" : [
         {
             "name" : "TextBox",
 			"font" : "../fonts/nsimsun_14pt.fnt",
 			"color" : [1,1,1],
             "alignment" : "left",
-            "width" : 200,
-            "height" : 100,
-            "message":"Pick random map"
+            "width" : 300,
+            "height" : 400,
+            "message":"Click symbol to see detail."
         },
         {
-			"name" : "MapDetailController"
+            "name" : "ModeDetailController",
+            "mode_data" : "data/map/ModeTileInfo.json",
+            "button_data":"map_selection_scene/mode_button.json",
+            "start_x":0,
+            "start_y":0,
+            "offset_x":60,
+            "offset_y":60,
+            "num_per_row":5
 		}
     ]
 }
