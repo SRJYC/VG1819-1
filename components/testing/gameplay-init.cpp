@@ -7,6 +7,7 @@
 #include "components/initializers/DrawCardsFromDeckWithDelay.h"
 #include "AI/controller.h"
 #include "board/tile/GameMode/GameModeManager.h"
+#include "networking/ClientGame.h"
 
 GameplayInit::GameplayInit(bool p_testing)
 { 
@@ -23,6 +24,11 @@ GameplayInit::~GameplayInit()
 	GameModeManager::destroyInstance();
 }
 
+void GameplayInit::onDisabled()
+{
+	unit::InitiativeTracker::getInstance()->gameTurnStart();
+}
+
 void GameplayInit::start() {
 	// TODO put this in a separate component or something. 
 	GameModeManager::createInstance();
@@ -32,7 +38,6 @@ void GameplayInit::start() {
 	//UnitInteractionManager::createInstance();
 	UnitInteractionManager::getInstance()->reset();
 
-
 	if (m_testing) {
 		unit::UnitTest::getInstanceSafe()->test();
 		DrawCardsFromDeckWithDelay::getActiveInstance()->setCardCountToDispense(5);
@@ -40,6 +45,9 @@ void GameplayInit::start() {
 	}
 
 	if (AI::controller::AIPresent()) {
+		if (AI::controller::getAIControllerSize() <= 1) {
+			networking::ClientGame::setClientId(0);
+		}
 		AI::controller::setupAIControllers();
 	}
 }

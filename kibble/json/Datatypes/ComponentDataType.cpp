@@ -1543,7 +1543,7 @@ kitten::K_Component* getStatusContext(nlohmann::json* p_jsonFile) {
 }
 #include "AI/controller.h"
 kitten::K_Component* getAIController(nlohmann::json* p_jsonFile) {
-	return new AI::controller(AI::controller::getAIControllerSize()+1);
+	return new AI::controller();
 }
 
 #include "UI\ContextMenu.h"
