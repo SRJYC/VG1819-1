@@ -53,6 +53,7 @@ void ConnectToHost::start()
 {
 	m_ipInputTextBox = m_attachedObject->getComponent<puppy::TextBox>();
 	assert(m_ipInputTextBox != nullptr);
+	m_ipInputTextBox->setText("");
 
 	m_stringInputDisplay = m_attachedObject->getComponent<StringInputDisplay>();
 	assert(m_stringInputDisplay != nullptr);

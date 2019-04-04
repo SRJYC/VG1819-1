@@ -17,7 +17,7 @@ void StringInputDisplay::start()
 	m_textBox = m_attachedObject->getComponent<puppy::TextBox>();
 	
 	assert(m_textBox != nullptr);
-	m_textBox->setText("");
+	//m_textBox->setText("");
 
 	input::InputManager::getInstance()->addStringListener(this);
 }

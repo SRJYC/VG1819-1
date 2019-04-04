@@ -55,11 +55,6 @@
 			"filename" : "netmenu_join_button.txt",
 			"scale2d" : [250, 80],
 			"translate" : [959, 22, -0.1]
-		},
-		{
-			"filename" : "netmenu_ui.txt",
-			"translate" : [0.0, 0.0, -0.1],
-			"translate2d" : [999, 76]
 		}
     ]
 }
