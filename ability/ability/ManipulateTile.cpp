@@ -32,7 +32,7 @@ namespace ability
 		if (p_info->m_source->m_clientId == clientId || clientId == -1)
 		{
 			kitten::Event* e = new kitten::Event(kitten::Event::EventType::Manipulate_Tile);
-			e->putInt(MANIPULATE_TILE_KEY, 1);
+			e->putInt(MANIPULATE_TILE_KEY, 6);
 			kitten::EventManager::getInstance()->triggerEvent(kitten::Event::EventType::Manipulate_Tile, e);
 		}
 
