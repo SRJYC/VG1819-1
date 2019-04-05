@@ -62,5 +62,12 @@ namespace AI {
 			void run(unit::Unit* p_unit) override;
 		};
 
+		struct MultiTargetAbility : public Action {
+			std::vector<std::pair<int, int>> targetPositions;
+			std::string abilityName;
+			MultiTargetAbility(std::vector<std::pair<int, int>> targetPositions, std::string abilityName) : targetPositions(targetPositions), abilityName(abilityName) {}
+			void run(unit::Unit* p_unit) override;
+		};
+
 	}
 }

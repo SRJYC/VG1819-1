@@ -14,6 +14,47 @@
 #include "networking/ClientGame.h"
 #include "AI/Extract/Behavior.h"
 
+
+template <typename Iterator>
+inline bool next_combination(const Iterator first, Iterator k, const Iterator last)
+{
+	/* Credits: Thomas Draper */
+	// http://stackoverflow.com/a/5097100/8747
+	if ((first == last) || (first == k) || (last == k))
+		return false;
+	Iterator itr1 = first;
+	Iterator itr2 = last;
+	++itr1;
+	if (last == itr1)
+		return false;
+	itr1 = last;
+	--itr1;
+	itr1 = k;
+	--itr2;
+	while (first != itr1)
+	{
+		if (*--itr1 < *itr2)
+		{
+			Iterator j = k;
+			while (!(*itr1 < *j)) ++j;
+			std::iter_swap(itr1, j);
+			++itr1;
+			++j;
+			itr2 = k;
+			std::rotate(itr1, j, last);
+			while (last != j)
+			{
+				++j;
+				++itr2;
+			}
+			std::rotate(k, itr2, last);
+			return true;
+		}
+	}
+	std::rotate(first, k, last);
+	return false;
+}
+
 namespace AI {
 	std::map<int,controller*> AIcontrollers;
 	std::vector<controller*> AIcontrollerlist;
@@ -149,12 +190,15 @@ namespace AI {
 			// For unit AD
 			for (auto ability : p_info.sourceUnit->m_ADList) {
 				// check if our unit can even use it
-				if (ability->m_intValue[UNIT_LV] > p_info.sourceUnit->m_attributes[UNIT_LV]) continue;
+				if (ability->m_intValue[UNIT_LV] > p_info.sourceUnit->m_attributes[UNIT_LV]
+					|| ability->m_intValue[UNIT_NEED_UNIT] < 1 // TODO REMOVE THIS AFTER TAKING the need for tiles INTO ACCOUNT
+					// TODO CHECK IF THE ABILITY IS ON COOLDOWN
+					|| (ability->m_intValue.find(COUNTER_POWER) != ability->m_intValue.end() && ability->m_intValue[ability->m_stringValue[COUNTER_NAME]] <ability->m_intValue[COUNTER_POWER]) // make sure we have enough power
+					) continue;
 				std::string abilityName = ability->m_stringValue[ABILITY_NAME];
 
 				// give target max value of 1
 				// give the damage a value boost of difference it does to enemy, which can be a lot. 
-				// TODO add general AI "preferences" that weight up or down damage vs buff vs debuff if units have both else treat them both with weight of the change
 
 				// Give this weight based on closeness to lowest health targets. 
 
@@ -162,35 +206,75 @@ namespace AI {
 				// this will be stripped down to essentials based on what ability information we get. 
 				// TODO add general unit preferences, and ability preferences that override the general. these should affect the target and move
 
-				if (abilityName == ABILITY_SHOOT) {
-					Model::TargetRange targetRange;
-					targetRange.min_range = ability->m_intValue[MIN_RANGE];
-					targetRange.max_range = ability->m_intValue[MAX_RANGE];
-					targetRange.currentPlacement = p_info.curPos;
-					targetRange.unit = p_info.sourceUnit;
-					targetRange.blockedPos = p_info.blockedPos;
-					for (auto target : m_model.getTargetsInRange(targetRange)) {
-						if (target->m_clientId != p_info.sourceUnit->m_clientId 
-							&& target->m_attributes[UNIT_HP] > 0) {
-							Extract::Sequence attackSeq(p_currentSeq);
-							attackSeq.weight += 2;
-							auto targetPos = target->getTile()->getComponent<TileInfo>()->getPos();
-							attackSeq.actions.push_back(new Extract::Ability(targetPos.first, targetPos.second,abilityName));
-							p_sequences.push_back(attackSeq);
-							availableInfo info(p_info);
-							info.canAct = false;
-							generateSequences(attackSeq, p_sequences, info);
-						}
+				Model::TargetRange targetRange;
+				targetRange.min_range = ability->m_intValue[MIN_RANGE];
+				targetRange.max_range = ability->m_intValue[MAX_RANGE];
+				targetRange.currentPlacement = p_info.curPos;
+				targetRange.unit = p_info.sourceUnit;
+				targetRange.blockedPos = p_info.blockedPos;
+				targetRange.select_repeat = (ability->m_intValue.find(UNIT_SELECT_REPEAT) != ability->m_intValue.end()) ? ability->m_intValue[UNIT_SELECT_REPEAT]: false; // default is false
+				std::vector<std::pair<int,int>> possibleTargets;
+
+				// TODO this should only be done when need_unit is set, otherwise, it should be looking for specific tiles
+				auto targets = m_model.getTargetsInRange(targetRange);
+				// The following for normal attacks that have a set number of targets
+				int targetsToHit = ability->m_intValue[UNIT_TARGETS];
+
+				targetRange.hasPower = ability->m_intValue.find(UNIT_POWER) != ability->m_intValue.end();
+				targetRange.addsCounter = ability->m_intValue.find(COUNTER_CHANGE) != ability->m_intValue.end();
+				targetRange.needsCounter = ability->m_intValue.find(COUNTER_POWER) != ability->m_intValue.end(); // If there's no special case, remove this
+
+				if (targetRange.hasPower) targetRange.abilityPower = ability->m_intValue[UNIT_POWER];
+				if (targetRange.addsCounter) {
+					targetRange.counterChange = ability->m_intValue[COUNTER_CHANGE];
+					targetRange.counterMax = ability->m_intValue[COUNTER_MAX];
+					targetRange.counterName = ability->m_stringValue[COUNTER_NAME];
+				}
+
+				// Now go through the list of target units available and pickout the ones we can target.
+				for (auto target : targets) {
+					if (target->m_attributes[UNIT_HP] <= 0 // if no HP left
+							|| (target->m_clientId == targetRange.unit->m_clientId && !targetRange.allyHit) // if it can't hit allies
+						)
+						continue;
+
+					int numberOfRepetitionsPossibleOnATarget = 1;
+					if (targetRange.select_repeat) // if the targets can be repeatedly selected
+						if (targetRange.hasPower) // If it's based on power
+							numberOfRepetitionsPossibleOnATarget = MAX(MIN(targetsToHit, std::ceil((double)target->m_attributes[UNIT_HP] / targetRange.abilityPower)), 1);
+
+					possibleTargets.resize(possibleTargets.size() + numberOfRepetitionsPossibleOnATarget, target->getTile()->getComponent<TileInfo>()->getPos());
+				}
+
+				if (possibleTargets.size() == 0
+					|| (!targetRange.select_repeat && possibleTargets.size() < targetsToHit)
+					) continue;
+
+				// If the number of possible targets end up being less than the target needed, repeat the last one over again. 
+				// Due to the earlier repeat check, this will always get triggered only if the target can be repeatedly targetted.
+				if (possibleTargets.size() < targetsToHit)
+				{
+					possibleTargets.resize(targetsToHit, possibleTargets.back());
+				}
+
+				std::sort(possibleTargets.begin(), possibleTargets.end());
+				do {
+					Extract::Sequence abilitySeq(p_currentSeq);
+					abilitySeq.actions.push_back(new Extract::MultiTargetAbility(std::vector<std::pair<int, int>>(possibleTargets.begin(), possibleTargets.begin()+ targetsToHit), abilityName));
+					if (targetRange.unit->m_AbilityBehavior.find(abilityName) != targetRange.unit->m_AbilityBehavior.end()) {
+						abilitySeq.weight += targetRange.unit->m_AbilityBehavior[abilityName]->calculateWeight(targetRange, m_model);
 					}
+					else {
+						abilitySeq.weight += defaultBehavior.calculateWeight(targetRange, m_model);
+					}
+					p_sequences.push_back(abilitySeq);
+					availableInfo info(p_info);
+					info.canAct = false;
+					generateSequences(abilitySeq, p_sequences, info);
+
+				} while (next_combination(possibleTargets.begin(), possibleTargets.begin() + targetsToHit, possibleTargets.end()));
 
 
-				}
-				else if (abilityName == ABILITY_QUICK_SHOOT) {
-
-				}
-				else if (abilityName == ABILITY_RALLY) {
-
-				}
 			}
 
 			if (p_info.sourceUnit->isCommander()) {
@@ -201,8 +285,9 @@ namespace AI {
 					targetRange.max_range = 1;
 					targetRange.currentPlacement = p_info.curPos;
 					targetRange.unit = p_info.sourceUnit;
+					targetRange.checkTargetFailIfOwnedByAny = true;
 
-					for (auto tile : m_model.getTargetNotOwnedTilesInRange(targetRange)) {
+					for (auto tile : m_model.getTargetTilesInRange(targetRange)) {
 						if (tile->getOwnerId() != m_playerID) {
 							Extract::Sequence manip(p_currentSeq);
 							targetRange.targetPlacement = tile->getPos();
@@ -234,8 +319,10 @@ namespace AI {
 						targetRange.currentPlacement = p_info.curPos;
 						targetRange.unit = p_info.sourceUnit;
 						targetRange.blockedPos = p_info.blockedPos;
+						targetRange.checkTargetFailIfNotOwnedBySelf = true;
+						targetRange.checkTargetFailIfBlocked = true;
 
-						for (auto target : m_model.getTargetOwnedTilesInRange(targetRange)) {
+						for (auto target : m_model.getTargetTilesInRange(targetRange)) {
 							Extract::Sequence summoning(p_currentSeq);
 							targetRange.targetPlacement = target->getPos();
 							targetRange.targetUnit = m_model.hand.m_cards[p_info.summonableUnits[i]];

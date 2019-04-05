@@ -20,16 +20,18 @@ namespace AI {
 		std::vector<unit::Unit*> getOtherPlayerUnits();
 		std::vector<unit::Unit*> getOwnUnits();
 		struct TargetRange {
-			int min_range, max_range;
+			int min_range, max_range, abilityPower, targets, counterChange, counterMax;
 			unit::Unit* unit, *targetUnit;
 			std::pair<int, int> currentPlacement,targetPlacement;
-			std::vector<std::pair<int, int>> blockedPos;
+			std::vector<std::pair<int, int>> blockedPos, *targetPlacements;
+			bool select_repeat = false, allyHit = false,
+				checkTargetFailIfBlocked = false, // This is when the tile is blocked by a unit
+				checkTargetFailIfOwnedByAny = false, checkTargetFailIfNotOwnedBySelf = false,
+				hasPower = false, needsCounter = false, addsCounter = false;
+			std::string counterName;
 		};
 		std::vector<Extract::Move> getAvailableMoves(TargetRange p_Target);
 		std::vector<unit::Unit*> getTargetsInRange(TargetRange p_Target);
-		std::vector<TileInfo*> getTargetTilesInRange(TargetRange p_Target);
-		std::vector<TileInfo*> getTargetNonBlockedTilesInRange(TargetRange p_Target);
-		std::vector<TileInfo*> getTargetOwnedTilesInRange(TargetRange p_Target);
-		std::vector<TileInfo*> getTargetNotOwnedTilesInRange(TargetRange p_Target);
+		std::vector<TileInfo*> getTargetTilesInRange(const TargetRange& p_Target);
 	};
 }

@@ -184,8 +184,9 @@ std::vector<unit::Unit*> AI::Model::getTargetsInRange(TargetRange p_Target)
 					temp.first >= 0 && temp.first < boardDimensions.first
 					&& temp.second >= 0 && temp.second < boardDimensions.second
 					// Check if inhabitted by units
-					&& board.board[temp.first][temp.second]->hasUnit())
-					
+					&& board.board[temp.first][temp.second]->hasUnit()
+					&& board.board[temp.first][temp.second]->getUnit()->getComponent<unit::Unit>() != p_Target.unit
+					)
 				{
 					unitsAround.push_back(board.board[temp.first][temp.second]->getUnit()->getComponent<unit::Unit>());
 				}
@@ -198,7 +199,7 @@ std::vector<unit::Unit*> AI::Model::getTargetsInRange(TargetRange p_Target)
 	return unitsAround;
 }
 
-std::vector<TileInfo*> AI::Model::getTargetTilesInRange(TargetRange p_Target)
+std::vector<TileInfo*> AI::Model::getTargetTilesInRange(const TargetRange& p_Target)
 {
 	std::vector<TileInfo*> tiles;
 	int sides[4][2] = { {1,0},{0,1},{-1,0},{0,-1} };
@@ -215,107 +216,10 @@ std::vector<TileInfo*> AI::Model::getTargetTilesInRange(TargetRange p_Target)
 				if (// Check if Coordinates are valid
 					temp.first >= 0 && temp.first < boardDimensions.first
 					&& temp.second >= 0 && temp.second < boardDimensions.second
-					&& board.board[temp.first][temp.second]->getType() != LandInformation::Water_land
-					)
-				{
-					tiles.push_back(board.board[temp.first][temp.second]);
-				}
-			}
-		}
-	}
-
-	if (p_Target.min_range == 0) tiles.push_back(p_Target.unit->getTile()->getComponent<TileInfo>());
-
-	return tiles;
-}
-
-std::vector<TileInfo*> AI::Model::getTargetNonBlockedTilesInRange(TargetRange p_Target)
-{
-	std::vector<TileInfo*> tiles;
-	int sides[4][2] = { {1,0},{0,1},{-1,0},{0,-1} };
-	std::pair<int, int> boardDimensions = BoardManager::getInstance()->getDimension();
-
-	for (int i = 1; i <= p_Target.max_range; ++i) {
-		for (int j = 0; j <= p_Target.max_range - i; ++j) {
-			if (i + j < p_Target.min_range) continue;
-			for (int k = 0; k < 4; ++k) {
-				std::pair<int, int> temp = std::make_pair(
-					p_Target.currentPlacement.first + sides[k][0] * i + sides[k][1] * j,
-					p_Target.currentPlacement.second + sides[k][1] * i + sides[k][0] * j
-				);
-				if (// Check if Coordinates are valid
-					temp.first >= 0 && temp.first < boardDimensions.first
-					&& temp.second >= 0 && temp.second < boardDimensions.second
-					// checks if its blocked only if the TargetRange is supplied with blocked positions to check for
-					&& std::find(p_Target.blockedPos.begin(), p_Target.blockedPos.end(), temp) == p_Target.blockedPos.end()
-					&& !board.board[temp.first][temp.second]->hasUnit()
-					&& board.board[temp.first][temp.second]->getType() != LandInformation::Water_land
-					)
-				{
-					tiles.push_back(board.board[temp.first][temp.second]);
-				}
-			}
-		}
-	}
-
-	if (p_Target.min_range == 0) tiles.push_back(p_Target.unit->getTile()->getComponent<TileInfo>());
-
-	return tiles;
-}
-
-std::vector<TileInfo*> AI::Model::getTargetOwnedTilesInRange(TargetRange p_Target)
-{
-	std::vector<TileInfo*> tiles;
-	int sides[4][2] = { {1,0},{0,1},{-1,0},{0,-1} };
-	std::pair<int, int> boardDimensions = BoardManager::getInstance()->getDimension();
-
-	for (int i = 1; i <= p_Target.max_range; ++i) {
-		for (int j = 0; j <= p_Target.max_range - i; ++j) {
-			if (i + j < p_Target.min_range) continue;
-			for (int k = 0; k < 4; ++k) {
-				std::pair<int, int> temp = std::make_pair(
-					p_Target.currentPlacement.first + sides[k][0] * i + sides[k][1] * j,
-					p_Target.currentPlacement.second + sides[k][1] * i + sides[k][0] * j
-				);
-				if (// Check if Coordinates are valid
-					temp.first >= 0 && temp.first < boardDimensions.first
-					&& temp.second >= 0 && temp.second < boardDimensions.second
-					&& board.board[temp.first][temp.second]->getOwnerId() == p_Target.unit->m_clientId
-					// checks if its blocked only if the TargetRange is supplied with blocked positions to check for
-					&& std::find(p_Target.blockedPos.begin(), p_Target.blockedPos.end(), temp) == p_Target.blockedPos.end()
-					&& !board.board[temp.first][temp.second]->hasUnit()
-					&& board.board[temp.first][temp.second]->getType() != LandInformation::Water_land
-					)
-				{
-					tiles.push_back(board.board[temp.first][temp.second]);
-				}
-			}
-		}
-	}
-
-	if (p_Target.min_range == 0) tiles.push_back(p_Target.unit->getTile()->getComponent<TileInfo>());
-
-	return tiles;
-}
-
-std::vector<TileInfo*> AI::Model::getTargetNotOwnedTilesInRange(TargetRange p_Target)
-{
-	std::vector<TileInfo*> tiles;
-	int sides[4][2] = { {1,0},{0,1},{-1,0},{0,-1} };
-	std::pair<int, int> boardDimensions = BoardManager::getInstance()->getDimension();
-
-	for (int i = 1; i <= p_Target.max_range; ++i) {
-		for (int j = 0; j <= p_Target.max_range - i; ++j) {
-			if (i + j < p_Target.min_range) continue;
-			for (int k = 0; k < 4; ++k) {
-				std::pair<int, int> temp = std::make_pair(
-					p_Target.currentPlacement.first + sides[k][0] * i + sides[k][1] * j,
-					p_Target.currentPlacement.second + sides[k][1] * i + sides[k][0] * j
-				);
-				if (// Check if Coordinates are valid
-					temp.first >= 0 && temp.first < boardDimensions.first
-					&& temp.second >= 0 && temp.second < boardDimensions.second
-					&& board.board[temp.first][temp.second]->getOwnerId() < 0
+					&& (!p_Target.checkTargetFailIfOwnedByAny || board.board[temp.first][temp.second]->getOwnerId() < 0)
+					&& (!p_Target.checkTargetFailIfNotOwnedBySelf || board.board[temp.first][temp.second]->getOwnerId() == p_Target.unit->m_clientId)
+					&& (!p_Target.checkTargetFailIfBlocked || std::find(p_Target.blockedPos.begin(), p_Target.blockedPos.end(), temp) == p_Target.blockedPos.end())
+					&& (!p_Target.checkTargetFailIfBlocked || !board.board[temp.first][temp.second]->hasUnit())
 					&& board.board[temp.first][temp.second]->getType() != LandInformation::Water_land
 					)
 				{

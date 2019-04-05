@@ -89,3 +89,16 @@ void AI::Extract::Ability::run(unit::Unit * p_unit) {
 	p_unit->useAbility(abilityName);
 	BoardManager::getInstance()->autoClick(&board.board[targetX][targetY]->getGameObject());
 }
+
+void AI::Extract::MultiTargetAbility::run(unit::Unit * p_unit)
+{
+	std::cout << "Ability run \n";
+	Board& board = controller::getAIModel(p_unit->m_clientId)->board;
+	p_unit->useAbility(abilityName);
+	int targetsToHit = p_unit->m_ADMap[abilityName]->m_intValue[UNIT_TARGETS];
+
+	for (int i = 0; i < targetsToHit;i++) {
+		BoardManager::getInstance()->autoClick(&board.board[targetPositions[i].first][targetPositions[i].second]->getGameObject());
+	}
+
+}
