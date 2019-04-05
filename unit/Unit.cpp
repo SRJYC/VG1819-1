@@ -275,7 +275,7 @@ namespace unit
 		}
 
 		//if has auto cast ability, use it
-		if (m_autoCast)
+		if (m_autoCast && networking::ClientGame::getClientId() == m_clientId)
 		{
 			useAbility(m_autoAbility);
 		}
