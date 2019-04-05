@@ -21,21 +21,47 @@ void unit::InitiativeTracker::sortListByIn(int p_list)
 	//highest intiative unit go first
 	switch (p_list)
 	{
-	case 1:
-		std::sort(m_waitUnitObjectList.begin(), m_waitUnitObjectList.end(), [](kitten::K_GameObject * p_u1, kitten::K_GameObject * p_u2)
+	case 1://sort wait list
+		if (m_currentUnitIndex == m_unitObjectList.size())
+		{//first unit in list is current unit
+			//sort from second unit
+			std::sort(m_waitUnitObjectList.begin()+1, m_waitUnitObjectList.end(), [](kitten::K_GameObject * p_u1, kitten::K_GameObject * p_u2)
+			{
+				int in1 = p_u1->getComponent<unit::Unit>()->m_attributes["in"];
+				int in2 = p_u2->getComponent<unit::Unit>()->m_attributes["in"];
+				return in1 > in2;
+			});
+		}
+		else
 		{
-			int in1 = p_u1->getComponent<unit::Unit>()->m_attributes["in"];
-			int in2 = p_u2->getComponent<unit::Unit>()->m_attributes["in"];
-			return in1 > in2;
-		});
+			std::sort(m_waitUnitObjectList.begin(), m_waitUnitObjectList.end(), [](kitten::K_GameObject * p_u1, kitten::K_GameObject * p_u2)
+			{
+				int in1 = p_u1->getComponent<unit::Unit>()->m_attributes["in"];
+				int in2 = p_u2->getComponent<unit::Unit>()->m_attributes["in"];
+				return in1 > in2;
+			});
+		}
 		break;
-	default:
-		std::sort(m_unitObjectList.begin(), m_unitObjectList.end(), [](kitten::K_GameObject * p_u1, kitten::K_GameObject * p_u2)
+	default://sort unit list
+		if (m_currentUnitIndex == 0)
+		{//first unit in list is current unit
+			//sort from next unit
+			std::sort(m_unitObjectList.begin()+1, m_unitObjectList.end(), [](kitten::K_GameObject * p_u1, kitten::K_GameObject * p_u2)
+			{
+				int in1 = p_u1->getComponent<unit::Unit>()->m_attributes["in"];
+				int in2 = p_u2->getComponent<unit::Unit>()->m_attributes["in"];
+				return in1 > in2;
+			});
+		}
+		else
 		{
-			int in1 = p_u1->getComponent<unit::Unit>()->m_attributes["in"];
-			int in2 = p_u2->getComponent<unit::Unit>()->m_attributes["in"];
-			return in1 > in2;
-		});
+			std::sort(m_unitObjectList.begin(), m_unitObjectList.end(), [](kitten::K_GameObject * p_u1, kitten::K_GameObject * p_u2)
+			{
+				int in1 = p_u1->getComponent<unit::Unit>()->m_attributes["in"];
+				int in2 = p_u2->getComponent<unit::Unit>()->m_attributes["in"];
+				return in1 > in2;
+			});
+		}
 	}
 	
 }
