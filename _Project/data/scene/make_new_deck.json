@@ -12,7 +12,8 @@
 			"name" : "Deck name Input components",
 			"components" : [
                 {
-                    "name" : "StartNewDeckSetupWizard"
+                    "name" : "StartNewDeckSetupWizard",
+					"scene" : "deck-builder-commander_selection_screen.json"
                 },
 				{
 					"name" : "TextBox",
