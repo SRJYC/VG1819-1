@@ -5,7 +5,7 @@
 class DragNDrop : public kitten::ClickableUI
 {
 protected:
-	bool m_isDragging=false, m_backToOrigin= false;
+	bool m_isDragging, m_backToOrigin= false;
 	glm::vec3 m_origin;
 
 	LerpController* m_lerpController = nullptr;

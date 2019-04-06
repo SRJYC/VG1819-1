@@ -47,6 +47,7 @@ namespace input
 		std::string m_inputString;
 		std::unordered_set<StringListener*> m_stringListeners;
 
+		
 
 		InputManager();
 		~InputManager();

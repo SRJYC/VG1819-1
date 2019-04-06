@@ -122,15 +122,22 @@ namespace MousePicker
 		kitten::ClickableFrame* hitFrame = nullptr;
 		float z = -9999999.9f;
 
-		auto end = activeUIClickables.cend();
-		for (auto it = activeUIClickables.cbegin(); it != end; ++it)
+		if (!m_isFocused)
 		{
-			if (uiHit(*it, p_mouseX, p_mouseY) && (*it)->getTransform().getTranslation().z > z)
+
+			auto end = activeUIClickables.cend();
+			for (auto it = activeUIClickables.cbegin(); it != end; ++it)
 			{
-				hitFrame = *it;
-				z = (*it)->getTransform().getTranslation().z;
+				if (uiHit(*it, p_mouseX, p_mouseY) && (*it)->getTransform().getTranslation().z > z)
+				{
+					hitFrame = *it;
+					z = (*it)->getTransform().getTranslation().z;
+				}
 			}
+			return hitFrame;
 		}
-		return hitFrame;
+		else {
+			return nullptr;
+		}
 	}
 }
