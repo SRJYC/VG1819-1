@@ -1,33 +1,29 @@
 #include "DragNDrop.h"
 #include "kitten/InputManager.h"
-#include "kitten\mouse picking\MousePicker.h"
 
 #define TIME_TO_GO_BACK_TO_ORIGIN 0.025
 
-DragNDrop::DragNDrop(bool p_backToOrigin) : m_backToOrigin(p_backToOrigin)
+DragNDrop::DragNDrop(bool p_backToOrigin) : m_backToOrigin(p_backToOrigin), m_isDragging(false)
 {
-
 }
 
 DragNDrop::~DragNDrop()
 {
-
 }
 
 void DragNDrop::onClick() 
 {
-	bool focus = MousePicker::m_isFocused;
-	if (focus && m_isDragging)
+	if (m_focused && m_isDragging)
 	{
 		getTransform().move(0,0,-0.1);
-		MousePicker::m_isFocused = false;
+		m_focused = false;
 		m_isDragging = false;
 		onDrop();
 	}
-	else if(!focus && !m_isDragging)
+	else if(!m_focused && !m_isDragging)
 	{
 		getTransform().move(0, 0, 0.1);
-		MousePicker::m_isFocused = true;
+		m_focused = true;
 		m_isDragging = true;
 	}
 }
