@@ -1,4 +1,5 @@
 #include "Behavior.h"
+#include "AI/controller.h"
 
 #define LOOKUP(var) p_json[var]
 #define LOOKUPDEF(var,def) ((p_json.find(var) != p_json.end())? p_json[var]: def)
@@ -15,6 +16,7 @@ void setupBehaviors() {
 	ADDTOMAP(LowestAttribEnemy);
 	ADDTOMAP(HighestAttribEnemy);
 	ADDTOMAP(TileOwnership);
+	ADDTOMAP(TargetAlignment);
 }
 
 Behavior * generateBehavior(nlohmann::json & p_json)
@@ -33,9 +35,10 @@ Behavior::Behavior(nlohmann::json & p_json)
 
 Behavior::Behavior(const Behavior * source)
 {
+
 }
 
-double Behavior::calculateWeight(AI::Model::TargetRange& p_target, AI::Model& p_data) 
+double Behavior::calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo) 
 { 
 	return 0; 
 }
@@ -44,23 +47,24 @@ NearestEnemy::NearestEnemy(nlohmann::json & p_json) : Behavior(p_json)
 {
 }
 
-double NearestEnemy::calculateWeight(AI::Model::TargetRange& p_target, AI::Model & p_data)
+double NearestEnemy::calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo)
 {
-	auto enemyUnits = p_data.getOtherPlayerUnits();
+	auto enemyUnits = p_retainedInfo.enemyUnits;
 	if (enemyUnits.size() == 0) return 0.0;
 	unit::Unit* nearestEnemy = enemyUnits[0]; // replace with preference weighting here
 	std::pair<int, int> enemyPos = nearestEnemy->getTile()->getComponent<TileInfo>()->getPos();
-	int distance = std::abs(p_target.targetPlacement.first - enemyPos.first) + std::abs(p_target.targetPlacement.second - enemyPos.second);
+	int distance = std::abs(p_passedInfo.curPos.first - enemyPos.first) + std::abs(p_passedInfo.curPos.second - enemyPos.second);
 	for (auto enemy : enemyUnits) {
 		enemyPos = enemy->getTile()->getComponent<TileInfo>()->getPos();
-		if ((std::abs(p_target.targetPlacement.first - enemyPos.first) + std::abs(p_target.targetPlacement.second - enemyPos.second)) < distance) {
-			distance = std::abs(p_target.targetPlacement.first - enemyPos.first) + std::abs(p_target.targetPlacement.second - enemyPos.second);
+		if ((std::abs(p_passedInfo.curPos.first - enemyPos.first) + std::abs(p_passedInfo.curPos.second - enemyPos.second)) < distance) {
+			distance = std::abs(p_passedInfo.curPos.first - enemyPos.first) + std::abs(p_passedInfo.curPos.second - enemyPos.second);
 			nearestEnemy = enemy;
 		}
 	}
 
 	enemyPos = nearestEnemy->getTile()->getComponent<TileInfo>()->getPos();
-	return 1 - ((double)(std::abs(p_target.targetPlacement.first - enemyPos.first) + std::abs(p_target.targetPlacement.second - enemyPos.second)) / (double)(p_data.board.board.size() + p_data.board.board[0].size()));
+	return 1 - ((double)(std::abs(p_passedInfo.curPos.first - enemyPos.first) + std::abs(p_passedInfo.curPos.second - enemyPos.second)) 
+		/ (double)(p_retainedInfo.board.tile.size() + p_retainedInfo.board.tile[0].size()));
 }
 
 LowestAttribEnemy::LowestAttribEnemy(nlohmann::json & p_json) : Behavior(p_json)
@@ -68,9 +72,10 @@ LowestAttribEnemy::LowestAttribEnemy(nlohmann::json & p_json) : Behavior(p_json)
 	attribute = p_json["attribute"].get<std::string>();
 }
 
-double LowestAttribEnemy::calculateWeight(AI::Model::TargetRange& p_target, AI::Model & p_data)
+double LowestAttribEnemy::calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo)
 {
-	auto enemyUnits = p_data.getOtherPlayerUnits();
+	auto enemyUnits = p_retainedInfo.enemyUnits;
+	if (enemyUnits.size() == 0) return 0.0;
 	unit::Unit* lowestAttribUnit = enemyUnits[0];
 
 	for (auto enemy : enemyUnits) {
@@ -78,17 +83,19 @@ double LowestAttribEnemy::calculateWeight(AI::Model::TargetRange& p_target, AI::
 			lowestAttribUnit = enemy;
 	}
 	std::pair<int, int> enemyPos = lowestAttribUnit->getTile()->getComponent<TileInfo>()->getPos();
-	return 1 - ((double)(std::abs(p_target.targetPlacement.first - enemyPos.first) + std::abs(p_target.targetPlacement.second - enemyPos.second)) / (double)(p_data.board.board.size() + p_data.board.board[0].size()));
+	return 1 - ((double)(std::abs(p_passedInfo.curPos.first - enemyPos.first) + std::abs(p_passedInfo.curPos.second - enemyPos.second))
+		/ (double)(p_retainedInfo.board.tile.size() + p_retainedInfo.board.tile[0].size()));
 }
 
-HighestAttribEnemy::HighestAttribEnemy(nlohmann::json & p_json)
+HighestAttribEnemy::HighestAttribEnemy(nlohmann::json & p_json) : Behavior(p_json)
 {
 	attribute = p_json["attribute"].get<std::string>();
 }
 
-double HighestAttribEnemy::calculateWeight(AI::Model::TargetRange & p_target, AI::Model & p_data)
+double HighestAttribEnemy::calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo)
 {
-	auto enemyUnits = p_data.getOtherPlayerUnits();
+	auto enemyUnits = p_retainedInfo.enemyUnits;
+	if (enemyUnits.size() == 0) return 0.0;
 	unit::Unit* highestAttribUnit = enemyUnits[0];
 
 	for (auto enemy : enemyUnits) {
@@ -96,26 +103,47 @@ double HighestAttribEnemy::calculateWeight(AI::Model::TargetRange & p_target, AI
 			highestAttribUnit = enemy;
 	}
 	std::pair<int, int> enemyPos = highestAttribUnit->getTile()->getComponent<TileInfo>()->getPos();
-	return 1 - ((double)(std::abs(p_target.targetPlacement.first - enemyPos.first) + std::abs(p_target.targetPlacement.second - enemyPos.second)) / (double)(p_data.board.board.size() + p_data.board.board[0].size()));
+	return 1 - ((double)(std::abs(p_passedInfo.curPos.first - enemyPos.first) + std::abs(p_passedInfo.curPos.second - enemyPos.second))
+		/ (double)(p_retainedInfo.board.tile.size() + p_retainedInfo.board.tile[0].size()));
 }
 
-TileOwnership::TileOwnership(nlohmann::json & p_json)
+TileOwnership::TileOwnership(nlohmann::json & p_json) : Behavior(p_json)
 {
 	own = p_json["ownTeam"];
 	passWeight = LOOKUPDEF("pass", 1);
 	failWeight = LOOKUPDEF("fail", 0.25);
 }
 
-double TileOwnership::calculateWeight(AI::Model::TargetRange & p_target, AI::Model & p_data)
+double TileOwnership::calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo)
 {
-	if (p_data.board.board[p_target.targetPlacement.first][p_target.targetPlacement.second]->getOwnerId() == p_target.unit->m_clientId == own)
+	if (p_retainedInfo.board.tile[p_targgetingInfo.targets[0].first][p_targgetingInfo.targets[0].second]->getOwnerId() == p_retainedInfo.source.clientId == own)
 		if (subBehaviors.size() > 0)
-			return passWeight * subBehaviors[0]->calculateWeight(p_target,p_data);
+			return passWeight * subBehaviors[0]->calculateWeight(p_retainedInfo,p_passedInfo,p_targgetingInfo);
 		else
 			return passWeight;
 	else
 		if (subBehaviors.size() > 0)
-			return failWeight * subBehaviors[0]->calculateWeight(p_target,p_data);
+			return failWeight * subBehaviors[0]->calculateWeight(p_retainedInfo, p_passedInfo, p_targgetingInfo);
 		else
 			return failWeight;
+}
+
+TargetAlignment::TargetAlignment(nlohmann::json & p_json) : Behavior(p_json)
+{
+	sameTeamWeight = LOOKUPDEF("sameTeam", -1);
+	differentTeamWeight = LOOKUPDEF("differentTeam", 1);
+}
+
+double TargetAlignment::calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo & p_targgetingInfo)
+{
+	if (p_retainedInfo.board.unit[p_targgetingInfo.targets[0].first][p_targgetingInfo.targets[0].second]->m_clientId == p_retainedInfo.source.clientId)
+		if (subBehaviors.size() > 0)
+			return sameTeamWeight * subBehaviors[0]->calculateWeight(p_retainedInfo, p_passedInfo, p_targgetingInfo);
+		else
+			return sameTeamWeight;
+	else
+		if (subBehaviors.size() > 0)
+			return differentTeamWeight * subBehaviors[0]->calculateWeight(p_retainedInfo, p_passedInfo, p_targgetingInfo);
+		else
+			return differentTeamWeight;
 }

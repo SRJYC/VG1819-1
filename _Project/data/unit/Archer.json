@@ -53,8 +53,13 @@
 			{
 				"ability" : "Shoot",
 				"behavior" : {
-					"name" : "NearestEnemy",
-					"attribute" : "hp"
+					"name" : "TargetAlignment",
+					"subBehavior" : [
+						{
+							"name" : "LowestAttribEnemy",
+							"attribute" : "hp"
+						}
+					]
 				}
 			},
 			{

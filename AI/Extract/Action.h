@@ -15,7 +15,7 @@ namespace AI {
 		};
 
 		struct Sequence {
-			std::vector<Action*> actions;
+			std::vector<std::shared_ptr<Action>> actions;
 			double weight = 0;
 			int cStep = 0;
 			bool complete = false;

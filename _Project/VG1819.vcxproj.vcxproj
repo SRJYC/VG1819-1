@@ -192,6 +192,7 @@
     <ClCompile Include="..\AI\Extract\Action.cpp" />
     <ClCompile Include="..\AI\Extract\Behavior.cpp" />
     <ClCompile Include="..\AI\Extract\Deck.cpp" />
+    <ClCompile Include="..\AI\Extract\AIUnit.cpp" />
     <ClCompile Include="..\AI\model.cpp" />
     <ClCompile Include="..\board\component\area\AllPattern.cpp" />
     <ClCompile Include="..\board\component\area\Area.cpp" />
@@ -545,7 +546,7 @@
     <ClInclude Include="..\AI\Extract\Deck.h" />
     <ClInclude Include="..\AI\Extract\Hand.h" />
     <ClInclude Include="..\AI\Extract\PowerTracker.h" />
-    <ClInclude Include="..\AI\Extract\Unit.h" />
+    <ClInclude Include="..\AI\Extract\AIUnit.h" />
     <ClInclude Include="..\AI\model.h" />
     <ClInclude Include="..\assimp\include\assimp\ai_assert.h" />
     <ClInclude Include="..\assimp\include\assimp\anim.h" />

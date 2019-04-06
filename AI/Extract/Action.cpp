@@ -29,13 +29,10 @@ void AI::Extract::Sequence::step(unit::Unit * p_unit)
 }
 
 AI::Extract::Sequence::Sequence() {
-	actions = std::vector<Action*>();
+	actions = std::vector<std::shared_ptr<Action>>();
 }
 
 AI::Extract::Sequence::~Sequence() {
-	// TODO investigate why delete is throwing a breakpoint
-	//for (Action* action : actions)
-	//	delete action;
 	actions.clear();
 }
 
@@ -44,7 +41,7 @@ void AI::Extract::Move::run(unit::Unit * p_unit) {
 	Board& board = controller::getAIModel(p_unit->m_clientId)->board;
 	if (p_unit->canMove()) {
 		p_unit->move();
-		BoardManager::getInstance()->autoClick(&board.board[targetX][targetY]->getGameObject());
+		BoardManager::getInstance()->autoClick(&board.tile[targetX][targetY]->getGameObject());
 	}
 }
 
@@ -53,7 +50,7 @@ void AI::Extract::ManipulateTile::run(unit::Unit * p_unit) {
 	Board& board = controller::getAIModel(p_unit->m_clientId)->board;
 	PowerTracker& powerTracker = controller::getAIModel(p_unit->m_clientId)->powerTracker;
 	p_unit->useAbility(ABILITY_MANIPULATE_TILE);
-	BoardManager::getInstance()->autoClick(&board.board[targetX][targetY]->getGameObject());
+	BoardManager::getInstance()->autoClick(&board.tile[targetX][targetY]->getGameObject());
 	// update tracker
 	powerTracker.increaseMaxPower(1);
 }
@@ -77,7 +74,7 @@ void AI::Extract::Summon::run(unit::Unit * p_unit) {
 	kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Summon_Unit, e);
 
 	// Click where we need to click
-	BoardManager::getInstance()->autoClick(&board.board[targetX][targetY]->getGameObject());
+	BoardManager::getInstance()->autoClick(&board.tile[targetX][targetY]->getGameObject());
 	
 	// destroy that card, we don't need it anymore
 	kitten::K_GameObjectManager::getInstance()->destroyGameObject(g);
@@ -87,7 +84,7 @@ void AI::Extract::Ability::run(unit::Unit * p_unit) {
 	std::cout << "Ability run \n";
 	Board& board = controller::getAIModel(p_unit->m_clientId)->board;
 	p_unit->useAbility(abilityName);
-	BoardManager::getInstance()->autoClick(&board.board[targetX][targetY]->getGameObject());
+	BoardManager::getInstance()->autoClick(&board.tile[targetX][targetY]->getGameObject());
 }
 
 void AI::Extract::MultiTargetAbility::run(unit::Unit * p_unit)
@@ -98,7 +95,7 @@ void AI::Extract::MultiTargetAbility::run(unit::Unit * p_unit)
 	int targetsToHit = p_unit->m_ADMap[abilityName]->m_intValue[UNIT_TARGETS];
 
 	for (int i = 0; i < targetsToHit;i++) {
-		BoardManager::getInstance()->autoClick(&board.board[targetPositions[i].first][targetPositions[i].second]->getGameObject());
+		BoardManager::getInstance()->autoClick(&board.tile[targetPositions[i].first][targetPositions[i].second]->getGameObject());
 	}
 
 }
