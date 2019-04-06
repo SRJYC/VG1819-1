@@ -3,7 +3,6 @@
 #include "mouse picking\Clickable.h"
 #include "mouse picking\ClickableUI.h"
 #include "K_GameObject.h"
-
 #include <string>
 #include <unordered_set>
 
@@ -46,7 +45,6 @@ namespace input
 
 		std::string m_inputString;
 		std::unordered_set<StringListener*> m_stringListeners;
-
 
 		InputManager();
 		~InputManager();
