@@ -28,8 +28,9 @@ namespace unit
 		//list for old units
 		std::vector<kitten::K_GameObject*> m_unitObjectList;
 
-		//list for units take extra turn
+		//the unit that takes extra turn
 		std::vector<kitten::K_GameObject*> m_extraTurnUnitList;
+		int m_indexOfBreakPoint;//the index of break point
 
 		int m_currentUnitIndex;
 

@@ -21,15 +21,38 @@ void unit::InitiativeTracker::sortListByIn(int p_list)
 	//highest intiative unit go first
 	switch (p_list)
 	{
-	case 1:
-		std::sort(m_waitUnitObjectList.begin(), m_waitUnitObjectList.end(), [](kitten::K_GameObject * p_u1, kitten::K_GameObject * p_u2)
-		{
-			int in1 = p_u1->getComponent<unit::Unit>()->m_attributes["in"];
-			int in2 = p_u2->getComponent<unit::Unit>()->m_attributes["in"];
-			return in1 > in2;
-		});
+	case 1://sort wait list that's after current unit
+		if (m_currentUnitIndex >= m_unitObjectList.size())
+		{//current unit is in wait list
+			auto end = m_waitUnitObjectList.end();
+
+			//find current unit
+			for (auto it = m_waitUnitObjectList.begin(); it != end; it++)
+			{
+				if (getCurrentUnit() == *it)
+				{
+					//sort unit after current unit in wait list
+					std::sort(it+1, m_waitUnitObjectList.end(), [](kitten::K_GameObject * p_u1, kitten::K_GameObject * p_u2)
+					{
+						int in1 = p_u1->getComponent<unit::Unit>()->m_attributes["in"];
+						int in2 = p_u2->getComponent<unit::Unit>()->m_attributes["in"];
+						return in1 > in2;
+					});
+					break;
+				}
+			}
+		}
+		else
+		{//current unit is 
+			std::sort(m_waitUnitObjectList.begin(), m_waitUnitObjectList.end(), [](kitten::K_GameObject * p_u1, kitten::K_GameObject * p_u2)
+			{
+				int in1 = p_u1->getComponent<unit::Unit>()->m_attributes["in"];
+				int in2 = p_u2->getComponent<unit::Unit>()->m_attributes["in"];
+				return in1 > in2;
+			});
+		}
 		break;
-	default:
+	default://sort unit list
 		std::sort(m_unitObjectList.begin(), m_unitObjectList.end(), [](kitten::K_GameObject * p_u1, kitten::K_GameObject * p_u2)
 		{
 			int in1 = p_u1->getComponent<unit::Unit>()->m_attributes["in"];
@@ -217,18 +240,34 @@ kitten::K_GameObject * unit::InitiativeTracker::getUnitByIndex(int p_index)
 	if (LISTSIZE(m_unitObjectList, m_waitUnitObjectList) == 0)
 		return nullptr;
 
+	if (m_extraTurnUnitList.size() > 0)//there's extra turn unit
+	{
+		if (p_index > m_indexOfBreakPoint)//units before extra turn unit are passed
+		{
+			int index = p_index - m_indexOfBreakPoint - 1;
+			if (index < m_extraTurnUnitList.size())//unit is in extra turn list
+			{
+				return m_extraTurnUnitList[index];
+			}
+			else//extra turn unit is passed
+			{
+				p_index -= index;//move index
+			}
+		}
+	}
+
 	if (p_index >= 0 && p_index < m_unitObjectList.size())
 	{
 		return m_unitObjectList[p_index];
 	}
-	else if (p_index >= m_unitObjectList.size() && p_index < LISTSIZE(m_unitObjectList, m_extraTurnUnitList))
+	//else if (p_index >= m_unitObjectList.size() && p_index < LISTSIZE(m_unitObjectList, m_extraTurnUnitList))
+	//{
+	//	int index = p_index - m_unitObjectList.size();
+	//	return m_extraTurnUnitList[index];
+	//}
+	else if(p_index >= m_unitObjectList.size())
 	{
-		int index = p_index - m_unitObjectList.size();
-		return m_extraTurnUnitList[index];
-	}
-	else if(p_index >= LISTSIZE(m_unitObjectList, m_extraTurnUnitList))
-	{
-		int size = LISTSIZE(m_unitObjectList, m_extraTurnUnitList);
+		int size = m_unitObjectList.size();
 		int index = p_index - size;
 		return m_waitUnitObjectList[index];
 	}
@@ -292,8 +331,9 @@ void unit::InitiativeTracker::gameTurnStart()
 	
 	if (getUnitNumber() > 0)
 	{
-		m_uAura->getTransform().setParent(&getCurrentUnit()->getTransform());
-		m_uturn->turnStart(getCurrentUnit());//let the unit start its turn
+		kitten::K_GameObject* currentUnit = getCurrentUnit();
+		m_uAura->getTransform().setParent(&currentUnit->getTransform());
+		m_uturn->turnStart(currentUnit);//let the unit start its turn
 	}
 }
 
@@ -311,9 +351,10 @@ void unit::InitiativeTracker::unitTurnEnd()
 	m_currentUnitIndex++;//iterator point next unit
 	if (m_currentUnitIndex < getUnitNumber())
 	{
-		m_uAura->getTransform().setParent(&getCurrentUnit()->getTransform());
+		kitten::K_GameObject* currentUnit = getCurrentUnit();
+		m_uAura->getTransform().setParent(&currentUnit->getTransform());
 		m_UI->next();
-		m_uturn->turnStart(getCurrentUnit());//let next unit start its turn
+		m_uturn->turnStart(currentUnit);//let next unit start its turn
 	}
 	else// start a new game turn
 	{
@@ -341,6 +382,7 @@ void unit::InitiativeTracker::gameTurnEnd()
 
 void unit::InitiativeTracker::addExtraTurn(kitten::K_GameObject * p_unit)
 {
+	m_indexOfBreakPoint = m_currentUnitIndex;
 	m_extraTurnUnitList.push_back(p_unit);
 	m_UI->change(m_currentUnitIndex);
 }

@@ -44,6 +44,7 @@ void GameplayInit::start() {
 		DrawCardsFromDeckWithDelay::getActiveInstance()->addDelayToStart(7);
 	}
 
+	
 	if (AI::controller::AIPresent()) {
 		if (AI::controller::getAIControllerSize() <= 1) {
 			networking::ClientGame::setClientId(0);
