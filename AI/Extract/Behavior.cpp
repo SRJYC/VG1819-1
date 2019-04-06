@@ -31,6 +31,8 @@ Behavior::Behavior(nlohmann::json & p_json)
 			subBehaviors.push_back(generateBehavior(*it));
 		}
 	}
+
+	internalMultiplier = LOOKUPDEF("multiplier", 1);
 }
 
 Behavior::Behavior(const Behavior * source)
@@ -40,14 +42,27 @@ Behavior::Behavior(const Behavior * source)
 
 double Behavior::calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo) 
 { 
-	return 0; 
+	if (this->subBehaviors.size() > 0) {
+		double total = 0;
+		for (auto behavior : subBehaviors) {
+			total += behavior->calculateWeight(p_retainedInfo, p_passedInfo, p_targgetingInfo);
+		}
+		return this->internalMultiplier * this->calculateMultiplier(p_retainedInfo, p_passedInfo, p_targgetingInfo) * total;
+	}
+	else
+		return this->internalMultiplier * this->calculateMultiplier(p_retainedInfo,p_passedInfo,p_targgetingInfo); 
+}
+
+double Behavior::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo & p_targgetingInfo)
+{
+	return 1;
 }
 
 NearestEnemy::NearestEnemy(nlohmann::json & p_json) : Behavior(p_json)
 {
 }
 
-double NearestEnemy::calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo)
+double NearestEnemy::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo)
 {
 	auto enemyUnits = p_retainedInfo.enemyUnits;
 	if (enemyUnits.size() == 0) return 0.0;
@@ -72,7 +87,7 @@ LowestAttribEnemy::LowestAttribEnemy(nlohmann::json & p_json) : Behavior(p_json)
 	attribute = p_json["attribute"].get<std::string>();
 }
 
-double LowestAttribEnemy::calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo)
+double LowestAttribEnemy::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo)
 {
 	auto enemyUnits = p_retainedInfo.enemyUnits;
 	if (enemyUnits.size() == 0) return 0.0;
@@ -92,7 +107,7 @@ HighestAttribEnemy::HighestAttribEnemy(nlohmann::json & p_json) : Behavior(p_jso
 	attribute = p_json["attribute"].get<std::string>();
 }
 
-double HighestAttribEnemy::calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo)
+double HighestAttribEnemy::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo)
 {
 	auto enemyUnits = p_retainedInfo.enemyUnits;
 	if (enemyUnits.size() == 0) return 0.0;
@@ -114,18 +129,12 @@ TileOwnership::TileOwnership(nlohmann::json & p_json) : Behavior(p_json)
 	failWeight = LOOKUPDEF("fail", 0.25);
 }
 
-double TileOwnership::calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo)
+double TileOwnership::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo)
 {
-	if (p_retainedInfo.board.tile[p_targgetingInfo.targets[0].first][p_targgetingInfo.targets[0].second]->getOwnerId() == p_retainedInfo.source.clientId == own)
-		if (subBehaviors.size() > 0)
-			return passWeight * subBehaviors[0]->calculateWeight(p_retainedInfo,p_passedInfo,p_targgetingInfo);
-		else
-			return passWeight;
+	if (p_retainedInfo.board.tile[p_targgetingInfo.targets[0].first][p_targgetingInfo.targets[0].second]->getOwnerId() == p_retainedInfo.source.clientId == own)	
+		return passWeight;
 	else
-		if (subBehaviors.size() > 0)
-			return failWeight * subBehaviors[0]->calculateWeight(p_retainedInfo, p_passedInfo, p_targgetingInfo);
-		else
-			return failWeight;
+		return failWeight;
 }
 
 TargetAlignment::TargetAlignment(nlohmann::json & p_json) : Behavior(p_json)
@@ -134,16 +143,10 @@ TargetAlignment::TargetAlignment(nlohmann::json & p_json) : Behavior(p_json)
 	differentTeamWeight = LOOKUPDEF("differentTeam", 1);
 }
 
-double TargetAlignment::calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo & p_targgetingInfo)
+double TargetAlignment::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo & p_targgetingInfo)
 {
 	if (p_retainedInfo.board.unit[p_targgetingInfo.targets[0].first][p_targgetingInfo.targets[0].second]->m_clientId == p_retainedInfo.source.clientId)
-		if (subBehaviors.size() > 0)
-			return sameTeamWeight * subBehaviors[0]->calculateWeight(p_retainedInfo, p_passedInfo, p_targgetingInfo);
-		else
-			return sameTeamWeight;
+		return sameTeamWeight;
 	else
-		if (subBehaviors.size() > 0)
-			return differentTeamWeight * subBehaviors[0]->calculateWeight(p_retainedInfo, p_passedInfo, p_targgetingInfo);
-		else
-			return differentTeamWeight;
+		return differentTeamWeight;
 }
