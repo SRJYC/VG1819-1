@@ -5,7 +5,11 @@
       "components": [
         {
           "name": "GameplayInit"
-        }
+        },
+		{
+			"name" : "DisableAfterTime",
+			"time" : 30
+		}
       ]
     },
     {
@@ -60,7 +64,7 @@
 		]
 	}
   ],
-	"scenes" : [
+	"scenes" : [ 
 		"Game_Scene.json", "mountainForest.json"
 	]
 }

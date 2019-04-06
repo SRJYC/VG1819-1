@@ -1,0 +1,24 @@
+{
+    "Info":[
+        {
+            "name":"drop area",
+            "image":"textures/map/mode/chest.png",
+            "description":"At the end of game turn, unit with item that's on the tile will drop the item and player gains points. There's two kinds of chests. One for each player. You can't drop item on enemy chest."
+        },
+        {
+            "name":"capture item",
+            "image":"textures/map/mode/crystal.png",
+            "description":"This is the item for player to chase. They will randomly spawn on map that has chest(drop area). Unit can pick up crystal by moving on to the tile. After dropping crystal, player can gain 10 pt."
+        },
+        {
+            "name":"control area",
+            "image":"textures/map/mode/white_flag.png",
+            "description":"This is area for player to control. If only one player has unit on control area, this player will gain points based on units. Each unit without level will grant 1 pt and other units will grant points same as its level."
+        },
+        {
+            "name":"defend area",
+            "image":"textures/map/mode/blue_flag.png",
+            "description":"This is defend area. Defender will gain 4 pt every turn and attacker will gain points based on how many units are on defender are and which level they are. So defender has to keep attacker out of the area."
+        }
+    ]
+}

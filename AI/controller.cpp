@@ -15,22 +15,27 @@
 #include "AI/Extract/Behavior.h"
 
 namespace AI {
-	std::map<int, controller*> AIcontrollers;
+	std::map<int,controller*> AIcontrollers;
+	std::vector<controller*> AIcontrollerlist;
 	NearestEnemy defaultBehavior;
 
-	controller::controller(int p_playerId) : m_playerID(p_playerId) { // TODO make an ID dispensor, i hate this already. 
+	controller::controller() { // TODO make an ID dispensor, i hate this already. 
 		setupEventListeners();
-		m_model.playerId = p_playerId;
-		AIcontrollers[this->m_playerID] = this;
+		AIcontrollerlist.push_back(this);
 	}
 
 	controller::~controller() {
 		tearDownEventListeners();
+		AIcontrollerlist.erase(std::find(AIcontrollerlist.begin(), AIcontrollerlist.end(), this));
 		AIcontrollers.erase(this->m_playerID);
+
 	}
 
 	void controller::runTurn(unit::Unit* p_unit)
 	{
+		// Disable the previous timer
+		this->m_attachedObject->setEnabled(false);
+
 		// Generated Sequences will be stored here
 		std::vector<Extract::Sequence> sequences;
 		
@@ -78,34 +83,38 @@ namespace AI {
 
 	void controller::setupAIControllers()
 	{
-		for (std::pair<int,controller*> controller: AIcontrollers) {
+		// Alter the client Id to reflect non AI, player controlled opponent. 
+		// They'll always set Id to 0 when theres an AI ;
+		int startingId = networking::ClientGame::getClientId();
+
+		for (controller* controller: AIcontrollerlist) {
+			controller->m_playerID = ++startingId;
+			controller->m_model.playerId = controller->m_playerID;
+			AIcontrollers[controller->m_playerID] = controller;
 
 			// TODO work on how decks are picked, for now MUH OH SEE
 			// Set up deck the AI will use
-			controller.second->m_model.deck.setDeckSource(kibble::getDeckDataFromId(0));
-			controller.second->m_model.deck.setupDeck();
+			controller->m_model.deck.setDeckSource(kibble::getDeckDataFromId(0));
+			controller->m_model.deck.setupDeck();
 
 			// Set up hand
-			while (controller.second->m_model.hand.canAddCard()) {
-				Extract::Deck::InteractionState draw = controller.second->m_model.deck.drawTop();
+			while (controller->m_model.hand.canAddCard()) {
+				Extract::Deck::InteractionState draw = controller->m_model.deck.drawTop();
 				if (draw.status != AI::Extract::Deck::Status::OK) break;
 				unit::Unit* unit = new unit::Unit(kibble::getUnitFromId(draw.card));
-				unit->m_clientId = controller.second->m_playerID;
-				controller.second->m_model.hand.addCard(unit);
+				unit->m_clientId = controller->m_playerID;
+				controller->m_model.hand.addCard(unit);
 			}
 
 			// Spawn Commander
-			kitten::K_GameObject* unitGO = unit::UnitSpawn::getInstance()->spawnUnitObject(controller.second->m_model.deck.m_deckSource->commanderID);
-			unitGO->getComponent<unit::UnitMove>()->setTile(BoardManager::getInstance()->getSpawnPoint(controller.second->m_playerID));
-			unitGO->getComponent<unit::Unit>()->m_clientId = controller.second->m_playerID;
+			kitten::K_GameObject* unitGO = unit::UnitSpawn::getInstance()->spawnUnitObject(controller->m_model.deck.m_deckSource->commanderID);
+			unitGO->getComponent<unit::UnitMove>()->setTile(BoardManager::getInstance()->getSpawnPoint(controller->m_playerID ));
+			unitGO->getComponent<unit::Unit>()->m_clientId = controller->m_playerID;
 
 			// Set up board reference
-			controller.second->m_model.board.setupBoard();
+			controller->m_model.board.setupBoard();
 
 		}
-		// Alter the client Id to reflect non AI, player controlled opponent. 
-		// They'll always set Id to 0, so no worries. 
-		networking::ClientGame::setClientId(0);
 	}
 
 	void controller::generateSequences(Extract::Sequence p_currentSeq,std::vector<Extract::Sequence>& p_sequences, availableInfo p_info)
@@ -161,7 +170,8 @@ namespace AI {
 					targetRange.unit = p_info.sourceUnit;
 					targetRange.blockedPos = p_info.blockedPos;
 					for (auto target : m_model.getTargetsInRange(targetRange)) {
-						if (target->m_clientId != p_info.sourceUnit->m_clientId) {
+						if (target->m_clientId != p_info.sourceUnit->m_clientId 
+							&& target->m_attributes[UNIT_HP] > 0) {
 							Extract::Sequence attackSeq(p_currentSeq);
 							attackSeq.weight += 2;
 							auto targetPos = target->getTile()->getComponent<TileInfo>()->getPos();
@@ -280,7 +290,7 @@ namespace AI {
 
 	int controller::getAIControllerSize()
 	{
-		return AIcontrollers.size();
+		return AIcontrollerlist.size();
 	}
 
 	Model * controller::getAIModel(int p_playerId)
@@ -290,12 +300,12 @@ namespace AI {
 
 	bool controller::AIPresent()
 	{
-		return AIcontrollers.size()> 0;
+		return AIcontrollerlist.size()> 0;
 	}
 
 	void controller::onDisabled()
 	{
-		if (m_unit != nullptr) {
+		if (m_unit != nullptr && m_unit == unit::InitiativeTracker::getInstance()->getCurrentUnit()->getComponent<unit::Unit>()) {
 			m_sequence.step(m_unit);
 		}
 	}

@@ -1,0 +1,16 @@
+{
+    "name" : "Mode Button", 
+    "components" : [
+        {
+            "name" : "UIObject",
+            "texture" : "textures/ui/buttons/blank_button.tga"
+        },
+        {
+            "name" : "ClickableFrame"
+        },
+        {
+            "name" : "ChangeModeDetailOnClick"
+        }
+    ],
+    "scale2d": [50,50]
+}

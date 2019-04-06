@@ -275,12 +275,12 @@ namespace unit
 		}
 
 		//if has auto cast ability, use it
-		if (m_autoCast)
+		if (m_autoCast && networking::ClientGame::getClientId() == m_clientId)
 		{
 			useAbility(m_autoAbility);
 		}
 		kitten::Event* eventData = new kitten::Event(kitten::Event::Next_Units_Turn_Start);
-		kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Next_Units_Turn_Start, eventData);
+		kitten::EventManager::getInstance()->queueEvent(kitten::Event::Next_Units_Turn_Start, eventData);
 	}
 
 	bool Unit::canMove()

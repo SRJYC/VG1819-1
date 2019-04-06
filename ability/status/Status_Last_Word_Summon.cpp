@@ -23,18 +23,12 @@ int ability::Status_Last_Word_Summon::effect(const TimePointEvent::TPEventType& 
 
 
 		//spawn unit
-		kitten::K_GameObject* u = unit::UnitSpawn::getInstance()->spawnUnitObject(id);
+		kitten::K_GameObject* u = unit::UnitSpawn::getInstance()->spawnUnitObject(id, m_intValue[CLIENT_ID]);
 		unit::Unit* unit = u->getComponent<unit::Unit>();
 
 		//set tile
 		kitten::K_GameObject* tile = m_unit->getTile();
 		u->getComponent<unit::UnitMove>()->setTile(tile);
-
-		//set client id
-		if (networking::ClientGame::getInstance() != nullptr)
-		{
-			unit->m_clientId = m_intValue[CLIENT_ID];
-		}
 
 		//lv up
 		for (int i = 1; i < lv; i++)

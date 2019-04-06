@@ -92,14 +92,9 @@ void ability::Ability::multiTargetProjectileFinished(AbilityInfoPackage* p_packa
 
 kitten::K_GameObject * ability::Ability::summonToken(AbilityInfoPackage* p_info, int p_unitIndex)
 {
-	kitten::K_GameObject* u = unit::UnitSpawn::getInstance()->spawnUnitObject(p_unitIndex);
+	kitten::K_GameObject* u = unit::UnitSpawn::getInstance()->spawnUnitObject(p_unitIndex, p_info->m_sourceClientId);
 	kitten::K_GameObject* tile = p_info->m_targetTilesGO[0];
 	u->getComponent<unit::UnitMove>()->setTile(tile);
-
-	if (networking::ClientGame::getInstance() != nullptr)
-	{
-		u->getComponent<unit::Unit>()->m_clientId = p_info->m_sourceClientId;
-	}
 
 	return u;
 }
@@ -194,7 +189,7 @@ std::vector<kitten::K_GameObject*> ability::Ability::getCardsInHand()
 void ability::Ability::triggerTPEvent(ability::TimePointEvent::TPEventType p_tp, unit::Unit * p_target, AbilityInfoPackage * p_info)
 {
 	unit::StatusContainer* sc = p_target->getStatusContainer();
-	if (sc == nullptr) return;
+	if (sc == nullptr) return;	
 	ability::TimePointEvent* t = new ability::TimePointEvent(p_tp);
 	t->putPackage(INFO_PACKAGE_KEY, p_info);
 	sc->triggerTP(p_tp, t);

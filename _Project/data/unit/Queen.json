@@ -29,7 +29,7 @@
 				"need_unit":0,
 				"filter":1,
 				"filter0":"unowned_tile",
-				"description":"Select 4 owned tile, change them into Homeland."
+				"description":"Select 4 owned tile, change them into [Homeland]. [Homeland] can grant ally defensive power and extra movement when ally stay on it. "
 			}
 		],
 		"portrait_texture" : "textures/cards/500x500/Queen.tga"

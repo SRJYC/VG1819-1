@@ -396,14 +396,14 @@ void CardContext::setUnitListener(kitten::Event::EventType p_type, kitten::Event
 		kitten::K_GameObject* unitGO = p_event->getGameObj(UPDATE_CARD_CONTEXT_KEY);
 		if (unitGO != nullptr)
 		{
-			unit::Unit* unit = unitGO->getComponent<unit::Unit>();
-			setUnit(unit);
 			m_updatedByGO = true;
+			unit::Unit* unit = unitGO->getComponent<unit::Unit>();
+			setUnit(unit);			
 		}
 	} else if (p_type == kitten::Event::Update_Card_Context_By_ID)
 	{
-		setUnit(kibble::getUnitFromId(p_event->getInt(UPDATE_CARD_CONTEXT_KEY)));
 		m_updatedByGO = false;
+		setUnit(kibble::getUnitFromId(p_event->getInt(UPDATE_CARD_CONTEXT_KEY)));
 	}
 }
 
