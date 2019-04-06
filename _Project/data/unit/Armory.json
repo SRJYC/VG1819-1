@@ -12,7 +12,6 @@
 				"power":3,
 				"min_range":0,
 				"max_range":0,
-				"auto_cast":1,
 				"auto_click":1,
 				"need_unit":0,
 				"area_mode":"square",
