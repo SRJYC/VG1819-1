@@ -5,6 +5,7 @@
 
 DragNDrop::DragNDrop(bool p_backToOrigin) : m_backToOrigin(p_backToOrigin), m_isDragging(false)
 {
+	m_focused = false;
 }
 
 DragNDrop::~DragNDrop()
