@@ -4,13 +4,13 @@
             "name":"default",
             "map":"default.vgmap",
             "image":"textures/map/default.png",
-            "description":"The normal map. There's forest on the center and sand on the side. You have to defeat enemy to win."
+            "description":"The normal map. There's mud pool on the center and sand on the side. You have to defeat enemy to win."
         },
         {
-            "name":"ForestHollow",
-            "map":"ForestHollow.vgmap",
+            "name":"Hollow",
+            "map":"Hollow.vgmap",
             "image":"textures/map/ForestHollow.png",
-            "description":"In the center  of forest, there's a hollow for commanders to control. "
+            "description":"In the center of mud pool, there's a hollow for commanders to control. "
         },
         {
             "name":"River",
@@ -22,7 +22,7 @@
             "name":"NarrowRoad",
             "map":"NarrowRoad.vgmap",
             "image":"textures/map/NarrowRoad.png",
-            "description":"Forest and swamp cover a crystal mine. There's only a narrow road that allow people move through."
+            "description":"Mud and swamp cover a crystal mine. There's only a narrow road that allow people move through."
         }
     ]
 }

@@ -383,7 +383,10 @@ void unit::InitiativeTracker::gameTurnEnd()
 void unit::InitiativeTracker::addExtraTurn(kitten::K_GameObject * p_unit)
 {
 	m_indexOfBreakPoint = m_currentUnitIndex;
-	m_extraTurnUnitList.push_back(p_unit);
+	if (m_extraTurnUnitList.size() == 0)
+		m_extraTurnUnitList.push_back(p_unit);
+	else if (m_extraTurnUnitList.size() == 1)
+		m_extraTurnUnitList[0] = p_unit;
 	m_UI->change(m_currentUnitIndex);
 }
 
