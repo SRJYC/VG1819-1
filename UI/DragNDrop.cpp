@@ -2,10 +2,10 @@
 #include "kitten/InputManager.h"
 
 #define TIME_TO_GO_BACK_TO_ORIGIN 0.025
+bool DragNDrop::m_focused = false;
 
 DragNDrop::DragNDrop(bool p_backToOrigin) : m_backToOrigin(p_backToOrigin), m_isDragging(false)
 {
-	m_focused = false;
 }
 
 DragNDrop::~DragNDrop()
