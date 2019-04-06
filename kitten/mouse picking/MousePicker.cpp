@@ -131,5 +131,6 @@ namespace MousePicker
 				z = (*it)->getTransform().getTranslation().z;
 			}
 		}
+		return hitFrame;
 	}
 }
