@@ -4,7 +4,6 @@
 #include "Ray.h"
 #include "ClickableBox.h"
 #include "ClickableFrame.h"
-#include "kitten\K_GameObject.h"
 
 namespace MousePicker
 {
