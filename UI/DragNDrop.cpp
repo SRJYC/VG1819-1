@@ -53,5 +53,4 @@ void DragNDrop::onDrop() // Override to set your custom own behavior
 		//getTransform().place2D(m_origin.x, m_origin.y);
 		m_lerpController->positionLerp(m_origin, TIME_TO_GO_BACK_TO_ORIGIN);
 	}
-	MousePicker::m_isFocused = false;
 }
