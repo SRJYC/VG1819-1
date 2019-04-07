@@ -4,7 +4,7 @@
 
 namespace kitten
 {
-	K_Component::K_Component()
+	K_Component::K_Component() : m_isEnabled(true), m_hasStarted(false)
 	{
 
 	}
