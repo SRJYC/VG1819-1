@@ -3,12 +3,14 @@
 #include "kitten/K_GameObjectManager.h"
 #include "_Project/DisableAfterTime.h"
 
-SaveDeckOnClick::SaveDeckOnClick() { 
-
+SaveDeckOnClick::SaveDeckOnClick()
+{ 
+	input::InputManager::getInstance()->addStringListener(this);
 }
 
-SaveDeckOnClick::~SaveDeckOnClick() {
-
+SaveDeckOnClick::~SaveDeckOnClick() 
+{
+	input::InputManager::getInstance()->removeStringListener(this);
 }
 
 void SaveDeckOnClick::onClick()
@@ -25,4 +27,16 @@ void SaveDeckOnClick::onClick()
 
 	DeckAlterationComponent::getActiveInstance()->saveDeck();
 
+}
+
+void SaveDeckOnClick::onStringChanged(const std::string& p_str)
+{
+
+}
+
+void SaveDeckOnClick::onStringFinished(const std::string& p_str)
+{
+	onClick();
+
+	input::InputManager::getInstance()->setPollMode(false);
 }
