@@ -15,7 +15,7 @@ public:
 	static std::vector<kitten::K_GameObject*> generateDecoration(TileInfo* p_info);
 
 private:
-	static std::vector<kitten::K_GameObject*> generateGrassDecoration();
+	static std::vector<kitten::K_GameObject*> generateGrassDecoration(int p_posX, int p_posY);
 	static std::vector<kitten::K_GameObject*> generateForestDecoration();
 	static std::vector<kitten::K_GameObject*> generateGardenDecoration();
 	static std::vector<kitten::K_GameObject*> generateWaterDecoration(int p_posX, int p_posY);
@@ -28,4 +28,6 @@ private:
 	static const std::vector<std::string> getEdgeFile(int p_x, int p_y,
 		const LandInformation::TileType& p_selfType, const LandInformation::TileType& p_targetType);
 	static const std::string typeToString(const LandInformation::TileType& p_type);
+
+	int m_tileX, m_tileY;
 };
