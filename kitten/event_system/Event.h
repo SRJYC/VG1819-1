@@ -120,6 +120,7 @@ namespace kitten
 			P2P_Start_Game,
 			Update_Map_Detail,
 			Game_Turn_End,
+			Update_Deck_Builder_Frame,
 
 			Test_Event, 
 			MAX_VAL = Test_Event

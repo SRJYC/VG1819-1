@@ -15,6 +15,7 @@ namespace kibble {
 	const std::vector<int>& getUnitIdsThatHaveTag(const std::string& p_tag);
 	const std::vector<int>& getCommanderIds();
 	const std::vector<int>& getNonCommanderIds();
+	const std::vector<int>& getAvaliableUnitIdsForCommander(int p_commanderId);
 
 	DeckData* getDeckDataFromId(const int& p_identifier);
 	int getDeckDataListCount();
