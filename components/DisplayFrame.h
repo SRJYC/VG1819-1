@@ -1,6 +1,7 @@
 #pragma once
 #include "kitten/K_GameObject.h"
 #include "kitten/K_Component.h"
+#include "kitten/event_system/Event.h"
 #include <vector>
 #include <string>
 
@@ -29,6 +30,10 @@ protected:
 	virtual int getTargetAvailable() { return 0; } // override to give it the total count of objects it has to deal with (i.e. decks, units, etc)
 	virtual void updateIndividualDisplayObject(int p_activeObjectIndex) {} // override to add customized changes to the children in an object. 
 	// The order the objects come in help in determining how they get loaded
+
+	void registerEvent();
+	void deregisterEvent();
+	void listenEvent(kitten::Event::EventType p_type, kitten::Event* p_data);
 
 public:
 

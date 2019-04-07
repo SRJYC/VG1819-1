@@ -52,4 +52,37 @@ void DeckAlterationComponent::discardChanges()
 	m_source = nullptr;
 	m_deckId = -1;
 	m_saved = false;
-} 
+}
+
+void DeckAlterationComponent::clearDeck()
+{//remove all cards in deck
+	m_source->cards.clear();
+}
+
+void DeckAlterationComponent::clearDeckForCommander()
+{//remove all cards in deck that aren't neutral or same faction as commander
+
+	//get commander id
+	int commanderId = m_source->commanderID;
+	//get commander faction
+	std::string commanderFaction = kibble::getFactionTagFor(commanderId);
+
+	//then check every card in deck
+	auto it = m_source->cards.begin();
+	while (it != m_source->cards.end())
+	{
+		//get unit id
+		int unitId = it->first;
+		//get faction tag
+		std::string unitFaction = kibble::getFactionTagFor(unitId);
+
+		if (unitFaction != commanderFaction && unitFaction != "Neutral")
+		{
+			it = m_source->cards.erase(it);//remove this card
+		}
+		else
+		{
+			it++;//check next card
+		}
+	}
+}

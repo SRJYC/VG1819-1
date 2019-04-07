@@ -5,7 +5,7 @@ class UnitDisplayFrame : public DisplayFrame
 {
 private:
 	friend class AddUnitOnClick;
-	const std::vector<int>& m_unitVector;
+	std::vector<int> m_unitVector;
 public:
 	static UnitDisplayFrame* getActiveInstance();
 

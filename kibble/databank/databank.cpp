@@ -9,11 +9,15 @@
 std::vector<kibble::UnitFileStruct> unitDataVector;
 std::vector<int> addableToDeckUnitVect;
 std::map<std::string, unit::AbilityDescription*> abilityDataMap;
-std::map<std::string, std::vector<int>> abilityToUnitMap, tagToUnitMap;
+std::map<std::string, std::vector<int>> abilityToUnitMap, tagToUnitMap, tagToAddableToDeckUnitMap;
 std::unordered_set<unit::AbilityDescription*> lateLoadAbility;
 std::vector<DeckData*> deckDataVector;
 
 std::vector<std::vector<kitten::K_Component*>> unitSpecificComponentVector;
+
+
+std::vector<int> avaliableUnitIds;
+std::vector<std::string> factionTags = { "Ancients","Terrans","Neutral" };
 
 #define DECK_LIST "data/gamedecklist.txt"
 #define UNIT_LIST "data/gameunitlist.txt"
@@ -57,6 +61,10 @@ void kibble::setupDatabank() {
 
 				for (std::string tag : target.data->m_tags) { // Set up Tags
 					tagToUnitMap[tag].push_back(unitDataVector.size());
+					if (!target.data->isCommander() &&
+						std::find(target.data->m_tags.begin(), target.data->m_tags.end(), "token") == target.data->m_tags.end()
+						)
+						tagToAddableToDeckUnitMap[tag].push_back(unitDataVector.size());
 				}
 
 				if (!target.data->isCommander() &&
@@ -139,6 +147,7 @@ void kibble::flagAbilityForLateLoad(unit::AbilityDescription* p_ability) {
 	lateLoadAbility.insert(p_ability);
 }
 
+
 const std::vector<int>&  kibble::getUnitIdsThatHaveAbilityOfName(const std::string& p_name) {
 	return abilityToUnitMap[p_name];
 }
@@ -150,6 +159,20 @@ const std::vector<int>&  kibble::getCommanderIds() {
 }
 const std::vector<int>&  kibble::getNonCommanderIds() {
 	return addableToDeckUnitVect;
+}
+
+const std::vector<int>& kibble::getAvaliableUnitIdsForCommander(int p_commanderId)
+{
+	//get commander faction
+	std::string commanderFaction = getFactionTagFor(p_commanderId);
+
+	//create new list
+	avaliableUnitIds.clear();
+	//it contains all addable unit from same faction and neutral faction
+	avaliableUnitIds.insert(avaliableUnitIds.end(), tagToAddableToDeckUnitMap[commanderFaction].begin(), tagToAddableToDeckUnitMap[commanderFaction].end());
+	avaliableUnitIds.insert(avaliableUnitIds.end(), tagToAddableToDeckUnitMap["Neutral"].begin(), tagToAddableToDeckUnitMap["Neutral"].end());
+
+	return avaliableUnitIds;
 }
 
 int kibble::getDeckDataListCount() {
@@ -241,6 +264,31 @@ kitten::K_GameObject* kibble::attachCustomComponentsToGameObject(const unit::Uni
 
 bool kibble::checkIfComponentDriven(const int& p_identifier) {
 	return !unitDataVector[p_identifier].components.empty();
+}
+
+std::string kibble::getFactionTagFor(int p_unitId)
+{
+	std::string unitfaction;
+
+	//get unit
+	unit::Unit* u = getUnitFromId(p_unitId);
+	bool found = false;
+	for (auto tag : u->m_tags)//check every tag
+	{
+		for (auto faction : factionTags)//see if it's one of faction tag
+		{
+			if (tag == faction)//found faction tag
+			{
+				unitfaction = tag;//change commander faction
+				found = true;
+				break;//don't check more
+			}
+		}
+		if (found)//don't check more
+			break;
+	}
+
+	return unitfaction;
 }
 
 unit::Unit* kibble::getUnitInstanceFromId(const int& p_identifier) {
