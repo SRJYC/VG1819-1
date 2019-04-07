@@ -62,18 +62,6 @@
 				"time" : 0
 			}
 		]
-	},
-	{
-		"name" : "AI 2",
-		"components" : [
-			{
-				"name" : "AIController"
-			},
-			{
-				"name" : "DisableAfterTime",
-				"time" : 0
-			}
-		]
 	}
   ],
 	"scenes" : [ 
