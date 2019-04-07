@@ -6,6 +6,10 @@
 			"texture" : "textures/ui/backgrounds/redBackground.tga",
 			"pivot" : "topleft",
 			"behaviour" : "repeat"
+		},
+		{
+			"name" : "ClickableFrame",
+			"pivot" : "topleft"
 		}
 	],
 	"scale2d" : [800, 100]

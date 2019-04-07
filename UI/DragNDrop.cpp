@@ -2,28 +2,30 @@
 #include "kitten/InputManager.h"
 
 #define TIME_TO_GO_BACK_TO_ORIGIN 0.025
+bool DragNDrop::m_focused = false;
 
-DragNDrop::DragNDrop(bool p_backToOrigin) : m_backToOrigin(p_backToOrigin)
+DragNDrop::DragNDrop(bool p_backToOrigin) : m_backToOrigin(p_backToOrigin), m_isDragging(false)
 {
-
 }
 
 DragNDrop::~DragNDrop()
 {
-
 }
 
 void DragNDrop::onClick() 
 {
-	m_isDragging = !m_isDragging;
-	if (!m_isDragging)
+	if (m_focused && m_isDragging)
 	{
 		getTransform().move(0,0,-0.1);
+		m_focused = false;
+		m_isDragging = false;
 		onDrop();
 	}
-	else
+	else if(!m_focused && !m_isDragging)
 	{
 		getTransform().move(0, 0, 0.1);
+		m_focused = true;
+		m_isDragging = true;
 	}
 }
 
@@ -32,8 +34,8 @@ void DragNDrop::update()
 	if (m_isDragging)
 	{
 		m_attachedObject->getTransform().place2D(
-			input::InputManager::getInstance()->getMouseXPos() - 5,
-			input::InputManager::getInstance()->getMouseYOpenGLPos() - getTransform().getScale2D().y + 5
+			input::InputManager::getInstance()->getMouseXPos() - 25,
+			input::InputManager::getInstance()->getMouseYOpenGLPos() - getTransform().getScale2D().y + 25
 		);
 	}
 }

@@ -1491,6 +1491,13 @@ kitten::K_Component* getMainMenu(nlohmann::json* p_jsonFile) {
 
 #include "components/scene change/StartNewDeckSetupWizard.h"
 kitten::K_Component* getStartNewDeckSetupWizard(nlohmann::json* p_jsonFile) {
+
+	auto sceneFound = p_jsonFile->find("scene");
+	if (sceneFound != p_jsonFile->end())
+	{
+		return new StartNewDeckSetupWizard(true, (*sceneFound));
+	}
+
 	return new StartNewDeckSetupWizard();
 }
 

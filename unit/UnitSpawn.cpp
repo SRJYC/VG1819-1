@@ -90,8 +90,10 @@ namespace unit
 		return unitObject;
 	}*/
 
-	kitten::K_GameObject* UnitSpawn::spawnUnitObject(const int& p_unitIdentifier) {
-		return spawnUnitObjectInternally(kibble::getUnitInstanceFromId(p_unitIdentifier));
+	kitten::K_GameObject* UnitSpawn::spawnUnitObject(const int& p_unitIdentifier, int p_clientId) {
+		unit::Unit* unit = kibble::getUnitInstanceFromId(p_unitIdentifier);
+		unit->m_clientId = p_clientId;
+		return spawnUnitObjectInternally(unit);
 	}
 
 	kitten::K_GameObject* UnitSpawn::spawnUnitObject(unit::Unit* p_unit) {

@@ -39,6 +39,7 @@ void GameplayInit::start() {
 	UnitInteractionManager::getInstance()->reset();
 
 
+	
 	if (AI::controller::AIPresent()) {
 		if (AI::controller::getAIControllerSize() <= 1) {
 			networking::ClientGame::setClientId(0);
