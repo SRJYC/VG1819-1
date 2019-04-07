@@ -7,17 +7,6 @@
 			[
 				{
 					"name" : "ModelRenderable",
-					"path" : "models/terrain/misc/Low_Poly_Grass_001.obj"
-				}
-			],
-			"rotate" : [0,0,0],
-			"scale" : [0.125,0.125,0.125]
-		},
-		{
-			"components" : 
-			[
-				{
-					"name" : "ModelRenderable",
 					"path" : "models/terrain/misc/Low_Poly_Grass_002.obj"
 				}
 			],
