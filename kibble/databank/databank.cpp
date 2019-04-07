@@ -268,8 +268,6 @@ bool kibble::checkIfComponentDriven(const int& p_identifier) {
 
 std::string kibble::getFactionTagFor(int p_unitId)
 {
-	std::string unitfaction;
-
 	//get unit
 	unit::Unit* u = getUnitFromId(p_unitId);
 	bool found = false;
@@ -279,16 +277,12 @@ std::string kibble::getFactionTagFor(int p_unitId)
 		{
 			if (tag == faction)//found faction tag
 			{
-				unitfaction = tag;//change commander faction
-				found = true;
-				break;//don't check more
+				return faction;
 			}
 		}
-		if (found)//don't check more
-			break;
 	}
 
-	return unitfaction;
+	return std::string();
 }
 
 unit::Unit* kibble::getUnitInstanceFromId(const int& p_identifier) {
