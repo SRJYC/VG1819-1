@@ -49,15 +49,32 @@
 		],
 		"portrait_texture" : "textures/cards/500x500/Archer.tga",
 		"AI" : [
-
 			{
 				"ability" : "Shoot",
 				"behavior" : {
 					"name" : "TargetAlignment",
 					"subBehavior" : [
 						{
-							"name" : "LowestAttribEnemy",
-							"attribute" : "hp"
+							"name" : "TargetAttribute",
+							"attribute" : "hp",
+							"attFrom" : 50,
+							"attTo" : 0
+						}
+					]
+				}
+			},
+			{
+				"ability" : "Quick Shoot",
+				"behavior" : {
+					"name" : "TargetAlignment",
+					"multiplier" : 0.75,
+					"same" : -50,
+					"subBehavior" : [
+						{
+							"name" : "TargetAttribute",
+							"attribute" : "hp",
+							"attFrom" : 50,
+							"attTo" : 0
 						}
 					]
 				}
@@ -66,6 +83,15 @@
 				"ability" : "mv",
 				"behavior" : {
 					"name" : "NearestEnemy"
+				}
+			},
+			{
+				"ability" : "Join",
+				"behavior" : {
+					"name" : "OwnAttribute",
+					"attribute" : "hp",
+					"attFrom" : 16,
+					"attTo" : 0
 				}
 			}
 		]

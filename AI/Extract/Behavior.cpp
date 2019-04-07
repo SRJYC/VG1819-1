@@ -17,6 +17,8 @@ void setupBehaviors() {
 	ADDTOMAP(HighestAttribEnemy);
 	ADDTOMAP(TileOwnership);
 	ADDTOMAP(TargetAlignment);
+	ADDTOMAP(OwnAttribute);
+	ADDTOMAP(TargetAttribute);
 }
 
 Behavior * generateBehavior(nlohmann::json & p_json)
@@ -40,20 +42,25 @@ Behavior::Behavior(const Behavior * source)
 
 }
 
-double Behavior::calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo) 
+double Behavior::calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) 
 { 
-	if (this->subBehaviors.size() > 0) {
-		double total = 0;
-		for (auto behavior : subBehaviors) {
-			total += behavior->calculateWeight(p_retainedInfo, p_passedInfo, p_targgetingInfo);
+	double overall = 0;
+	for (int i = 0; i < p_targgetingInfo.targets.size(); i++) {
+		p_targgetingInfo.focusedTarget = i;
+		if (this->subBehaviors.size() > 0) {
+			double total = 0;
+			for (auto behavior : subBehaviors) {
+				total += behavior->calculateWeight(p_retainedInfo, p_passedInfo, p_targgetingInfo);
+			}
+			overall += this->internalMultiplier * this->calculateMultiplier(p_retainedInfo, p_passedInfo, p_targgetingInfo) * total;
 		}
-		return this->internalMultiplier * this->calculateMultiplier(p_retainedInfo, p_passedInfo, p_targgetingInfo) * total;
+		else
+			overall += this->internalMultiplier * this->calculateMultiplier(p_retainedInfo, p_passedInfo, p_targgetingInfo);
 	}
-	else
-		return this->internalMultiplier * this->calculateMultiplier(p_retainedInfo,p_passedInfo,p_targgetingInfo); 
+	return overall;
 }
 
-double Behavior::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo & p_targgetingInfo)
+double Behavior::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo & p_targgetingInfo)
 {
 	return 1;
 }
@@ -62,7 +69,7 @@ NearestEnemy::NearestEnemy(nlohmann::json & p_json) : Behavior(p_json)
 {
 }
 
-double NearestEnemy::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo)
+double NearestEnemy::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo)
 {
 	auto enemyUnits = p_retainedInfo.enemyUnits;
 	if (enemyUnits.size() == 0) return 0.0;
@@ -87,7 +94,7 @@ LowestAttribEnemy::LowestAttribEnemy(nlohmann::json & p_json) : Behavior(p_json)
 	attribute = p_json["attribute"].get<std::string>();
 }
 
-double LowestAttribEnemy::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo)
+double LowestAttribEnemy::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo)
 {
 	auto enemyUnits = p_retainedInfo.enemyUnits;
 	if (enemyUnits.size() == 0) return 0.0;
@@ -107,7 +114,7 @@ HighestAttribEnemy::HighestAttribEnemy(nlohmann::json & p_json) : Behavior(p_jso
 	attribute = p_json["attribute"].get<std::string>();
 }
 
-double HighestAttribEnemy::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo)
+double HighestAttribEnemy::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo)
 {
 	auto enemyUnits = p_retainedInfo.enemyUnits;
 	if (enemyUnits.size() == 0) return 0.0;
@@ -129,9 +136,9 @@ TileOwnership::TileOwnership(nlohmann::json & p_json) : Behavior(p_json)
 	failWeight = LOOKUPDEF("fail", 0.25);
 }
 
-double TileOwnership::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo& p_targgetingInfo)
+double TileOwnership::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo)
 {
-	if (p_retainedInfo.board.tile[p_targgetingInfo.targets[0].first][p_targgetingInfo.targets[0].second]->getOwnerId() == p_retainedInfo.source.clientId == own)	
+	if (p_retainedInfo.board.tile[p_targgetingInfo.targets[p_targgetingInfo.focusedTarget].first][p_targgetingInfo.targets[p_targgetingInfo.focusedTarget].second]->getOwnerId() == p_retainedInfo.source.clientId == own)
 		return passWeight;
 	else
 		return failWeight;
@@ -139,14 +146,46 @@ double TileOwnership::calculateMultiplier(const AI::retainedInfo & p_retainedInf
 
 TargetAlignment::TargetAlignment(nlohmann::json & p_json) : Behavior(p_json)
 {
-	sameTeamWeight = LOOKUPDEF("sameTeam", -1);
-	differentTeamWeight = LOOKUPDEF("differentTeam", 1);
+	sameTeamWeight = LOOKUPDEF("same", -1);
+	differentTeamWeight = LOOKUPDEF("different", 1);
 }
 
-double TargetAlignment::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, const AI::targettingInfo & p_targgetingInfo)
+double TargetAlignment::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo & p_targgetingInfo)
 {
-	if (p_retainedInfo.board.unit[p_targgetingInfo.targets[0].first][p_targgetingInfo.targets[0].second]->m_clientId == p_retainedInfo.source.clientId)
+	if (p_retainedInfo.board.unit[p_targgetingInfo.targets[p_targgetingInfo.focusedTarget].first][p_targgetingInfo.targets[p_targgetingInfo.focusedTarget].second]->m_clientId == p_retainedInfo.source.clientId)
 		return sameTeamWeight;
 	else
 		return differentTeamWeight;
+}
+
+OwnAttribute::OwnAttribute(nlohmann::json & p_json)
+{
+	attribute = LOOKUP("attribute").get<std::string>();
+	attributeFrom = LOOKUPDEF("attFrom", 0);
+	attributeTo = LOOKUPDEF("attTo", 0);
+	weightRangeFrom = LOOKUPDEF("wFrom", 0);
+	weightRangeTo = LOOKUPDEF("wTo", 1);
+}
+
+double OwnAttribute::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo & p_targgetingInfo)
+{
+	int unitAttVal = p_retainedInfo.source.source->m_attributes[attribute];
+	double percentage = (double)std::abs(unitAttVal- attributeFrom) / std::abs(attributeTo - attributeFrom);
+	return (double)(weightRangeTo-weightRangeFrom) * percentage + weightRangeFrom;
+}
+
+TargetAttribute::TargetAttribute(nlohmann::json & p_json)
+{
+	attribute = LOOKUP("attribute").get<std::string>();
+	attributeFrom = LOOKUPDEF("attFrom", 0);
+	attributeTo = LOOKUPDEF("attTo", 0);
+	weightRangeFrom = LOOKUPDEF("wFrom", 0);
+	weightRangeTo = LOOKUPDEF("wTo", 1);
+}
+
+double TargetAttribute::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo & p_targgetingInfo)
+{
+	int unitAttVal = p_retainedInfo.board.unit[p_targgetingInfo.targets[p_targgetingInfo.focusedTarget].first][p_targgetingInfo.targets[p_targgetingInfo.focusedTarget].second]->m_attributes[attribute];
+	double percentage = (double)std::abs(unitAttVal- attributeFrom) / std::abs(attributeTo - attributeFrom);
+	return (double)(weightRangeTo-weightRangeFrom) * percentage + weightRangeFrom;
 }

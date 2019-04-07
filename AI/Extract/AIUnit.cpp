@@ -12,7 +12,9 @@ namespace AI {
 			this->hp = p_data->m_attributes[UNIT_HP];
 			this->cost = p_data->m_attributes[UNIT_COST];
 			this->mv = p_data->m_attributes[UNIT_MV];
+			this->lv = p_data->m_attributes[UNIT_LV];
 			this->clientId = p_data->m_clientId;
+			this->kibbleId = p_data->m_kibbleID;
 
 			for (auto origAbility : p_data->m_ADList) {
 				if (origAbility->m_intValue[UNIT_LV] > p_data->m_attributes[UNIT_LV]
@@ -91,6 +93,11 @@ namespace AI {
 			
 			// Setup join ability
 			join.name = ACTION_JOIN;
+			join.minRange = 1;
+			join.maxRange = 1;
+			join.filter.unoccupiedTiles = true;
+			join.filter.enemies = true;
+			join.filter.differentUnitKind = true;
 
 			// Setup movement
 			move.name = ACTION_MOVE;

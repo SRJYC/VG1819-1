@@ -13,7 +13,6 @@ void AI::Extract::Sequence::run(unit::Unit * p_unit) {
 
 void AI::Extract::Sequence::step(unit::Unit * p_unit)
 {
-	std::cout << "Sequence step \n";
 	if (!p_unit->isTurn()) {
 		this->complete = true;
 		return;
@@ -37,7 +36,7 @@ AI::Extract::Sequence::~Sequence() {
 }
 
 void AI::Extract::Move::run(unit::Unit * p_unit) {
-	std::cout << "Move run \n";
+	std::cout << "Move to x=" + std::to_string(targetX) + " y=" + std::to_string(targetX) + "\n";
 	Board& board = controller::getAIModel(p_unit->m_clientId)->board;
 	if (p_unit->canMove()) {
 		p_unit->move();
@@ -46,7 +45,7 @@ void AI::Extract::Move::run(unit::Unit * p_unit) {
 }
 
 void AI::Extract::ManipulateTile::run(unit::Unit * p_unit) {
-	std::cout << "Manip run \n";
+	std::cout << "Manipulate tile on x=" + std::to_string(targetX) + " y=" + std::to_string(targetX) + "\n";
 	Board& board = controller::getAIModel(p_unit->m_clientId)->board;
 	PowerTracker& powerTracker = controller::getAIModel(p_unit->m_clientId)->powerTracker;
 	p_unit->useAbility(ABILITY_MANIPULATE_TILE);
@@ -56,13 +55,15 @@ void AI::Extract::ManipulateTile::run(unit::Unit * p_unit) {
 }
 
 void AI::Extract::Summon::run(unit::Unit * p_unit) {
-	std::cout << "Summon run \n";
 	// Setup needed references
 	Board& board = controller::getAIModel(p_unit->m_clientId)->board;
 	PowerTracker& powerTracker = controller::getAIModel(p_unit->m_clientId)->powerTracker;
 
 	//	take out card from hand 
 	unit::Unit* unit = controller::getAIModel(p_unit->m_clientId)->hand.takeOutCard(targetToSummon - handOffset);
+
+	std::cout << "Summon " + unit->m_name + " on tile x=" + std::to_string(targetX) + " y=" + std::to_string(targetX) + "\n";
+
 	// update tracker
 	powerTracker.useCurrentPower(unit->m_attributes[UNIT_COST]);
 
@@ -89,13 +90,22 @@ void AI::Extract::Ability::run(unit::Unit * p_unit) {
 
 void AI::Extract::MultiTargetAbility::run(unit::Unit * p_unit)
 {
-	std::cout << "Ability run \n";
+	std::cout << "Ability " + abilityName + " run \n";
 	Board& board = controller::getAIModel(p_unit->m_clientId)->board;
 	p_unit->useAbility(abilityName);
 	int targetsToHit = p_unit->m_ADMap[abilityName]->m_intValue[UNIT_TARGETS];
 
 	for (int i = 0; i < targetsToHit;i++) {
+		std::cout << "Used  on tile x=" + std::to_string(targetPositions[i].first) + " y=" + std::to_string(targetPositions[i].second) + "\n";
 		BoardManager::getInstance()->autoClick(&board.tile[targetPositions[i].first][targetPositions[i].second]->getGameObject());
 	}
 
+}
+
+void AI::Extract::Join::run(unit::Unit * p_unit)
+{
+	std::cout << "Ability run \n";
+	Board& board = controller::getAIModel(p_unit->m_clientId)->board;
+	p_unit->join();
+	BoardManager::getInstance()->autoClick(&board.tile[targetX][targetY]->getGameObject());
 }

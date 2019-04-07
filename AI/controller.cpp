@@ -192,6 +192,8 @@ namespace AI {
 						&& (!filter.water || board.tile[temp.first][temp.second]->getType() != LandInformation::Water_land) // uber frog filter salesman
 						&& (!filter.enemies || board.unit[temp.first][temp.second] == nullptr || board.unit[temp.first][temp.second]->m_clientId == p_retainedInfo.source.clientId)
 						&& (!filter.allies || board.unit[temp.first][temp.second] == nullptr || board.unit[temp.first][temp.second]->m_clientId != p_retainedInfo.source.clientId)
+						&& (!filter.sameUnitKind || board.unit[temp.first][temp.second] == nullptr || board.unit[temp.first][temp.second]->m_kibbleID != p_retainedInfo.source.kibbleId)
+						&& (!filter.differentUnitKind || board.unit[temp.first][temp.second] == nullptr || board.unit[temp.first][temp.second]->m_kibbleID == p_retainedInfo.source.kibbleId)
 						)
 					{
 						tilePos.push_back(temp);
@@ -271,7 +273,7 @@ namespace AI {
 	{
 		std::vector<Extract::UnitCard> summonableCards;
 		for (auto i = 0; i < m_model.hand.m_cards.size(); ++i) {
-			if (m_model.powerTracker.checkPowerAmountUsable(m_model.hand.m_cards[i]->m_attributes[UNIT_COST])) {
+			if (m_model.powerTracker.checkPowerAmountUsable(m_model.hand.m_cards[i]->m_attributes[UNIT_COST]-1)) { // This is to allow commander who can manipulate tile to do so.
 				summonableCards.push_back(Extract::UnitCard(m_model.hand.m_cards[i],i));
 			}
 		}
@@ -395,6 +397,7 @@ namespace AI {
 						targetInfo.targets = std::vector<std::pair<int, int>>(1, tile);
 						passedInfo info(p_passedInfo);
 						info.canAct = false;
+						info.availableEnergy++;
 						info.sequence = Extract::Sequence(p_passedInfo.sequence);
 
 						if (p_retainedInfo.source.source->m_AbilityBehavior.find(ABILITY_MANIPULATE_TILE) != p_retainedInfo.source.source->m_AbilityBehavior.end()) {
@@ -458,6 +461,29 @@ namespace AI {
 			}
 			else {
 				// Logic for Join
+				targettingInfo targetInfo = targettingInfo(Extract::join);
+
+				for (auto unit : getTargetsInRange(p_retainedInfo, p_passedInfo, targetInfo)) {
+					if ( p_retainedInfo.source.lv >= 3 ||
+						p_retainedInfo.board.unit[unit.first][unit.second]->m_attributes[UNIT_LV] != p_retainedInfo.source.lv) continue;
+					targetInfo.targets = std::vector<std::pair<int, int>>(1, unit);
+					passedInfo info(p_passedInfo);
+					info.canAct = false;
+					info.sequence = Extract::Sequence(p_passedInfo.sequence);
+
+					if (p_retainedInfo.source.source->m_AbilityBehavior.find(ACTION_JOIN) != p_retainedInfo.source.source->m_AbilityBehavior.end()) {
+						info.sequence.weight += p_retainedInfo.source.source->m_AbilityBehavior[ACTION_JOIN]->calculateWeight(p_retainedInfo, info, targetInfo);
+					}
+					else {
+						info.sequence.weight += defaultBehavior.calculateWeight(p_retainedInfo, info, targetInfo);
+					}
+					info.sequence.actions.push_back(
+						std::make_shared<Extract::Join>(Extract::Join(unit.first, unit.second))
+					);
+					p_retainedInfo.generatedSequences.push_back(info.sequence);
+
+					generateSequences(p_retainedInfo, info);
+				}
 			}
 		}
 	}

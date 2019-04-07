@@ -46,6 +46,14 @@ namespace AI {
 			void run(unit::Unit* p_unit) override;
 		};
 
+		struct Join : public Action {
+			int targetX, targetY;
+
+			Join(int targetX, int targetY) : targetX(targetX), targetY(targetY) {}
+
+			void run(unit::Unit* p_unit) override;
+		};
+
 		struct Summon : public Action {
 			int targetX, targetY;
 			int targetToSummon;

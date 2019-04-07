@@ -46,6 +46,7 @@ namespace AI {
 	struct targettingInfo {
 		Extract::Unit::Ability& source;
 		std::vector<std::pair<int, int>> targets;
+		int focusedTarget = 0;
 
 		targettingInfo(Extract::Unit::Ability& source) : source(source) {}
 	};

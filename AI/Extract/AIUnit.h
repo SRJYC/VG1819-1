@@ -15,6 +15,9 @@ namespace AI {
 					tilesNotOwnedByTeam = false,
 					occupiedTiles = false,
 					unoccupiedTiles = false,
+					differentUnitKind = false,
+					sameUnitKind = false,
+					differentLevel = false,
 					allies = false;
 			};
 
@@ -35,7 +38,7 @@ namespace AI {
 
 
 
-			int hp = 0, mv = 0, cost = 0, turnsChanneling = 0, clientId;
+			int hp = 0, mv = 0, cost = 0, lv = 0, turnsChanneling = 0, clientId, kibbleId;
 			bool isCommander = false;
 			unit::Unit* source;
 			std::vector<Ability> ability;
