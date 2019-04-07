@@ -17,7 +17,7 @@ std::vector<std::vector<kitten::K_Component*>> unitSpecificComponentVector;
 
 
 std::vector<int> avaliableUnitIds;
-std::vector<std::string> factionTags = { "Ancients","Terrans" };
+std::vector<std::string> factionTags = { "Ancients","Terrans","Neutral" };
 
 #define DECK_LIST "data/gamedecklist.txt"
 #define UNIT_LIST "data/gameunitlist.txt"
@@ -147,6 +147,7 @@ void kibble::flagAbilityForLateLoad(unit::AbilityDescription* p_ability) {
 	lateLoadAbility.insert(p_ability);
 }
 
+
 const std::vector<int>&  kibble::getUnitIdsThatHaveAbilityOfName(const std::string& p_name) {
 	return abilityToUnitMap[p_name];
 }
@@ -163,23 +164,7 @@ const std::vector<int>&  kibble::getNonCommanderIds() {
 const std::vector<int>& kibble::getAvaliableUnitIdsForCommander(int p_commanderId)
 {
 	//get commander faction
-	std::string commanderFaction;
-	unit::Unit* commander = getUnitFromId(p_commanderId);
-	bool found = false;
-	for (auto tag : commander->m_tags)//check every tag
-	{
-		for (auto faction : factionTags)//see if it's one of faction tag
-		{
-			if (tag == faction)//found faction tag
-			{
-				commanderFaction = tag;//change commander faction
-				found = true;
-				break;//don't check more
-			}
-		}
-		if (found)//don't check more
-			break;
-	}
+	std::string commanderFaction = getFactionTagFor(p_commanderId);
 
 	//create new list
 	avaliableUnitIds.clear();
@@ -279,6 +264,31 @@ kitten::K_GameObject* kibble::attachCustomComponentsToGameObject(const unit::Uni
 
 bool kibble::checkIfComponentDriven(const int& p_identifier) {
 	return !unitDataVector[p_identifier].components.empty();
+}
+
+std::string kibble::getFactionTagFor(int p_unitId)
+{
+	std::string unitfaction;
+
+	//get unit
+	unit::Unit* u = getUnitFromId(p_unitId);
+	bool found = false;
+	for (auto tag : u->m_tags)//check every tag
+	{
+		for (auto faction : factionTags)//see if it's one of faction tag
+		{
+			if (tag == faction)//found faction tag
+			{
+				unitfaction = tag;//change commander faction
+				found = true;
+				break;//don't check more
+			}
+		}
+		if (found)//don't check more
+			break;
+	}
+
+	return unitfaction;
 }
 
 unit::Unit* kibble::getUnitInstanceFromId(const int& p_identifier) {

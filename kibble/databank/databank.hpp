@@ -31,7 +31,8 @@ namespace kibble {
 	unit::Unit* getUnitInstanceFromId(const int& p_identifier);
 	bool checkIfComponentDriven(const int& p_identifier);
 
-
+	//help method for finding faction tag of given unit
+	std::string getFactionTagFor(int p_unitId);
 
 	// ===----- For internal Use Only after this comment ---------------------------------------------------
 
@@ -41,4 +42,5 @@ namespace kibble {
 	// To be used only within kibble
 	unit::AbilityDescription* getCopyAbilityFromName(const std::string& p_name);
 	void flagAbilityForLateLoad(unit::AbilityDescription*);
+
 }

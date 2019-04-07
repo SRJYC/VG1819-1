@@ -15,6 +15,9 @@ void SetCommanderOnClick::onClick()
 		CommanderDisplayFrame::getActiveInstance()->getCommanderTiedTo(&this->m_attachedObject->getTransform().getParent()->getAttachedGameObject()
 		);
 
+	//clear deck, remove other factions unit
+	DeckAlterationComponent::getActiveInstance()->clearDeckForCommander();
+
 	CommanderDisplayFrame::getActiveInstance()->refreshCommander(); // do this first, 
 	CommanderDisplayFrame::getActiveInstance()->updateDisplay();
 }
