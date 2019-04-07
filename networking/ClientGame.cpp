@@ -272,6 +272,13 @@ namespace networking
 				packet.deserialize(buffer);
 				i += packet.getBytes();
 
+				std::stringstream message;
+				message << "Client:" << sm_iClientId << " received ability:";
+				m_log->logMessage(message.str());
+
+				std::string abilityInfo = packet.getFormattedAbilityInfo();
+				m_log->logMessage(abilityInfo);
+
 				if (checkSync(packet.m_sourceUnit.posX, packet.m_sourceUnit.posY))
 				{
 					useAbility(packet);
@@ -280,6 +287,7 @@ namespace networking
 				{
 					sendDesyncedPacket();
 				}
+				
 				break;
 			}
 			case PacketTypes::CAST_TIME_ABILITY_PACKET:
@@ -293,6 +301,13 @@ namespace networking
 				AbilityPacket packet;
 				packet.deserialize(buffer);
 				i += packet.getBytes();
+
+				std::stringstream message;
+				message << "Client:" << sm_iClientId << " received CastTime ability, setting cast for:";
+				m_log->logMessage(message.str());
+
+				std::string abilityInfo = packet.getFormattedAbilityInfo();
+				m_log->logMessage(abilityInfo);
 
 				if (checkSync(packet.m_sourceUnit.posX, packet.m_sourceUnit.posY))
 				{
@@ -532,13 +547,6 @@ namespace networking
 
 	void ClientGame::useAbility(AbilityPacket& p_packet)
 	{
-		std::stringstream message;
-		message << "Client:" << sm_iClientId << " received ability:";
-		m_log->logMessage(message.str());
-
-		std::string abilityInfo = p_packet.getFormattedAbilityInfo();
-		m_log->logMessage(abilityInfo);
-
 		std::string strAbilityName = p_packet.m_abilityName;
 		printf("[Client: %d] using ability: %s\n", sm_iClientId, strAbilityName.c_str());
 
@@ -588,13 +596,6 @@ namespace networking
 
 		unit::AbilityDescription* ad = info->m_source->m_ADMap[p_packet.m_abilityName];
 		info->m_source->setCast(ad, info);
-
-		std::stringstream message;
-		message << "Client:" << sm_iClientId << " received CastTime ability, setting cast for:";
-		m_log->logMessage(message.str());
-
-		std::string abilityInfo = p_packet.getFormattedAbilityInfo();
-		m_log->logMessage(abilityInfo);
 	}
 
 	void ClientGame::sendCastTimeAbilityPacket(unit::AbilityDescription * p_ad, ability::AbilityInfoPackage * p_info)

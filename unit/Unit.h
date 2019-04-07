@@ -57,9 +57,9 @@ namespace unit
 		virtual void start() override;
 
 		//set auto cast ability
-		bool m_autoCast = false;
-		std::string m_autoAbility;
-		void setAutoAbility(const std::string& p_name);
+		//bool m_autoCast = false;
+		//std::string m_autoAbility;
+		//void setAutoAbility(const std::string& p_name);
 
 		//item
 		kitten::K_GameObject* m_itemGO;

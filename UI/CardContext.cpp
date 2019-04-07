@@ -99,8 +99,6 @@ void CardContext::start()
 	m_currentNameFont = m_defaultNameFont;
 
 	m_statusContext = gom->createNewGameObject("UI/status_context/status_context.json")->getComponent<StatusContext>();
-	m_statusContext->getGameObject().getTransform().setIgnoreParent(false);
-	m_statusContext->getGameObject().getTransform().setParent(&m_attachedObject->getTransform());
 
 	// Testing
 	setUnit(kibble::getUnitFromId(13));

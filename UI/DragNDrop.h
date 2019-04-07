@@ -5,7 +5,8 @@
 class DragNDrop : public kitten::ClickableUI
 {
 protected:
-	bool m_isDragging=false, m_backToOrigin= false;
+	bool m_isDragging, m_backToOrigin= false;
+	static bool m_focused;
 	glm::vec3 m_origin;
 
 	LerpController* m_lerpController = nullptr;
@@ -23,4 +24,5 @@ public:
 	glm::vec3& getOrigin() { return m_origin; }
 
 	bool hasUpdate() const override { return true; }
+
 };
