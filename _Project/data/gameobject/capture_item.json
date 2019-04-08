@@ -8,12 +8,12 @@
 			"number":1,
 			"rotate":[45,0,0],
 			"scale":[1,1,1],
-			"translate":[-0.1,0.1,0.15]
+			"translate":[-0.1,0.1,0.0]
 		},
         {
             "name" : "CaptureItemController",
-            "tile_offset" : [0,1,0.75],
-            "unit_offset" : [0,2,0.15]
+            "tile_offset" : [0,0.33,0.0],
+            "unit_offset" : [0,0.5,-0.15]
         }
     ]
 }
