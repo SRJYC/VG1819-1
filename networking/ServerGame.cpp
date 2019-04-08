@@ -177,18 +177,18 @@ namespace networking
 						// Host decides the map, so send the map ID to all other clients
 						if (assignedClientId > 0)
 						{
-							char packetData[MAP_DATA_PACKET_SIZE];
-							Buffer buffer;
-							buffer.m_data = packetData;
-							buffer.m_size = MAP_DATA_PACKET_SIZE;
+							char mapPacketData[MAP_DATA_PACKET_SIZE];
+							Buffer mapBuffer;
+							mapBuffer.m_data = mapPacketData;
+							mapBuffer.m_size = MAP_DATA_PACKET_SIZE;
 
-							MapDataPacket packet;
-							packet.m_packetType = MAP_DATA;
-							packet.m_clientId = assignedClientId;
-							packet.m_mapId = m_hostMapId;
+							MapDataPacket mapPacket;
+							mapPacket.m_packetType = MAP_DATA;
+							mapPacket.m_clientId = assignedClientId;
+							mapPacket.m_mapId = m_hostMapId;
 
-							packet.serialize(buffer);
-							m_network->sendToClient(assignedClientId, packetData, MAP_DATA_PACKET_SIZE);
+							mapPacket.serialize(mapBuffer);
+							m_network->sendToClient(assignedClientId, mapPacketData, MAP_DATA_PACKET_SIZE);
 						}
 					}
 					else

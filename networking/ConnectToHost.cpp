@@ -142,6 +142,8 @@ void ConnectToHost::joinDirectAddressListener(kitten::Event::EventType p_type, k
 {
 	m_loadingMessage->setEnabled(true);
 	m_bLoadingMsgEnabled = true;
+	// Flags set so that a loading screen can appear while attempting to connect
+	// this->update() eventually calls this->joinDirectAccess()
 }
 
 void ConnectToHost::joinDirectAddress()
