@@ -8,7 +8,7 @@
         },
 		{
 			"name" : "DisableAfterTime",
-			"time" : 30
+			"time" : 10
 		}
       ]
     },

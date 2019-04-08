@@ -34,6 +34,8 @@ namespace unit
 
 		int m_currentUnitIndex;
 
+		bool m_gameStarted;
+
 		void sortListByIn(int p_list=0);
 		void addWaitList();
 		int getUnitObjectIndex(kitten::K_GameObject* p_uGO);
