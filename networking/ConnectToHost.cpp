@@ -36,6 +36,7 @@ ConnectToHost::~ConnectToHost()
 	kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Network_End_Game, this);
 	kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Quickplay, this);
 	kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::P2P_Start_Game, this);
+	kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Network_Host_Not_Ready, this);
 	m_inputMan->setPollMode(true);
 
 	if (m_bQuickplay && networking::ClientGame::isNetworkValid())
@@ -91,6 +92,11 @@ void ConnectToHost::start()
 		kitten::Event::EventType::P2P_Start_Game,
 		this,
 		std::bind(&ConnectToHost::startGameListener, this, std::placeholders::_1, std::placeholders::_2));
+
+	kitten::EventManager::getInstance()->addListener(
+		kitten::Event::EventType::Network_Host_Not_Ready,
+		this,
+		std::bind(&ConnectToHost::hostNotReadyListener, this, std::placeholders::_1, std::placeholders::_2));
 
 	// Create loading message game object to display when directly connecting to a host
 	auto goMan = kitten::K_GameObjectManager::getInstance();
@@ -243,6 +249,15 @@ void ConnectToHost::joinDedicatedServer()
 	kitten::K_Instance::changeScene("quickplay_screen.json");
 	m_bQuickplay = true;
 	m_bConnect = false;
+}
+
+void ConnectToHost::hostNotReadyListener(kitten::Event::EventType p_type, kitten::Event* p_event)
+{
+	std::string message = p_event->getString(NETWORK_MESSAGE_KEY);
+	m_ipInputTextBox->setText(message);
+	m_inputMan->setPollMode(false);
+	m_loadingMessage->setEnabled(false);
+	m_bLoadingMsgEnabled = false;
 }
 
 void ConnectToHost::startGameListener(kitten::Event::EventType p_type, kitten::Event* p_event)

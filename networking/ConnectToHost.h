@@ -34,6 +34,7 @@ public:
 	void joinLocalhost();
 	void quickplayListener(kitten::Event::EventType p_type, kitten::Event* p_event);
 	void joinDedicatedServer();
+	void hostNotReadyListener(kitten::Event::EventType p_type, kitten::Event* p_event);
 	void startGameListener(kitten::Event::EventType p_type, kitten::Event* p_event);
 	void startGame();	
 	void lostConnectionListener(kitten::Event::EventType p_type, kitten::Event* p_event);

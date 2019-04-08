@@ -203,6 +203,21 @@ namespace networking
 				i += BASIC_PACKET_SIZE;
 				break;
 			}
+			case PacketTypes::NO_MAP_ID:
+			{
+				std::stringstream message;
+				message << "Client:" << sm_iClientId << " received NO_MAP_ID (" << defaultPacket.m_clientId << ")";
+				m_log->logMessage(message.str());
+
+				printf("[Client: %d] received NO_MAP_ID packet from server\n", sm_iClientId);
+
+				kitten::Event* eventData = new kitten::Event(kitten::Event::Network_Host_Not_Ready);
+				eventData->putString(NETWORK_MESSAGE_KEY, "Host Not Ready");
+				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Network_Host_Not_Ready, eventData);
+
+				i += BASIC_PACKET_SIZE;
+				break;
+			}
 			case PacketTypes::MAP_DATA:
 			{
 				Buffer buffer;

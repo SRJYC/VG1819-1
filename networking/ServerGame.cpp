@@ -151,7 +151,23 @@ namespace networking
 				{
 					i += BASIC_PACKET_SIZE;
 					printf("Server received JOIN_GAME packet from [Polled Client: %d]\n", iter->first);
-					if (m_clientId < MAX_JOINED_CLIENTS)
+					if (m_hostMapId < 0)
+					{
+						printf("[Server] host map ID not received yet, rejecting join request\n");
+						
+						char packetData[BASIC_PACKET_SIZE];
+						Buffer buffer;
+						buffer.m_data = packetData;
+						buffer.m_size = BASIC_PACKET_SIZE;
+
+						Packet packet;
+						packet.m_packetType = NO_MAP_ID;
+						packet.m_clientId = -1;
+
+						packet.serialize(buffer);
+						m_network->sendToPolledClient(iter->first, packetData, BASIC_PACKET_SIZE);
+					}
+					else if (m_clientId < MAX_JOINED_CLIENTS)
 					{
 						printf("[Polled Client: %d] is now [Client: %d]\n", iter->first, m_clientId);
 
