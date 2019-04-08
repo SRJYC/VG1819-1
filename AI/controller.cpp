@@ -349,8 +349,7 @@ namespace AI {
 					int numberOfRepetitionsPossibleOnATarget = 1;
 					unit::Unit* target = m_model.board.unit[pos.first][pos.second];
 					if (ability.selectRepeat) // if the targets can be repeatedly selected
-						if (ability.power > 0) // If it's based on power
-							numberOfRepetitionsPossibleOnATarget = MAX(MIN(ability.targets, std::ceil((double)target->m_attributes[UNIT_HP] / ability.power)), 1);
+						numberOfRepetitionsPossibleOnATarget = MAX(ability.targets, 1);
 					possibleTargets.resize(possibleTargets.size() + numberOfRepetitionsPossibleOnATarget, pos);
 				}
 

@@ -12,6 +12,12 @@ struct Behavior {
 	virtual double calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo);
 };
 
+struct ForEachTarget : public Behavior {
+
+	ForEachTarget(nlohmann::json& p_json);
+	virtual double calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) override;
+};
+
 struct NearestEnemy : public Behavior {
 
 	NearestEnemy(){}
@@ -59,6 +65,12 @@ struct TargetAttribute : public Behavior {
 	double weightRangeFrom, weightRangeTo;
 	int attributeFrom, attributeTo;
 	TargetAttribute(nlohmann::json& p_json);
+	virtual double calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) override;
+};
+
+struct RepeatedTarget : public Behavior {
+	double newWeight;
+	RepeatedTarget(nlohmann::json& p_json);
 	virtual double calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) override;
 };
 

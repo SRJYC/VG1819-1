@@ -19,6 +19,8 @@ void setupBehaviors() {
 	ADDTOMAP(TargetAlignment);
 	ADDTOMAP(OwnAttribute);
 	ADDTOMAP(TargetAttribute);
+	ADDTOMAP(RepeatedTarget);
+	ADDTOMAP(ForEachTarget);
 }
 
 Behavior * generateBehavior(nlohmann::json & p_json)
@@ -44,26 +46,40 @@ Behavior::Behavior(const Behavior * source)
 
 double Behavior::calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) 
 { 
-	double overall = 0;
-	for (int i = 0; i < p_targgetingInfo.targets.size(); i++) {
-		p_targgetingInfo.focusedTarget = i;
-		if (this->subBehaviors.size() > 0) {
-			double total = 0;
-			for (auto behavior : subBehaviors) {
-				total += behavior->calculateWeight(p_retainedInfo, p_passedInfo, p_targgetingInfo);
-			}
-			overall += this->internalMultiplier * this->calculateMultiplier(p_retainedInfo, p_passedInfo, p_targgetingInfo) * total;
+	if (this->subBehaviors.size() > 0) {
+		double total = 0;
+		for (auto behavior : subBehaviors) {
+			total += behavior->calculateWeight(p_retainedInfo, p_passedInfo, p_targgetingInfo);
 		}
-		else
-			overall += this->internalMultiplier * this->calculateMultiplier(p_retainedInfo, p_passedInfo, p_targgetingInfo);
+		return this->internalMultiplier * this->calculateMultiplier(p_retainedInfo, p_passedInfo, p_targgetingInfo) * total;
 	}
-	return overall;
+	else
+		return this->internalMultiplier * this->calculateMultiplier(p_retainedInfo, p_passedInfo, p_targgetingInfo);
+	
 }
 
 double Behavior::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo & p_targgetingInfo)
 {
 	return 1;
 }
+
+ForEachTarget::ForEachTarget(nlohmann::json & p_json) : Behavior(p_json)
+{
+}
+
+double ForEachTarget::calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo)
+{
+	double overall = 0;
+	for (int i = 0; i < p_targgetingInfo.targets.size(); i++) {
+		p_targgetingInfo.focusedTarget = i;
+		for (auto behavior : subBehaviors) {
+			overall += behavior->calculateWeight(p_retainedInfo, p_passedInfo, p_targgetingInfo);
+		}
+	}
+
+	return this->internalMultiplier * overall;
+}
+
 
 NearestEnemy::NearestEnemy(nlohmann::json & p_json) : Behavior(p_json)
 {
@@ -158,7 +174,7 @@ double TargetAlignment::calculateMultiplier(const AI::retainedInfo & p_retainedI
 		return differentTeamWeight;
 }
 
-OwnAttribute::OwnAttribute(nlohmann::json & p_json)
+OwnAttribute::OwnAttribute(nlohmann::json & p_json) : Behavior(p_json)
 {
 	attribute = LOOKUP("attribute").get<std::string>();
 	attributeFrom = LOOKUPDEF("attFrom", 0);
@@ -174,7 +190,7 @@ double OwnAttribute::calculateMultiplier(const AI::retainedInfo & p_retainedInfo
 	return (double)(weightRangeTo-weightRangeFrom) * percentage + weightRangeFrom;
 }
 
-TargetAttribute::TargetAttribute(nlohmann::json & p_json)
+TargetAttribute::TargetAttribute(nlohmann::json & p_json) : Behavior(p_json)
 {
 	attribute = LOOKUP("attribute").get<std::string>();
 	attributeFrom = LOOKUPDEF("attFrom", 0);
@@ -188,4 +204,20 @@ double TargetAttribute::calculateMultiplier(const AI::retainedInfo & p_retainedI
 	int unitAttVal = p_retainedInfo.board.unit[p_targgetingInfo.targets[p_targgetingInfo.focusedTarget].first][p_targgetingInfo.targets[p_targgetingInfo.focusedTarget].second]->m_attributes[attribute];
 	double percentage = (double)std::abs(unitAttVal- attributeFrom) / std::abs(attributeTo - attributeFrom);
 	return (double)(weightRangeTo-weightRangeFrom) * percentage + weightRangeFrom;
+}
+
+RepeatedTarget::RepeatedTarget(nlohmann::json & p_json) : Behavior(p_json)
+{
+	newWeight = LOOKUPDEF("newWeight", 0.1);
+}
+
+double RepeatedTarget::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo & p_targgetingInfo)
+{
+	if (p_targgetingInfo.lastTarget == p_targgetingInfo.targets[p_targgetingInfo.focusedTarget]) {
+		return newWeight;
+	}
+	else {
+		p_targgetingInfo.lastTarget = p_targgetingInfo.targets[p_targgetingInfo.focusedTarget];
+		return 1;
+	}
 }

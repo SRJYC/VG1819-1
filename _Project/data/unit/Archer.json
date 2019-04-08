@@ -66,15 +66,26 @@
 			{
 				"ability" : "Quick Shoot",
 				"behavior" : {
-					"name" : "TargetAlignment",
+					"name" : "ForEachTarget",
 					"multiplier" : 0.75,
-					"same" : -50,
 					"subBehavior" : [
 						{
-							"name" : "TargetAttribute",
-							"attribute" : "hp",
-							"attFrom" : 50,
-							"attTo" : 0
+							"name" : "TargetAlignment",
+							"same" : -50,
+							"subBehavior" : [
+								{
+									"name" : "TargetAttribute",
+									"multiplier" : 0.8,
+									"attribute" : "hp",
+									"attFrom" : 50,
+									"attTo" : 0
+								}, 
+								{
+									"name" : "RepeatedTarget",
+									"multiplier" : 0.2,
+									"newWeight" : 0.5
+								}
+							]
 						}
 					]
 				}

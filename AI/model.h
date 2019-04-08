@@ -47,6 +47,8 @@ namespace AI {
 		Extract::Unit::Ability& source;
 		std::vector<std::pair<int, int>> targets;
 		int focusedTarget = 0;
+		std::pair<int, int> lastTarget = std::make_pair(-1,-1);
+
 
 		targettingInfo(Extract::Unit::Ability& source) : source(source) {}
 	};
