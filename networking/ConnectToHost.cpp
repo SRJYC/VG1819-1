@@ -247,7 +247,6 @@ void ConnectToHost::joinDedicatedServer()
 
 void ConnectToHost::startGameListener(kitten::Event::EventType p_type, kitten::Event* p_event)
 {
-	int mapId = p_event->getInt(MAP_ID_KEY);
 	startGame();
 }
 

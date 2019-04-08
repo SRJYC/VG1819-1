@@ -128,9 +128,7 @@ void BoardCreator::createBoard(int p_id)
 	//let game mode manager init
 	GameModeManager::getInstance()->initComponents();
 
-	kitten::Event* e = new kitten::Event(kitten::Event::Board_Loaded);
-	e->putInt(MAP_ID_KEY, mapId);
-	kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Board_Loaded, e);
+	kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Board_Loaded, nullptr);
 }
 /*
 void BoardCreator::start()

@@ -27,7 +27,6 @@ namespace networking
 		unit::Unit* m_commander;
 
 		static int sm_iClientId;
-		static int sm_mapId;
 		static bool sm_networkValid;
 		static ClientGame* sm_clientGameInstance;
 		static std::string sm_dedicatedServerAddress;
@@ -59,7 +58,7 @@ namespace networking
 		void sendAbilityPacket(const std::string & p_strAbilityName, ability::AbilityInfoPackage * p_info);
 		void setCastTime(AbilityPacket& p_packet);
 		void sendCastTimeAbilityPacket(unit::AbilityDescription * p_ad, ability::AbilityInfoPackage * p_info);
-		void sendStartingData(int p_mapId);
+		void sendStartingData();
 		void boardLoadedListener(kitten::Event::EventType p_type, kitten::Event* p_event);
 
 		// Compare units via their position
@@ -75,8 +74,6 @@ namespace networking
 		int sendBasicPacket(PacketTypes p_packetType);
 
 		unit::Unit* getCommander() { return m_commander; }
-		
-		static int getMapId() { return sm_mapId; }
 		
 		static int getClientId() { return sm_iClientId; }
 		static void setClientId(int p_id) { sm_iClientId = p_id; }
