@@ -32,8 +32,8 @@
 
 // Networking Events
 #define GAME_END_RESULT "game_end_result_key"
-#define HOST_COMMANDER_DIED 0
-#define CLIENT_COMMANDER_DIED 1
+#define DEFEAT 0
+#define VICTORY 1
 #define PLAYER_DISCONNECTED 2
 #define CLIENT_DESYNCED 3
 
