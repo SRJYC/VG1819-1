@@ -184,13 +184,13 @@ namespace unit
 //		kitten::K_GameObject* u20 = UnitSpawn::getInstance()->spawnUnitObject(24);//gorefiend
 //		u20->getComponent<unit::UnitMove>()->setTile(2, 4);
 
-		kitten::K_GameObject* u21 = UnitSpawn::getInstance()->spawnUnitObject(29);//eldritch lord
-		u21->getComponent<unit::UnitMove>()->setTile(4, 7);
-		u21->getComponent<unit::Unit>()->m_clientId = 0;
+//		kitten::K_GameObject* u21 = UnitSpawn::getInstance()->spawnUnitObject(29);//eldritch lord
+//		u21->getComponent<unit::UnitMove>()->setTile(4, 7);
+//		u21->getComponent<unit::Unit>()->m_clientId = 0;
 
-		kitten::K_GameObject* u22 = UnitSpawn::getInstance()->spawnUnitObject(25);//monument
-		u22->getComponent<unit::UnitMove>()->setTile(5, 4);
-		u22->getComponent<unit::Unit>()->m_clientId = 0;
+//		kitten::K_GameObject* u22 = UnitSpawn::getInstance()->spawnUnitObject(25);//monument
+//		u22->getComponent<unit::UnitMove>()->setTile(5, 4);
+//		u22->getComponent<unit::Unit>()->m_clientId = 0;
 
 		//test unit 
 		//unit::Unit* u = u1->getComponent<unit::Unit>();
