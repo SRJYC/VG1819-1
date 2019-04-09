@@ -15,6 +15,7 @@
 #define NEXT_SCENE_PATH_KEY "next_scene_path_key"
 #define UNIT_GO_KEY "unit_go_key"
 #define MAP_ID_KEY "map_id_key"
+#define NETWORK_MESSAGE_KEY "network_message_key"
 
 #define PLAYER_ID "playerID"
 #define CARD_ID "cardID"
@@ -121,6 +122,8 @@ namespace kitten
 			Update_Map_Detail,
 			Game_Turn_End,
 			Update_Deck_Builder_Frame,
+			Network_Host_Not_Ready,
+			Network_Cancel_Join,
 
 			Test_Event, 
 			MAX_VAL = Test_Event

@@ -23,13 +23,6 @@ void BoardManager::createBoard(int p_mapID, bool p_enableTileInfoDisplay)
 	{
 		mapId = selectedId;
 	}
-
-	//get host map id
-	int hostId = networking::ClientGame::getMapId();
-	if ( hostId > -1)
-	{
-		mapId = hostId;
-	}
 	m_boardCreator->createBoard(mapId);
 
 	//it's done, delete it

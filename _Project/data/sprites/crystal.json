@@ -3,10 +3,10 @@
 	"texture" : "textures/sprites/terrain/crystal.png",
 	
 	"sheetwidth" : 150,
-	"sheetheight" : 50,
+	"sheetheight" : 32,
 	
 	"characterwidth" : 28,
-	"characterheight" : 30,
+	"characterheight" : 32,
 	
 	"padding" : 0,
 	

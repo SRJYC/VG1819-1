@@ -45,7 +45,8 @@ namespace ability
 		//destroy itself
 		p_info->m_source->destroy();
 
-		done(p_info);
+		//done(p_info);
+		delete p_info;
 
 		return 0;
 	}
