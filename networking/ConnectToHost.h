@@ -3,15 +3,22 @@
 #include "kitten\event_system\EventManager.h"
 #include "_Project\StringInputDisplay.h"
 #include "kitten\InputManager.h"
+#include "UI/TriggerEventButton.h"
 
 class ConnectToHost : public kitten::K_Component
 {
 private:
 	puppy::TextBox* m_ipInputTextBox;
 	puppy::TextBox* m_localHostTextBox;
+	puppy::TextBox* m_networkStatusTextBox;
 	StringInputDisplay* m_stringInputDisplay;
 	input::InputManager* m_inputMan;
 	kitten::K_GameObject* m_loadingMessage;
+
+	userinterface::TriggerEventButton* m_refreshButton;
+	userinterface::TriggerEventButton* m_joinLocalHostButton;
+	userinterface::TriggerEventButton* m_joinDirectHostButton;
+	userinterface::TriggerEventButton* m_cancelButton;
 
 	bool m_bConnect;
 	bool m_bLoadingMsgEnabled;
@@ -38,4 +45,6 @@ public:
 	void startGameListener(kitten::Event::EventType p_type, kitten::Event* p_event);
 	void startGame();	
 	void lostConnectionListener(kitten::Event::EventType p_type, kitten::Event* p_event);
+	void cancelJoinListener(kitten::Event::EventType p_type, kitten::Event* p_event);
+	void cancelJoin();
 };

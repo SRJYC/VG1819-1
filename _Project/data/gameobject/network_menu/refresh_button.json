@@ -18,7 +18,5 @@
 		{
 			"name" : "ClickableFrame"
 		}
-	],
-	"translate" : [777, 356, -0.8],
-	"scale2d" : [48, 48]
+	]
 }

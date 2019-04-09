@@ -37,6 +37,7 @@ namespace networking
 		// IDs for the clients connecting for table in ServerNetwork 
 		unsigned int m_clientId;
 		unsigned int m_polledClientId;
+		int m_numClients = 0;
 
 		// The ServerNetwork object 
 		ServerNetwork* m_network;
@@ -50,6 +51,7 @@ namespace networking
 		// Vector to hold the starting data of all player's Commanders
 		std::vector<UnitPacket> m_commanders;
 
+		int m_clientWaitingToConnect = -1;
 		int m_clientsReadyChecked = 0;
 		int m_hostMapId = -1;
 	};

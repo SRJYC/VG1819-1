@@ -49,7 +49,7 @@ namespace networking
 		static const std::string& getDedicatedServerAddress() { return sm_dedicatedServerAddress; }
 
 		void setupNetwork(const std::string &p_strAddr = "127.0.0.1");
-		void disconnectFromNetwork(bool p_bServerShutdown = false);
+		void disconnectFromNetwork();
 		void connectToDedicatedServer();
 
 		void update();

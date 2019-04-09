@@ -941,6 +941,8 @@ kitten::K_Component* getTriggerEventButton(nlohmann::json* p_jsonFile) {
 		eventEnum = kitten::Event::Quickplay;
 	else if (eventType == "Quickplay_Find_Game")
 		eventEnum = kitten::Event::Quickplay_Find_Game;
+	else if (eventType == "Network_Cancel_Join")
+		eventEnum = kitten::Event::Network_Cancel_Join;
 	else
 		eventEnum = -1;
 

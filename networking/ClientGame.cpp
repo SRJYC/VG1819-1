@@ -118,7 +118,7 @@ namespace networking
 		setupNetwork(sm_dedicatedServerAddress);
 	}
 
-	void ClientGame::disconnectFromNetwork(bool p_bServerShutdown)
+	void ClientGame::disconnectFromNetwork()
 	{
 		// Send a packet to alert server that client is disconnecting
 		char data[BASIC_PACKET_SIZE];
@@ -212,7 +212,7 @@ namespace networking
 				printf("[Client: %d] received NO_MAP_ID packet from server\n", sm_iClientId);
 
 				kitten::Event* eventData = new kitten::Event(kitten::Event::Network_Host_Not_Ready);
-				eventData->putString(NETWORK_MESSAGE_KEY, "Host Not Ready");
+				eventData->putString(NETWORK_MESSAGE_KEY, "Host not ready, waiting for map ID...");
 				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Network_Host_Not_Ready, eventData);
 
 				i += BASIC_PACKET_SIZE;
@@ -248,7 +248,7 @@ namespace networking
 				printf("[Client: %d] received SERVER_SHUTDOWN packet from server\n", sm_iClientId);
 
 				i += BASIC_PACKET_SIZE;
-				disconnectFromNetwork(true);
+				disconnectFromNetwork();
 
 				// Display disconnect screen; Server received manual disconnect from server
 				kitten::Event* eventData = new kitten::Event(kitten::Event::Network_End_Game);

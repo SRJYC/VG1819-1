@@ -9,25 +9,6 @@
 			"filename" : "quad_repeat.txt"
 		},
 		{
-			"name" : "Connect to Host Input Components",
-			"components" : [
-				{
-					"name" : "TextBox",
-					"font" : "../fonts/common_consolas.fnt",
-					"width" : 300 , 
-					"height" : 100 ,
-					"color" : [1,1,1]
-				},
-				{
-					"name" : "ConnectToHost"
-				},
-				{
-					"name" : "StringInputDisplay"
-				}
-			],
-			"translate2d" : [527, 290, -0.1]
-		},
-		{
 			"filename" : "mainmenu_background.json"
 		},
 		{
@@ -35,66 +16,125 @@
             "components" : [
                 {
                     "name" : "UIObject",
-                    "texture" : "textures/ui/enter_ip_window.tga"
+                    "texture" : "textures/ui/enter_ip_window.dds"
                 }
             ],
             "translate" : [280, 160, -0.9],
-            "scale2d" : [720, 360]
+            "scale2d" : [720, 360],
+			
+			"gameobjects" :
+			[
+				{
+					"name" : "Connect to Host Input Components",
+					"components" : [
+						{
+							"name" : "TextBox",
+							"font" : "../fonts/common_consolas.fnt",
+							"width" : 300 , 
+							"height" : 100 ,
+							"color" : [1,1,1]
+						},
+						{
+							"name" : "ConnectToHost"
+						},
+						{
+							"name" : "StringInputDisplay"
+						}
+					],
+					"translate" : [247, 210, 0.1],
+					
+					"gameobjects" :
+					[
+						{
+							"filename" : "network_menu/join_screen_textbox.json",							
+							"translate" : [0, 104, 0.1]
+						},
+						{
+							"filename" : "network_menu/network_status_textbox.json",
+							"translate" : [-9, -80, 0.1]
+						},
+						{
+							"filename" : "network_menu/refresh_button.json",
+							"worldscale" : [48, 48, 1],
+							"translate" : [249, 66, 0.1]							
+						},
+						{
+							"name" : "Join Local Host Button",
+							"components" : [
+								{
+									"name" : "UIObject",
+									"texture" : "textures/ui/buttons/join_button_small.tga"
+								},
+								{
+									"name" : "PlayUniversalSoundOnUIClick",
+									"sound_name" : "click"
+								},
+								{
+									"name" : "TriggerEventButton",
+									"regularTexture" : "textures/ui/buttons/join_button_small.tga",
+									"highlightedTexture" : "textures/ui/buttons/join_button_small_h.tga",
+									"event" : "Join_Localhost"
+								},
+								{
+									"name" : "ClickableFrame"
+								}
+							],
+							"worldscale" : [150, 48, 1],
+							"translate" : [308, 66, 0.1]
+						},
+						{
+							"name" : "Join Direct Address Button",
+							"components" : [
+								{
+									"name" : "UIObject",
+									"texture" : "textures/ui/buttons/join_button_small.tga"
+								},
+								{
+									"name" : "PlayUniversalSoundOnUIClick",
+									"sound_name" : "click"
+								},
+								{
+									"name" : "TriggerEventButton",
+									"regularTexture" : "textures/ui/buttons/join_button_small.tga",
+									"highlightedTexture" : "textures/ui/buttons/join_button_small_h.tga",
+									"event" : "Join_Direct_Address"
+								},
+								{
+									"name" : "ClickableFrame"
+								}
+							],
+							"worldscale" : [150, 48, 1],
+							"translate" : [308, -34, 0.1]
+						},
+						{
+							"name" : "Cancel Button",
+							"components" : [
+								{
+									"name" : "UIObject",
+									"texture" : "textures/ui/buttons/cancel.dds"
+								},
+								{
+									"name" : "TriggerEventButton",
+									"regularTexture" : "textures/ui/buttons/cancel.dds",
+									"highlightedTexture" : "textures/ui/buttons/cancel_h.dds",
+									"inactiveTexture" : "textures/ui/buttons/cancel_i.dds",
+									"event" : "Network_Cancel_Join"
+								},
+								{
+									"name" : "PlayUniversalSoundOnUIClick",
+									"sound_name" : "click"
+								},
+								{
+									"name" : "ClickableFrame"
+								}
+							],
+							"worldscale" : [150, 48, 1],
+							"translate" : [308, -141, 0.1]
+						}
+					]
+				}
+			]
         },
-		{
-			"filename" : "network_menu/refresh_button.json"
-		},
-		{
-			"name" : "Join Local Host Button",
-			"components" : [
-				{
-					"name" : "ShowLoadingOnClick"
-				},
-				{
-					"name" : "UIObject",
-					"texture" : "textures/ui/buttons/join_button_small.tga"
-				},
-				{
-					"name" : "PlayUniversalSoundOnUIClick",
-					"sound_name" : "click"
-				},
-				{
-					"name" : "TriggerEventButton",
-					"regularTexture" : "textures/ui/buttons/join_button_small.tga",
-					"highlightedTexture" : "textures/ui/buttons/join_button_small_h.tga",
-					"event" : "Join_Localhost"
-				},
-				{
-					"name" : "ClickableFrame"
-				}
-			],
-			"scale2d" : [150, 48],
-			"translate" : [835, 356, -0.8]
-		},
-		{
-			"name" : "Join Direct Address Button",
-			"components" : [
-				{
-					"name" : "UIObject",
-					"texture" : "textures/ui/buttons/join_button_small.tga"
-				},
-				{
-					"name" : "PlayUniversalSoundOnUIClick",
-					"sound_name" : "click"
-				},
-				{
-					"name" : "TriggerEventButton",
-					"regularTexture" : "textures/ui/buttons/join_button_small.tga",
-					"highlightedTexture" : "textures/ui/buttons/join_button_small_h.tga",
-					"event" : "Join_Direct_Address"
-				},
-				{
-					"name" : "ClickableFrame"
-				}
-			],
-			"scale2d" : [150, 48],
-			"translate" : [835, 252, -0.8]
-		},
 		{
 			"name" : "Quickplay Button",
 			"components" : [
@@ -120,7 +160,7 @@
 				}
 			],
 			"scale2d" : [150, 48],
-			"translate" : [565, 185, -0.8]
+			"translate" : [1115, 38, -0.8]
 		},
         {
             "name" : "Back Button",

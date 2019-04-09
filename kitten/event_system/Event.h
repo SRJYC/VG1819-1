@@ -123,6 +123,7 @@ namespace kitten
 			Game_Turn_End,
 			Update_Deck_Builder_Frame,
 			Network_Host_Not_Ready,
+			Network_Cancel_Join,
 
 			Test_Event, 
 			MAX_VAL = Test_Event

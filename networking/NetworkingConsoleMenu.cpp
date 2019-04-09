@@ -267,7 +267,7 @@ void NetworkingConsoleMenu::disconnectFromHost(bool p_bServerShutdown)
 		{
 			printf("[Client: %d] disconnecting from server\n", networking::ClientGame::getInstance()->getClientId());
 
-			networking::ClientGame::getInstance()->disconnectFromNetwork(p_bServerShutdown);
+			networking::ClientGame::getInstance()->disconnectFromNetwork();
 			networking::ClientGame::destroyInstance();
 		}
 		else
