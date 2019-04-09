@@ -531,6 +531,17 @@ namespace networking
 
 				break;
 			}
+			case PacketTypes::SERVER_FULL:
+			{
+				printf("[Client: %d] received SERVER_FULL packet from server\n", sm_iClientId);
+
+				kitten::Event* eventData = new kitten::Event(kitten::Event::Network_Host_Not_Ready);
+				eventData->putString(NETWORK_MESSAGE_KEY, "Server Full");
+				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Network_Host_Not_Ready, eventData);
+
+				i += BASIC_PACKET_SIZE;
+				break;
+			}
 			case PacketTypes::SESSIONS_FULL:
 			{
 				printf("[Client: %d] received SESSIONS_FULL packet from server\n", sm_iClientId);
