@@ -92,10 +92,10 @@ void PauseMenu::enableEndGameScreen(kitten::Event::EventType p_type, kitten::Eve
 		int gameResult = p_data->getInt(GAME_END_RESULT);
 		switch (gameResult)
 		{
-		case HOST_COMMANDER_DIED:
+		case DEFEAT:
 			m_endGameScreenObj->setTexture(DEFEAT_TEXTURE);
 			break;
-		case CLIENT_COMMANDER_DIED:
+		case VICTORY:
 			// m_endGameScreenObj starting texture is Victory texture
 			break;
 		case PLAYER_DISCONNECTED:
