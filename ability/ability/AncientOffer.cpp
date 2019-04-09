@@ -37,9 +37,10 @@ namespace ability
 		{
 			//get hp of u
 			hp += u->m_attributes[UNIT_HP];
-			
-			//destroy it
-			u->destroy();
+
+			// Destroy next frame
+			// (need to send info about unit across network first)
+			u->queueDestroy();
 		}
 
 		//set power
@@ -52,6 +53,7 @@ namespace ability
 		int randIndex = (rand() % 3) + 1;
 		UniversalSounds::playSound("earthy" + std::to_string(randIndex));
 
+		
 		//delete package
 		done(p_info);
 

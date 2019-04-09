@@ -17,8 +17,6 @@
 #include <map>
 #include "networking/ClientGame.h"
 
-
-
 namespace userinterface
 {
 	//TO DO
@@ -52,7 +50,7 @@ namespace userinterface
 		if (!networking::ClientGame::getInstance()->isNetworkValid())
 		{
 			//REMOVE WHEN NOT TESTING
-			attachCommander(kibble::getUnitFromId(13));
+			attachCommander(kibble::getUnitFromId(29));
 			//REMOVE WHEN NOT TESTING
 		}
 	}
@@ -114,6 +112,9 @@ namespace userinterface
 		//make a GO based on the json textbox data ->
 		kitten::K_GameObject* GO_name = kitten::K_GameObjectManager::getInstance()->createNewGameObject("commander_name.txt");
 		puppy::TextBox* nameComp = GO_name->getComponent<puppy::TextBox>();
+		int nameLength = m_attachedCommander->m_name.length();
+		if (nameLength > 8)
+			nameComp->setFont(puppy::FontTable::getInstance()->getFont("../fonts/nsimsun_14pt.fnt"));
 		nameComp->setText(m_attachedCommander->m_name);
 		nameComp->setEnabled(true);
 

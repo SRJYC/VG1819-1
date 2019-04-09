@@ -15,7 +15,7 @@
 
 namespace unit
 {
-	Unit::Unit() : m_healthBarState(none), m_healthBar(nullptr), m_unitSelect(nullptr)
+	Unit::Unit() : m_healthBarState(none), m_healthBar(nullptr), m_unitSelect(nullptr), m_lateDestroy(false), m_queuedDestroy(false), m_framesToWaitForDestroy(1)
 	{
 		m_itemGO = nullptr;
 
@@ -236,6 +236,15 @@ namespace unit
 		if (isTurn())
 		{
 			m_turn->checkTurn();
+		}
+
+		if (m_queuedDestroy)
+		{
+			//Intentionally not --m_...
+			if (m_framesToWaitForDestroy-- == 0)
+			{
+				destroy();
+			}
 		}
 	}
 
@@ -552,6 +561,11 @@ namespace unit
 
 		//remove from intiative tracker
 		InitiativeTracker::getInstance()->removeUnit(m_attachedObject);
+	}
+
+	void Unit::queueDestroy()
+	{
+		m_queuedDestroy = true;
 	}
 
 	void Unit::destroy()

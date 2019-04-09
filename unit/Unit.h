@@ -40,7 +40,9 @@ namespace unit
 
 		std::vector<kitten::K_GameObject*> m_path;
 
-		bool m_lateDestroy = false;
+		bool m_lateDestroy = false, m_queuedDestroy;
+		int m_framesToWaitForDestroy;
+
 		AbilityDescription m_joinAD;
 
 		std::string m_portraitTexturePath;
@@ -149,6 +151,7 @@ namespace unit
 		//destroy
 		int destroyedByDamage();
 		int destroyedByJoin();
+		void queueDestroy();
 		void simpleDestroy();
 		void destroy();
 
