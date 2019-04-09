@@ -44,8 +44,11 @@ namespace ability
 	}
 
 	Status::Status()
+		:m_caster(nullptr),
+		m_unit(nullptr)
 	{
 	}
+
 	Status::~Status()
 	{
 		//effectEnd();
