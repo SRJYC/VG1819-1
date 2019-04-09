@@ -50,31 +50,7 @@
     },
     {
       "filename": "debug_particle.json"
-    },
-	{
-		"name" : "AI",
-		"components" : [
-			{
-				"name" : "AIController"
-			},
-			{
-				"name" : "DisableAfterTime",
-				"time" : 0
-			}
-		]
-	},
-	{
-		"name" : "AI 2",
-		"components" : [
-			{
-				"name" : "AIController"
-			},
-			{
-				"name" : "DisableAfterTime",
-				"time" : 0
-			}
-		]
-	}
+    }
   ],
 	"scenes" : [ 
 		"mountainForest.json","Game_Scene.json"

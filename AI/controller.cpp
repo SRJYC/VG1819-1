@@ -139,7 +139,6 @@ namespace AI {
 
 			// TODO work on how decks are picked, for now MUH OH SEE
 			// Set up deck the AI will use
-
 			int randomDeckID = (std::uniform_real_distribution<long double>()(controller->m_model.deck.RNGZUZ)* kibble::getAIDeckDataListCount());
 			controller->m_model.deck.setDeckSource(kibble::getAIDeckDataFromId(randomDeckID));
 			controller->m_model.deck.setupDeck();

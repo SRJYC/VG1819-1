@@ -4,6 +4,7 @@
 #include "UI/ClickableButton.h"
 #include "networking/ClientGame.h"
 #include "ActionMap.h"
+#include "AI/controller.h"
 
 unit::ActionButtonStore::ActionButtonStore()
 {
@@ -94,7 +95,7 @@ void unit::ActionButtonStore::display(Unit * p_u)
 	setButton("Turn End", true);
 
 	//for test
-	if (!networking::ClientGame::isNetworkValid())
+	if (!networking::ClientGame::isNetworkValid() && !(AI::controller::getAIControllerSize() == 1))
 	{
 		bool canJoin = !m_unit->isCommander() && !m_unit->checkTag(STRUCTURE);//not structure or commander
 		canJoin = canJoin && m_unit->m_attributes[UNIT_LV] < 3;//not level 3
