@@ -58,7 +58,7 @@ inline bool next_combination(const Iterator first, Iterator k, const Iterator la
 namespace AI {
 	std::map<int,controller*> AIcontrollers;
 	std::vector<controller*> AIcontrollerlist;
-	NearestEnemy defaultBehavior;
+	NearestUnit defaultBehavior;
 
 	controller::controller() { // TODO make an ID dispensor, i hate this already. 
 		setupEventListeners();

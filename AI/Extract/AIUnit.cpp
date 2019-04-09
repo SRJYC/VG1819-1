@@ -62,9 +62,14 @@ namespace AI {
 				}
 				lastAbility.filter.unoccupiedTiles = LOOKUPINT(UNIT_NEED_UNIT);
 
+				lastAbility.status.encourage = CHECKSTREXISTS(std::string("status_name_") + STATUS_ENCOURAGE);
+
+
 				// TODO ADD the counter buildup map setter. 
 				//std::map<std::string, int> counter, counterLimit;
 			}
+
+			this->status.encourage = p_data->m_attributes.find(std::string("status_name_") + STATUS_ENCOURAGE) != p_data->m_attributes.end();
 
 			if (this->isCommander = p_data->isCommander()) {
 

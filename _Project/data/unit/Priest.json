@@ -45,7 +45,66 @@
 				"hp":5
 			}
 		],
-		"portrait_texture" : "textures/cards/500x500/Priest.tga"
+		"portrait_texture" : "textures/cards/500x500/Priest.tga",
+		"AI" : [
+			{
+				"ability" : "Heal",
+				"behavior" : {
+					"name" : "TargetAlignment",
+					"same" : 1,
+					"different" : -100,
+					"subBehavior" : [
+						{
+							"name" : "TargetAttribute",
+							"attribute" : "hp",
+							"attFrom" : 40,
+							"attTo" : 0
+						}
+					]
+				}
+			},
+			{
+				"ability" : "Encourage",
+				"behavior" : {
+					"name" : "TargetAlignment",
+					"same" : 1,
+					"different" : -1,
+					"subBehavior" : [
+						{
+							"name" : "TargetAttribute",
+							"multiplier" : 0.4,
+							"attribute" : "hp",
+							"attFrom" : 0,
+							"attTo" : 15
+						}, 
+						{
+							"name" : "TargetHasStatus",
+							"multiplier" : 0.8,
+							"status": "Status_Encourage",
+							"weightIfHas": 0,
+							"weightIfNot" : 1
+						}
+					]
+				}
+			},
+			{
+				"ability" : "mv",
+				"behavior" : {
+					"name" : "LowestAttribUnit",
+					"target" : "ally",
+					"attribute" : "hp"
+				}
+			},
+			{
+				"ability" : "Join",
+				"behavior" : {
+					"name" : "OwnAttribute",
+					"attribute" : "hp",
+					"attFrom" : 16,
+					"attTo" : 0
+				}
+			}
+		]
 	},
 	"components" : [
 		{

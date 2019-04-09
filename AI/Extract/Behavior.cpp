@@ -12,15 +12,17 @@ std::map<std::string, Behavior* (*)(nlohmann::json& p_json)> behaviorMap;
 #define ADDTOMAP(type) behaviorMap[#type] = &getBehavior<type>
 void setupBehaviors() {
 	ADDTOMAP(Behavior);
-	ADDTOMAP(NearestEnemy);
-	ADDTOMAP(LowestAttribEnemy);
-	ADDTOMAP(HighestAttribEnemy);
+	ADDTOMAP(NearestUnit);
+	ADDTOMAP(LowestAttribUnit);
+	ADDTOMAP(HighestAttribUnit);
 	ADDTOMAP(TileOwnership);
 	ADDTOMAP(TargetAlignment);
 	ADDTOMAP(OwnAttribute);
 	ADDTOMAP(TargetAttribute);
 	ADDTOMAP(RepeatedTarget);
 	ADDTOMAP(ForEachTarget);
+	ADDTOMAP(SelfHasStatus);
+	ADDTOMAP(TargetHasStatus);
 }
 
 Behavior * generateBehavior(nlohmann::json & p_json)
@@ -82,22 +84,40 @@ double ForEachTarget::calculateWeight(const AI::retainedInfo & p_retainedInfo, c
 }
 
 
-NearestEnemy::NearestEnemy(nlohmann::json & p_json) : Behavior(p_json)
+NearestUnit::NearestUnit(nlohmann::json & p_json) : Behavior(p_json)
 {
+	std::string target = LOOKUPDEF("target", "");
+	if (target == "") this->targetType = 0;
+	else if (target == "enemy") this->targetType = 1;
+	else if (target == "ally") this->targetType = 2;
 }
 
-double NearestEnemy::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo)
+double NearestUnit::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo)
 {
-	auto enemyUnits = p_retainedInfo.enemyUnits;
-	if (enemyUnits.size() == 0) return 0.0;
-	unit::Unit* nearestEnemy = enemyUnits[0]; // replace with preference weighting here
+	std::vector<unit::Unit*> targetUnits;
+	switch (targetType) {
+	case 1: {
+		targetUnits = p_retainedInfo.enemyUnits;
+		break;
+	}
+	case 2: {
+		targetUnits = p_retainedInfo.allyUnits;
+		break;
+	}
+	default: {
+		targetUnits = p_retainedInfo.allUnits;
+		break;
+	}
+	}
+	if (targetUnits.size() == 0) return 0.0;
+	unit::Unit* nearestEnemy = targetUnits[0]; // replace with preference weighting here
 	std::pair<int, int> enemyPos = nearestEnemy->getTile()->getComponent<TileInfo>()->getPos();
 	int distance = std::abs(p_passedInfo.curPos.first - enemyPos.first) + std::abs(p_passedInfo.curPos.second - enemyPos.second);
-	for (auto enemy : enemyUnits) {
-		enemyPos = enemy->getTile()->getComponent<TileInfo>()->getPos();
+	for (auto target : targetUnits) {
+		enemyPos = target->getTile()->getComponent<TileInfo>()->getPos();
 		if ((std::abs(p_passedInfo.curPos.first - enemyPos.first) + std::abs(p_passedInfo.curPos.second - enemyPos.second)) < distance) {
 			distance = std::abs(p_passedInfo.curPos.first - enemyPos.first) + std::abs(p_passedInfo.curPos.second - enemyPos.second);
-			nearestEnemy = enemy;
+			nearestEnemy = target;
 		}
 	}
 
@@ -106,40 +126,76 @@ double NearestEnemy::calculateMultiplier(const AI::retainedInfo & p_retainedInfo
 		/ (double)(p_retainedInfo.board.tile.size() + p_retainedInfo.board.tile[0].size()));
 }
 
-LowestAttribEnemy::LowestAttribEnemy(nlohmann::json & p_json) : Behavior(p_json)
+LowestAttribUnit::LowestAttribUnit(nlohmann::json & p_json) : Behavior(p_json)
 {
+	std::string target = LOOKUPDEF("target", "");
+	if (target == "") this->targetType = 0;
+	else if (target == "enemy") this->targetType = 1;
+	else if (target == "ally") this->targetType = 2;
 	attribute = p_json["attribute"].get<std::string>();
 }
 
-double LowestAttribEnemy::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo)
+double LowestAttribUnit::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo)
 {
-	auto enemyUnits = p_retainedInfo.enemyUnits;
-	if (enemyUnits.size() == 0) return 0.0;
-	unit::Unit* lowestAttribUnit = enemyUnits[0];
+	std::vector<unit::Unit*> targetUnits;
+	switch (targetType) {
+	case 1: {
+		targetUnits = p_retainedInfo.enemyUnits;
+		break;
+	}
+	case 2: {
+		targetUnits = p_retainedInfo.allyUnits;
+		break;
+	}
+	default: {
+		targetUnits = p_retainedInfo.allUnits;
+		break;
+	}
+	}
+	if (targetUnits.size() == 0) return 0.0;
+	unit::Unit* lowestAttribUnit = targetUnits[0];
 
-	for (auto enemy : enemyUnits) {
-		if (enemy->m_attributes[attribute] < lowestAttribUnit->m_attributes[attribute])
-			lowestAttribUnit = enemy;
+	for (auto target : targetUnits) {
+		if (target->m_attributes[attribute] < lowestAttribUnit->m_attributes[attribute])
+			lowestAttribUnit = target;
 	}
 	std::pair<int, int> enemyPos = lowestAttribUnit->getTile()->getComponent<TileInfo>()->getPos();
 	return 1 - ((double)(std::abs(p_passedInfo.curPos.first - enemyPos.first) + std::abs(p_passedInfo.curPos.second - enemyPos.second))
 		/ (double)(p_retainedInfo.board.tile.size() + p_retainedInfo.board.tile[0].size()));
 }
 
-HighestAttribEnemy::HighestAttribEnemy(nlohmann::json & p_json) : Behavior(p_json)
+HighestAttribUnit::HighestAttribUnit(nlohmann::json & p_json) : Behavior(p_json)
 {
+	std::string target = LOOKUPDEF("target", "");
+	if (target == "") this->targetType = 0;
+	else if (target == "enemy") this->targetType = 1;
+	else if (target == "ally") this->targetType = 2;
 	attribute = p_json["attribute"].get<std::string>();
 }
 
-double HighestAttribEnemy::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo)
+double HighestAttribUnit::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo)
 {
-	auto enemyUnits = p_retainedInfo.enemyUnits;
-	if (enemyUnits.size() == 0) return 0.0;
-	unit::Unit* highestAttribUnit = enemyUnits[0];
+	std::vector<unit::Unit*> targetUnits;
+	switch (targetType) {
+	case 1: {
+		targetUnits = p_retainedInfo.enemyUnits;
+		break;
+	}
+	case 2: {
+		targetUnits = p_retainedInfo.allyUnits;
+		break;
+	}
+	default: {
+		targetUnits = p_retainedInfo.allUnits;
+		break;
+	}
+	}
+	if (targetUnits.size() == 0) return 0.0;
+	unit::Unit* highestAttribUnit = targetUnits[0];
 
-	for (auto enemy : enemyUnits) {
-		if (enemy->m_attributes[attribute] > highestAttribUnit->m_attributes[attribute])
-			highestAttribUnit = enemy;
+	for (auto target : targetUnits) {
+		if (target->m_attributes[attribute] > highestAttribUnit->m_attributes[attribute])
+			highestAttribUnit = target;
 	}
 	std::pair<int, int> enemyPos = highestAttribUnit->getTile()->getComponent<TileInfo>()->getPos();
 	return 1 - ((double)(std::abs(p_passedInfo.curPos.first - enemyPos.first) + std::abs(p_passedInfo.curPos.second - enemyPos.second))
@@ -187,6 +243,12 @@ OwnAttribute::OwnAttribute(nlohmann::json & p_json) : Behavior(p_json)
 double OwnAttribute::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo & p_targgetingInfo)
 {
 	int unitAttVal = p_retainedInfo.source.source->m_attributes[attribute];
+	if (attributeFrom < attributeTo) {
+		if (unitAttVal < attributeFrom) unitAttVal = attributeFrom;
+		else if (unitAttVal > attributeTo) unitAttVal = attributeTo;
+	}
+	else if (unitAttVal > attributeFrom) unitAttVal = attributeFrom;
+	else if (unitAttVal < attributeTo) unitAttVal = attributeTo;
 	double percentage = (double)std::abs(unitAttVal- attributeFrom) / std::abs(attributeTo - attributeFrom);
 	return (double)(weightRangeTo-weightRangeFrom) * percentage + weightRangeFrom;
 }
@@ -203,8 +265,49 @@ TargetAttribute::TargetAttribute(nlohmann::json & p_json) : Behavior(p_json)
 double TargetAttribute::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo & p_targgetingInfo)
 {
 	int unitAttVal = p_retainedInfo.board.unit[p_targgetingInfo.targets[p_targgetingInfo.focusedTarget].first][p_targgetingInfo.targets[p_targgetingInfo.focusedTarget].second]->m_attributes[attribute];
+	if (attributeFrom < attributeTo) {
+		if (unitAttVal < attributeFrom) unitAttVal = attributeFrom;
+		else if (unitAttVal > attributeTo) unitAttVal = attributeTo;
+	}
+	else if (unitAttVal > attributeFrom) unitAttVal = attributeFrom;
+	else if (unitAttVal < attributeTo) unitAttVal = attributeTo;
+
 	double percentage = (double)std::abs(unitAttVal- attributeFrom) / std::abs(attributeTo - attributeFrom);
 	return (double)(weightRangeTo-weightRangeFrom) * percentage + weightRangeFrom;
+}
+
+SelfHasStatus::SelfHasStatus(nlohmann::json & p_json) : Behavior(p_json)
+{
+	status = LOOKUP("status").get<std::string>();
+	wIfHas = LOOKUPDEF("weightIfHas", 0);
+	wIfNot = LOOKUPDEF("weightIfNot", 1);
+}
+
+double SelfHasStatus::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo & p_targgetingInfo)
+{
+	if (p_retainedInfo.source.source->getStatusContainer()->getStatus(status,"ANY") != nullptr) {
+		return wIfHas;
+	}
+	else {
+		return wIfNot;
+	}
+}
+
+TargetHasStatus::TargetHasStatus(nlohmann::json & p_json) : Behavior(p_json)
+{
+	status = LOOKUP("status").get<std::string>();
+	wIfHas = LOOKUPDEF("weightIfHas", 0);
+	wIfNot = LOOKUPDEF("weightIfNot", 1);
+}
+
+double TargetHasStatus::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo & p_targgetingInfo)
+{
+	if (p_retainedInfo.board.unit[p_targgetingInfo.targets[p_targgetingInfo.focusedTarget].first][p_targgetingInfo.targets[p_targgetingInfo.focusedTarget].second]->getStatusContainer()->getStatus(status, "ANY") != nullptr) {
+		return wIfHas;
+	}
+	else {
+		return wIfNot;
+	}
 }
 
 RepeatedTarget::RepeatedTarget(nlohmann::json & p_json) : Behavior(p_json)

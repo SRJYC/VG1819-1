@@ -53,6 +53,7 @@
 				"ability" : "Shoot",
 				"behavior" : {
 					"name" : "TargetAlignment",
+					"same" : -50,
 					"subBehavior" : [
 						{
 							"name" : "TargetAttribute",
@@ -93,7 +94,8 @@
 			{
 				"ability" : "mv",
 				"behavior" : {
-					"name" : "NearestEnemy"
+					"name" : "NearestUnit",
+					"target" : "enemy"
 				}
 			},
 			{

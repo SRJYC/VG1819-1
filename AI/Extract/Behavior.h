@@ -18,24 +18,26 @@ struct ForEachTarget : public Behavior {
 	virtual double calculateWeight(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) override;
 };
 
-struct NearestEnemy : public Behavior {
-
-	NearestEnemy(){}
-	NearestEnemy(nlohmann::json& p_json);
+struct NearestUnit : public Behavior {
+	int targetType= 0; // 0 for all, 1 for enemy , 2 for Ally
+	NearestUnit(){}
+	NearestUnit(nlohmann::json& p_json);
 	virtual double calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) override;
 };
 
-struct LowestAttribEnemy : public Behavior {
+struct LowestAttribUnit : public Behavior {
+	int targetType = 0; // 0 for all, 1 for enemy , 2 for Ally
 	std::string attribute;
 
-	LowestAttribEnemy(nlohmann::json& p_json);
+	LowestAttribUnit(nlohmann::json& p_json);
 	virtual double calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) override;
 };
 
-struct HighestAttribEnemy : public Behavior {
+struct HighestAttribUnit : public Behavior {
+	int targetType = 0; // 0 for all, 1 for enemy , 2 for Ally
 	std::string attribute;
 
-	HighestAttribEnemy(nlohmann::json& p_json);
+	HighestAttribUnit(nlohmann::json& p_json);
 	virtual double calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) override;
 };
 
@@ -71,6 +73,20 @@ struct TargetAttribute : public Behavior {
 struct RepeatedTarget : public Behavior {
 	double newWeight;
 	RepeatedTarget(nlohmann::json& p_json);
+	virtual double calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) override;
+};
+
+struct SelfHasStatus : public Behavior {
+	std::string status;
+	int wIfHas = 0, wIfNot = 1;
+	SelfHasStatus(nlohmann::json& p_json);
+	virtual double calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) override;
+};
+
+struct TargetHasStatus : public Behavior {
+	std::string status;
+	int wIfHas = 0, wIfNot = 1;
+	TargetHasStatus(nlohmann::json& p_json);
 	virtual double calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) override;
 };
 

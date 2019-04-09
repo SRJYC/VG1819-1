@@ -21,8 +21,12 @@ namespace AI {
 					allies = false;
 			};
 
+			struct Status {
+				bool encourage = false;
+			};
+
 			struct Ability {
-				Filter filter;
+				Filter filter; Status status;
 				bool selectRepeat = false,
 					hasPower = false
 					;
@@ -40,6 +44,7 @@ namespace AI {
 
 			int hp = 0, mv = 0, cost = 0, lv = 0, turnsChanneling = 0, clientId, kibbleId;
 			bool isCommander = false;
+			Status status;
 			unit::Unit* source;
 			std::vector<Ability> ability;
 			Unit(unit::Unit* p_data);
