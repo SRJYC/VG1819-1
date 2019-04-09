@@ -1,8 +1,28 @@
 {
     "files":[
-        "default.vgmap",
-        "ForestHollow.vgmap",
-        "River.vgmap",
-        "NarrowRoad.vgmap"
+        {
+            "name":"default",
+            "map":"default.vgmap",
+            "image":"textures/map/default.png",
+            "description":"The normal map. There's mud pool on the center and sand on the side. You have to defeat enemy to win."
+        },
+        {
+            "name":"Hollow",
+            "map":"Hollow.vgmap",
+            "image":"textures/map/ForestHollow.png",
+            "description":"In the center of mud pool, there's a hollow for commanders to control. "
+        },
+        {
+            "name":"River",
+            "map":"River.vgmap",
+            "image":"textures/map/River.png",
+            "description":"Two commanders face each other on the opposite side of river. One defends his domain and the other tries to conquer."
+        },
+        {
+            "name":"NarrowRoad",
+            "map":"NarrowRoad.vgmap",
+            "image":"textures/map/NarrowRoad.png",
+            "description":"Mud and swamp cover a crystal mine. There's only a narrow road that allow people move through."
+        }
     ]
 }

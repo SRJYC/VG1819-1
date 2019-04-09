@@ -1,0 +1,12 @@
+{
+    "name":"map_image",
+    "components" : [
+        {
+			"name" : "UIObject",
+			"texture" : "textures/map/question-mark.jpg"
+        },
+        {
+			"name" : "MapDetailController"
+		}
+    ]
+}

@@ -47,7 +47,7 @@ namespace unit
 
 		//kitten::K_GameObject* spawnUnitObject(Unit* p_unitData);
 
-		kitten::K_GameObject* spawnUnitObject(const int& p_unitIdentifier); // makes a new copy from id
+		kitten::K_GameObject* spawnUnitObject(const int& p_unitIdentifier, int p_clientId = -1); // makes a new copy from id
 		kitten::K_GameObject* spawnUnitObject(unit::Unit* p_unitIdentifier); // makes  a copy of the unit 
 
 		ActionButtonStore* getActionButtonStorage() { return m_storage; };

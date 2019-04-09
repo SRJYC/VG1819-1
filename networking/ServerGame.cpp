@@ -151,44 +151,66 @@ namespace networking
 				{
 					i += BASIC_PACKET_SIZE;
 					printf("Server received JOIN_GAME packet from [Polled Client: %d]\n", iter->first);
-					if (m_clientId < MAX_JOINED_CLIENTS)
+					
+					if (m_numClients < MAX_JOINED_CLIENTS && m_clientWaitingToConnect < 0)
 					{
-						printf("[Polled Client: %d] is now [Client: %d]\n", iter->first, m_clientId);
-
-						int assignedClientId = m_clientId;
-
-						// Add client socket from polled sessions to main sessions
-						m_network->addPolledClientToSessions(iter->first, m_clientId);
-						m_clientId++;
-
-						// If the connecting client is the host, then they only need to know their ID
-						char packetData[BASIC_PACKET_SIZE];
-						Buffer buffer;
-						buffer.m_data = packetData;
-						buffer.m_size = BASIC_PACKET_SIZE;
-
-						Packet packet;
-						packet.m_packetType = SEND_CLIENT_ID;
-						packet.m_clientId = assignedClientId;
-
-						packet.serialize(buffer);
-						m_network->sendToClient(assignedClientId, packetData, BASIC_PACKET_SIZE);
-
-						// Host decides the map, so send the map ID to all other clients
-						if (assignedClientId > 0)
+						if (m_hostMapId < 0 && iter->first > 0)
 						{
-							char packetData[MAP_DATA_PACKET_SIZE];
+							printf("[Server] host map ID not received yet, queuing client\n");
+							m_clientWaitingToConnect = iter->first;
+
+							char packetData[BASIC_PACKET_SIZE];
 							Buffer buffer;
 							buffer.m_data = packetData;
-							buffer.m_size = MAP_DATA_PACKET_SIZE;
+							buffer.m_size = BASIC_PACKET_SIZE;
 
-							MapDataPacket packet;
-							packet.m_packetType = MAP_DATA;
-							packet.m_clientId = assignedClientId;
-							packet.m_mapId = m_hostMapId;
+							Packet packet;
+							packet.m_packetType = NO_MAP_ID;
+							packet.m_clientId = -1;
 
 							packet.serialize(buffer);
-							m_network->sendToClient(assignedClientId, packetData, MAP_DATA_PACKET_SIZE);
+							m_network->sendToPolledClient(m_clientWaitingToConnect, packetData, BASIC_PACKET_SIZE);
+						}
+						else
+						{
+							printf("[Polled Client: %d] is now [Client: %d]\n", iter->first, m_clientId);
+
+							int assignedClientId = m_clientId;
+
+							// Add client socket from polled sessions to main sessions
+							m_network->addPolledClientToSessions(iter->first, m_clientId);
+							++m_clientId;
+							++m_numClients;
+
+							// If the connecting client is the host, then they only need to know their ID
+							char packetData[BASIC_PACKET_SIZE];
+							Buffer buffer;
+							buffer.m_data = packetData;
+							buffer.m_size = BASIC_PACKET_SIZE;
+
+							Packet packet;
+							packet.m_packetType = SEND_CLIENT_ID;
+							packet.m_clientId = assignedClientId;
+
+							packet.serialize(buffer);
+							m_network->sendToClient(assignedClientId, packetData, BASIC_PACKET_SIZE);
+
+
+							if (assignedClientId > 0)
+							{
+								char mapPacketData[MAP_DATA_PACKET_SIZE];
+								Buffer mapBuffer;
+								mapBuffer.m_data = mapPacketData;
+								mapBuffer.m_size = MAP_DATA_PACKET_SIZE;
+
+								MapDataPacket mapPacket;
+								mapPacket.m_packetType = MAP_DATA;
+								mapPacket.m_clientId = assignedClientId;
+								mapPacket.m_mapId = m_hostMapId;
+
+								mapPacket.serialize(mapBuffer);
+								m_network->sendToClient(assignedClientId, mapPacketData, MAP_DATA_PACKET_SIZE);
+							}
 						}
 					}
 					else
@@ -213,6 +235,10 @@ namespace networking
 					i += BASIC_PACKET_SIZE;
 					unsigned int clientId = iter->first;
 					printf("Server received CLIENT_DISCONNECT from [Polled Client: %d]\n", clientId);
+					if (m_clientWaitingToConnect == clientId)
+					{
+						m_clientWaitingToConnect = -1;
+					}
 					m_network->removePolledClient(clientId);
 
 					break;
@@ -317,6 +343,48 @@ namespace networking
 							m_hostMapId = packet.m_mapId;
 						}
 
+						if (m_clientWaitingToConnect > -1)
+						{
+							// Add client to main sessions
+							printf("[Polled Client: %d] is now [Client: %d]\n", iter->first, m_clientId);
+
+							int assignedClientId = m_clientId;
+
+							// Add client socket from polled sessions to main sessions
+							m_network->addPolledClientToSessions(m_clientWaitingToConnect, m_clientId);
+							++m_clientId;
+							++m_numClients;
+
+							// If the connecting client is the host, then they only need to know their ID
+							char packetData[BASIC_PACKET_SIZE];
+							Buffer buffer;
+							buffer.m_data = packetData;
+							buffer.m_size = BASIC_PACKET_SIZE;
+
+							Packet packet;
+							packet.m_packetType = SEND_CLIENT_ID;
+							packet.m_clientId = assignedClientId;
+
+							packet.serialize(buffer);
+							m_network->sendToClient(assignedClientId, packetData, BASIC_PACKET_SIZE);
+
+							// Then send them the map ID
+							char mapPacketData[MAP_DATA_PACKET_SIZE];
+							Buffer mapBuffer;
+							mapBuffer.m_data = mapPacketData;
+							mapBuffer.m_size = MAP_DATA_PACKET_SIZE;
+
+							MapDataPacket mapPacket;
+							mapPacket.m_packetType = MAP_DATA;
+							mapPacket.m_clientId = -1;
+							mapPacket.m_mapId = m_hostMapId;
+
+							mapPacket.serialize(mapBuffer);
+							m_network->sendToClient(assignedClientId, mapPacketData, MAP_DATA_PACKET_SIZE);
+
+							m_clientWaitingToConnect = -1;
+						}
+
 						i += MAP_DATA_PACKET_SIZE;
 						break;
 					}
@@ -326,6 +394,7 @@ namespace networking
 						unsigned int clientId = iter->first;
 						printf("Server received CLIENT_DISCONNECT from [Client: %d]\n", clientId);						
 						m_network->removeClient(clientId);
+						--m_numClients;
 						kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Disconnect_From_Network, nullptr);
 
 						// Display disconnect screen; Server received manual disconnect from client

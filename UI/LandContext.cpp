@@ -116,7 +116,7 @@ void LandContext::updateContext()
 			name = "Sand Land";
 			break;
 		case LandInformation::Forest_land:
-			name = "Forest Land";
+			name = "Mud Land";
 			break;
 		case LandInformation::Garden_land:
 			name = "Garden Land";

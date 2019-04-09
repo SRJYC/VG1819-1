@@ -1,0 +1,14 @@
+{
+    "name":"mode header",
+    "components" : [
+        {
+            "name" : "TextBox",
+			"font" : "../fonts/nsimsun_40pt.fnt",
+			"color" : [1,1,1],
+            "alignment" : "left",
+            "width" : 200,
+            "height" : 30,
+            "message":"Game Mode"
+        }
+    ]
+}

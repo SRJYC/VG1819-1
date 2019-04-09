@@ -185,6 +185,7 @@ std::vector<unit::Unit*> AI::Model::getTargetsInRange(TargetRange p_Target)
 					&& temp.second >= 0 && temp.second < boardDimensions.second
 					// Check if inhabitted by units
 					&& board.board[temp.first][temp.second]->hasUnit())
+					
 				{
 					unitsAround.push_back(board.board[temp.first][temp.second]->getUnit()->getComponent<unit::Unit>());
 				}
@@ -214,6 +215,7 @@ std::vector<TileInfo*> AI::Model::getTargetTilesInRange(TargetRange p_Target)
 				if (// Check if Coordinates are valid
 					temp.first >= 0 && temp.first < boardDimensions.first
 					&& temp.second >= 0 && temp.second < boardDimensions.second
+					&& board.board[temp.first][temp.second]->getType() != LandInformation::Water_land
 					)
 				{
 					tiles.push_back(board.board[temp.first][temp.second]);
@@ -246,7 +248,8 @@ std::vector<TileInfo*> AI::Model::getTargetNonBlockedTilesInRange(TargetRange p_
 					&& temp.second >= 0 && temp.second < boardDimensions.second
 					// checks if its blocked only if the TargetRange is supplied with blocked positions to check for
 					&& std::find(p_Target.blockedPos.begin(), p_Target.blockedPos.end(), temp) == p_Target.blockedPos.end()
-					&& !board.board[temp.first][temp.second]->hasUnit() 
+					&& !board.board[temp.first][temp.second]->hasUnit()
+					&& board.board[temp.first][temp.second]->getType() != LandInformation::Water_land
 					)
 				{
 					tiles.push_back(board.board[temp.first][temp.second]);
@@ -281,6 +284,7 @@ std::vector<TileInfo*> AI::Model::getTargetOwnedTilesInRange(TargetRange p_Targe
 					// checks if its blocked only if the TargetRange is supplied with blocked positions to check for
 					&& std::find(p_Target.blockedPos.begin(), p_Target.blockedPos.end(), temp) == p_Target.blockedPos.end()
 					&& !board.board[temp.first][temp.second]->hasUnit()
+					&& board.board[temp.first][temp.second]->getType() != LandInformation::Water_land
 					)
 				{
 					tiles.push_back(board.board[temp.first][temp.second]);
@@ -311,7 +315,8 @@ std::vector<TileInfo*> AI::Model::getTargetNotOwnedTilesInRange(TargetRange p_Ta
 				if (// Check if Coordinates are valid
 					temp.first >= 0 && temp.first < boardDimensions.first
 					&& temp.second >= 0 && temp.second < boardDimensions.second
-					&& board.board[temp.first][temp.second]->getOwnerId() != p_Target.unit->m_clientId
+					&& board.board[temp.first][temp.second]->getOwnerId() < 0
+					&& board.board[temp.first][temp.second]->getType() != LandInformation::Water_land
 					)
 				{
 					tiles.push_back(board.board[temp.first][temp.second]);

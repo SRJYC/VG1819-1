@@ -1,0 +1,15 @@
+{
+    "name":"mode base rule",
+    "components" : [
+        {
+            "name" : "TextBox",
+			"font" : "../fonts/nsimsun_14pt.fnt",
+			"color" : [1,1,1],
+            "alignment" : "left",
+            "width" : 300,
+            "height" : 300,
+            "message":
+            "Other than destroy enemy commander, there's still a way to win. Each player can earn points from vairous methods based on map. If one player reaches 100 points, he wins the game."
+        }
+    ]
+}

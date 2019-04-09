@@ -5,6 +5,8 @@ class GameplayInit : public kitten::K_Component
 {
 private:
 	bool m_testing = false;;
+
+	void onDisabled() override;
 public:
 	void start();
 

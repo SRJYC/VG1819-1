@@ -27,7 +27,7 @@
 #define P1_COLOR_G 230.0f / 255.0f
 #define P1_COLOR_B 255.0f / 255.0f
 
-CardContext::CardContext(char p_statusContextKey) : m_statusContextKey(p_statusContextKey)
+CardContext::CardContext(char p_statusContextKey) : m_statusContextKey(p_statusContextKey), m_nonLevelStatus(0)
 {
 
 }
@@ -99,8 +99,6 @@ void CardContext::start()
 	m_currentNameFont = m_defaultNameFont;
 
 	m_statusContext = gom->createNewGameObject("UI/status_context/status_context.json")->getComponent<StatusContext>();
-	m_statusContext->getGameObject().getTransform().setIgnoreParent(false);
-	m_statusContext->getGameObject().getTransform().setParent(&m_attachedObject->getTransform());
 
 	// Testing
 	setUnit(kibble::getUnitFromId(13));
@@ -124,10 +122,9 @@ void CardContext::onDisabled()
 	m_attachedObject->setEnabled(false);
 	m_cardTexture->setEnabled(false);
 	m_unitPortrait->setEnabled(false);
-	if (m_nonLevelStatus > 0)
-	{
-		m_statusContext->getGameObject().setEnabled(false);
-	}
+	m_statusContext->getGameObject().setEnabled(false);
+
+	m_nonLevelStatus = 0;
 }
 
 // For testing only, changes the unit on the hovered card by pressing the B key
@@ -152,7 +149,7 @@ void CardContext::update()
 
 void CardContext::setUnit(unit::Unit* p_unit)
 {
-	if (p_unit != m_unitData && p_unit != nullptr)
+	if (p_unit != nullptr)
 	{
 		m_unitData = p_unit;
 		updateUnitData();
@@ -343,6 +340,15 @@ void CardContext::updateUnitStatus()
 			m_statusContext->updateContext(unitStatusIcons->m_statusList);
 		}
 	}
+
+	if (m_nonLevelStatus > 0 && m_isEnabled)
+	{
+		m_statusContext->getGameObject().setEnabled(true);
+	}
+	else
+	{
+		m_statusContext->getGameObject().setEnabled(false);
+	}
 }
 
 void CardContext::setAttribTextColor(puppy::TextBox* p_textBox, const std::string& p_currAttrib, const std::string& p_baseAttrib)
@@ -396,14 +402,14 @@ void CardContext::setUnitListener(kitten::Event::EventType p_type, kitten::Event
 		kitten::K_GameObject* unitGO = p_event->getGameObj(UPDATE_CARD_CONTEXT_KEY);
 		if (unitGO != nullptr)
 		{
-			unit::Unit* unit = unitGO->getComponent<unit::Unit>();
-			setUnit(unit);
 			m_updatedByGO = true;
+			unit::Unit* unit = unitGO->getComponent<unit::Unit>();
+			setUnit(unit);			
 		}
 	} else if (p_type == kitten::Event::Update_Card_Context_By_ID)
 	{
-		setUnit(kibble::getUnitFromId(p_event->getInt(UPDATE_CARD_CONTEXT_KEY)));
 		m_updatedByGO = false;
+		setUnit(kibble::getUnitFromId(p_event->getInt(UPDATE_CARD_CONTEXT_KEY)));
 	}
 }
 

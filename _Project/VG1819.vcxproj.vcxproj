@@ -267,6 +267,12 @@
     <ClCompile Include="..\components\PlayerNameController.cpp" />
     <ClCompile Include="..\components\initializers\DrawCardsFromDeckWithDelay.cpp" />
     <ClCompile Include="..\components\MainMenuBoard.cpp" />
+    <ClCompile Include="..\components\MapSelectionScene\ChangeListOnClick.cpp" />
+    <ClCompile Include="..\components\MapSelectionScene\ChangeMapDetailOnClick.cpp" />
+    <ClCompile Include="..\components\MapSelectionScene\ChangeModeDetailOnClick.cpp" />
+    <ClCompile Include="..\components\MapSelectionScene\MapDetailController.cpp" />
+    <ClCompile Include="..\components\MapSelectionScene\MapListController.cpp" />
+    <ClCompile Include="..\components\MapSelectionScene\ModeDetailController.cpp" />
     <ClCompile Include="..\components\PromptPopUp.cpp" />
     <ClCompile Include="..\components\RenameDeckComponent.cpp" />
     <ClCompile Include="..\components\scene change\StartGameOnClick.cpp" />
@@ -661,6 +667,12 @@
     <ClInclude Include="..\components\ExitGameButton.h" />
     <ClInclude Include="..\components\initializers\DrawCardsFromDeckWithDelay.h" />
     <ClInclude Include="..\components\MainMenuBoard.h" />
+    <ClInclude Include="..\components\MapSelectionScene\ChangeListOnClick.h" />
+    <ClInclude Include="..\components\MapSelectionScene\ChangeMapDetailOnClick.h" />
+    <ClInclude Include="..\components\MapSelectionScene\ChangeModeDetailOnClick.h" />
+    <ClInclude Include="..\components\MapSelectionScene\MapDetailController.h" />
+    <ClInclude Include="..\components\MapSelectionScene\MapListController.h" />
+    <ClInclude Include="..\components\MapSelectionScene\ModeDetailController.h" />
     <ClInclude Include="..\components\PromptPopUp.h" />
     <ClInclude Include="..\components\RenameDeckComponent.h" />
     <ClInclude Include="..\components\scene change\StartGameOnClick.h" />

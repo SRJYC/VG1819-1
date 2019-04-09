@@ -1,0 +1,17 @@
+{
+    "name" : "mode explain frame",
+    "gameobjects" : [
+        {
+            "filename" : "map_selection_scene/mode_header.json",
+            "translate2d" : [950, 530],
+	        "scale2d" : [100, 50]
+		},
+		{
+            "filename" : "map_selection_scene/mode_base_rule.json",
+            "translate2d" : [900, 480]
+        },
+        {
+            "filename" : "map_selection_scene/mode_tile_description.json"
+		}
+    ]
+}

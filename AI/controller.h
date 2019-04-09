@@ -12,13 +12,13 @@ namespace AI {
 		Model m_model;
 		Extract::Sequence m_sequence;
 		unit::Unit* m_unit = nullptr;
-		const int m_playerID;
+		int m_playerID;
 
 		void runTurn(unit::Unit* p_unit);
 
 	public:
 
-		controller(int p_playerID = 100);
+		controller();
 		~controller();
 
 		void start() override;

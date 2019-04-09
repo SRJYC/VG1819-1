@@ -14,6 +14,7 @@
 
 // Kibble
 #include "kibble\databank\databank.hpp"
+#include "kibble\map\MapReader.h"
 
 // Units
 #include "kitten\K_GameObjectManager.h"
@@ -37,7 +38,6 @@ namespace networking
 	ClientGame* ClientGame::sm_clientGameInstance = nullptr;
 	bool ClientGame::sm_networkValid = false;
 	int ClientGame::sm_iClientId = -1;
-	int ClientGame::sm_mapId = -1;
 
 	std::string ClientGame::sm_dedicatedServerAddress = "localhost";
 
@@ -94,7 +94,6 @@ namespace networking
 
 		sm_networkValid = false;
 		sm_iClientId = -1;
-		sm_mapId = -1;
 
 		kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Board_Loaded, this);
 	}
@@ -124,7 +123,7 @@ namespace networking
 		setupNetwork(sm_dedicatedServerAddress);
 	}
 
-	void ClientGame::disconnectFromNetwork(bool p_bServerShutdown)
+	void ClientGame::disconnectFromNetwork()
 	{
 		// Send a packet to alert server that client is disconnecting
 		char data[BASIC_PACKET_SIZE];
@@ -202,9 +201,24 @@ namespace networking
 
 				if (m_boardLoaded)
 				{
-					sendStartingData(BoardManager::getInstance()->getMapId());
+					sendStartingData();
 					m_boardLoaded = false;
 				}
+
+				i += BASIC_PACKET_SIZE;
+				break;
+			}
+			case PacketTypes::NO_MAP_ID:
+			{
+				std::stringstream message;
+				message << "Client:" << sm_iClientId << " received NO_MAP_ID (" << defaultPacket.m_clientId << ")";
+				m_log->logMessage(message.str());
+
+				printf("[Client: %d] received NO_MAP_ID packet from server\n", sm_iClientId);
+
+				kitten::Event* eventData = new kitten::Event(kitten::Event::Network_Host_Not_Ready);
+				eventData->putString(NETWORK_MESSAGE_KEY, "Host not ready, waiting for map ID...");
+				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Network_Host_Not_Ready, eventData);
 
 				i += BASIC_PACKET_SIZE;
 				break;
@@ -224,10 +238,8 @@ namespace networking
 
 				printf("[Client: %d] received MAP_DATA (map ID: %d) packet from server\n", sm_iClientId, packet.m_mapId);
 
-				sm_mapId = packet.m_mapId;
-				kitten::Event* e = new kitten::Event(kitten::Event::P2P_Start_Game);
-				e->putInt(MAP_ID_KEY, packet.m_mapId);
-				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::P2P_Start_Game, e);
+				kibble::MapReader::getInstance()->selectMap(packet.m_mapId);
+				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::P2P_Start_Game, nullptr);
 
 				i += MAP_DATA_PACKET_SIZE;
 				break;
@@ -241,7 +253,7 @@ namespace networking
 				printf("[Client: %d] received SERVER_SHUTDOWN packet from server\n", sm_iClientId);
 
 				i += BASIC_PACKET_SIZE;
-				disconnectFromNetwork(true);
+				disconnectFromNetwork();
 
 				// Display disconnect screen; Server received manual disconnect from server
 				kitten::Event* eventData = new kitten::Event(kitten::Event::Network_End_Game);
@@ -277,6 +289,13 @@ namespace networking
 				packet.deserialize(buffer);
 				i += packet.getBytes();
 
+				std::stringstream message;
+				message << "Client:" << sm_iClientId << " received ability:";
+				m_log->logMessage(message.str());
+
+				std::string abilityInfo = packet.getFormattedAbilityInfo();
+				m_log->logMessage(abilityInfo);
+
 				if (checkSync(packet.m_sourceUnit.posX, packet.m_sourceUnit.posY))
 				{
 					useAbility(packet);
@@ -285,6 +304,7 @@ namespace networking
 				{
 					sendDesyncedPacket();
 				}
+				
 				break;
 			}
 			case PacketTypes::CAST_TIME_ABILITY_PACKET:
@@ -298,6 +318,13 @@ namespace networking
 				AbilityPacket packet;
 				packet.deserialize(buffer);
 				i += packet.getBytes();
+
+				std::stringstream message;
+				message << "Client:" << sm_iClientId << " received CastTime ability, setting cast for:";
+				m_log->logMessage(message.str());
+
+				std::string abilityInfo = packet.getFormattedAbilityInfo();
+				m_log->logMessage(abilityInfo);
 
 				if (checkSync(packet.m_sourceUnit.posX, packet.m_sourceUnit.posY))
 				{
@@ -509,6 +536,17 @@ namespace networking
 
 				break;
 			}
+			case PacketTypes::SERVER_FULL:
+			{
+				printf("[Client: %d] received SERVER_FULL packet from server\n", sm_iClientId);
+
+				kitten::Event* eventData = new kitten::Event(kitten::Event::Network_Host_Not_Ready);
+				eventData->putString(NETWORK_MESSAGE_KEY, "Server Full");
+				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Network_Host_Not_Ready, eventData);
+
+				i += BASIC_PACKET_SIZE;
+				break;
+			}
 			case PacketTypes::SESSIONS_FULL:
 			{
 				printf("[Client: %d] received SESSIONS_FULL packet from server\n", sm_iClientId);
@@ -556,13 +594,6 @@ namespace networking
 
 	void ClientGame::useAbility(AbilityPacket& p_packet)
 	{
-		std::stringstream message;
-		message << "Client:" << sm_iClientId << " received ability:";
-		m_log->logMessage(message.str());
-
-		std::string abilityInfo = p_packet.getFormattedAbilityInfo();
-		m_log->logMessage(abilityInfo);
-
 		std::string strAbilityName = p_packet.m_abilityName;
 		printf("[Client: %d] using ability: %s\n", sm_iClientId, strAbilityName.c_str());
 
@@ -612,13 +643,6 @@ namespace networking
 
 		unit::AbilityDescription* ad = info->m_source->m_ADMap[p_packet.m_abilityName];
 		info->m_source->setCast(ad, info);
-
-		std::stringstream message;
-		message << "Client:" << sm_iClientId << " received CastTime ability, setting cast for:";
-		m_log->logMessage(message.str());
-
-		std::string abilityInfo = p_packet.getFormattedAbilityInfo();
-		m_log->logMessage(abilityInfo);
 	}
 
 	void ClientGame::sendCastTimeAbilityPacket(unit::AbilityDescription * p_ad, ability::AbilityInfoPackage * p_info)
@@ -648,7 +672,7 @@ namespace networking
 		m_log->logMessage(abilityInfo);
 	}
 
-	void ClientGame::sendStartingData(int p_mapId)
+	void ClientGame::sendStartingData()
 	{
 		char commanderData[UNIT_PACKET_SIZE];
 		Buffer commanderDataBuffer;
@@ -685,7 +709,7 @@ namespace networking
 			MapDataPacket mapDataPacket;
 			mapDataPacket.m_packetType = MAP_DATA;
 			mapDataPacket.m_clientId = sm_iClientId;
-			mapDataPacket.m_mapId = p_mapId;
+			mapDataPacket.m_mapId = BoardManager::getInstance()->getMapId();
 
 			mapDataPacket.serialize(mapDataBuffer);
 			NetworkServices::sendMessage(m_network->m_connectSocket, mapData, MAP_DATA_PACKET_SIZE);
@@ -699,14 +723,14 @@ namespace networking
 
 	void ClientGame::boardLoadedListener(kitten::Event::EventType p_type, kitten::Event* p_event)
 	{
+		// Board loaded before getting ID from the server, so set flag so we can sendStartingData when we get our ID
 		if (sm_iClientId < 0)
 		{
 			m_boardLoaded = true;
 		}
-		else
+		else // Otherwise, we have already gotten our ID, now that the board is loaded, we can send our starting data
 		{
-			int mapId = p_event->getInt(MAP_ID_KEY);
-			sendStartingData(mapId);
+			sendStartingData();
 		}
 	}
 

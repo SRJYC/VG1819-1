@@ -3,7 +3,7 @@
 	"components" : [
 		{
 			"name" : "UIObject",
-			"texture" : "textures/ui/buttons/button_refresh.tga"
+			"texture" : "textures/ui/buttons/button_refresh.dds"
 		},
 		{
 			"name" : "PlayUniversalSoundOnUIClick",
@@ -11,14 +11,13 @@
 		},
 		{
 			"name" : "TriggerEventButton",
-			"regularTexture" : "textures/ui/buttons/button_refresh.tga",
-			"highlightedTexture" : "textures/ui/buttons/button_refresh_h.tga",
+			"regularTexture" : "textures/ui/buttons/button_refresh.dds",
+			"highlightedTexture" : "textures/ui/buttons/button_refresh_h.dds",
+			"inactiveTexture" : "textures/ui/buttons/button_refresh_i.dds",
 			"event" : "Poll_For_Server"
 		},
 		{
 			"name" : "ClickableFrame"
 		}
-	],
-	"translate" : [777, 356, -0.8],
-	"scale2d" : [48, 48]
+	]
 }

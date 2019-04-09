@@ -40,7 +40,9 @@ namespace unit
 
 		std::vector<kitten::K_GameObject*> m_path;
 
-		bool m_lateDestroy = false;
+		bool m_lateDestroy = false, m_queuedDestroy;
+		int m_framesToWaitForDestroy;
+
 		AbilityDescription m_joinAD;
 
 		std::string m_portraitTexturePath;
@@ -57,9 +59,9 @@ namespace unit
 		virtual void start() override;
 
 		//set auto cast ability
-		bool m_autoCast = false;
-		std::string m_autoAbility;
-		void setAutoAbility(const std::string& p_name);
+		//bool m_autoCast = false;
+		//std::string m_autoAbility;
+		//void setAutoAbility(const std::string& p_name);
 
 		//item
 		kitten::K_GameObject* m_itemGO;
@@ -149,6 +151,7 @@ namespace unit
 		//destroy
 		int destroyedByDamage();
 		int destroyedByJoin();
+		void queueDestroy();
 		void simpleDestroy();
 		void destroy();
 

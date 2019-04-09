@@ -18,6 +18,7 @@ public:
 
 	void gainPoint(int p_clientId, int p_points);
 
+	void initComponents();
 	void removeModeComponent(GameModeComponent* p_comp);
 private:
 	static GameModeManager* sm_instance;
@@ -34,8 +35,6 @@ private:
 	std::unordered_map<GameModeComponent::TileType, GameModeComponent*> m_modeComponentMap;
 
 	std::vector<int> m_points; //the current point that player has
-
-	bool m_isInit;//are all components inited
 
 	int m_maxPoint;//when player reach max point, he wins
 

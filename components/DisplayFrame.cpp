@@ -200,6 +200,18 @@ void DisplayFrame::onEnabled()
 	else m_arrows[1]->getComponent<userinterface::ClickableButton>()->setActive(true);
 }
 
+void DisplayFrame::registerEvent()
+{
+}
+
+void DisplayFrame::deregisterEvent()
+{
+}
+
+void DisplayFrame::listenEvent(kitten::Event::EventType p_type, kitten::Event * p_data)
+{
+}
+
 const int& DisplayFrame::getCurrentPickedItemIndex() const {
 	return m_currentPick;
 }

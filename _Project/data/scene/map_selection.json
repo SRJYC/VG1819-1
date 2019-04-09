@@ -1,0 +1,48 @@
+{
+    "gameobjects" : [
+        {
+            "filename" : "camgameobj_main_menu.txt", 
+            "translate" : [7, 7.0, 2.0],
+            "rotate" : [-70,0,0]
+        },
+		{
+			"filename" : "mainmenu_background.json"
+		},
+		{
+			"filename" : "map_selection_scene/map_detail_frame.json"
+		},
+		{
+			"filename" : "map_selection_scene/map_selection_list.json"
+		},
+		{
+			"filename" : "map_selection_scene/mode_explain_frame.json"
+		},
+        {
+            "name" : "Back Button",
+            "components" : [
+				{
+					"name" : "ChangeSceneOnClick",
+					"scene" : "deck_menu.json"					
+				},
+                {
+                    "name" : "UIObject",
+                    "texture" : "textures/ui/buttons/button_return.tga"
+                },
+				{
+					"name" : "ClickableButton",
+					"regularTexture" : "textures/ui/buttons/button_return.tga",
+					"highlightedTexture" : "textures/ui/buttons/button_return_highlighted.tga"
+				},
+                {
+                    "name" : "ClickableFrame"
+                },
+				{
+					"name" : "PlayUniversalSoundOnUIClick",
+					"sound_name" : "click"
+				}
+            ],
+            "translate2d" : [71, 21],
+            "scale2d" : [125, 80]
+        }
+    ]
+}

@@ -31,8 +31,8 @@ out vec4 PixelColor;
 void main()
 {
 	// ---- lighting -----
-	vec4 light1Out;
-	vec4 light2Out;
+	vec4 light1Out = vec4(0,0,0,1);
+	vec4 light2Out = vec4(0,0,0,1);
 	
 	vec4 ambient = lightAmbientColor * matAmbient;
 	vec4 totalLightOut = ambient;

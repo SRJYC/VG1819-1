@@ -1,5 +1,4 @@
 #pragma once
-//@ Austin Rogers 09/15/18
 
 #include "TileInformationComponent.h"
 

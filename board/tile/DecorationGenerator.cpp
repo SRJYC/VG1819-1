@@ -14,7 +14,7 @@ std::vector<kitten::K_GameObject*> DecorationGenerator::generateDecoration(TileI
 	{
 		//no decoration
 	case LandInformation::Grass_land:
-		return generateGrassDecoration();
+		return generateGrassDecoration(x, y);
 	//case LandInformation::Forest_land:
 		//return generateForestDecoration();
 	case LandInformation::Garden_land:
@@ -33,15 +33,35 @@ std::vector<kitten::K_GameObject*> DecorationGenerator::generateDecoration(TileI
 }
 
 
-std::vector<kitten::K_GameObject*> DecorationGenerator::generateGrassDecoration()
+std::vector<kitten::K_GameObject*> DecorationGenerator::generateGrassDecoration(int p_tileX, int p_tileZ)
 {
 	std::vector<kitten::K_GameObject*> list;
 	kitten::K_GameObject* k;
+	kitten::K_GameObject* k2;
 	kitten::K_GameObjectManager* gm = kitten::K_GameObjectManager::getInstance();
-
 
 	k = gm->createNewGameObject("TileDecoration/grass/low_poly_grass1.json");
 	list.push_back(k);
+
+	k2 = gm->createNewGameObject("TileDecoration/grass/low_poly_grass2.json");
+
+	float bigGrassX = (rand() % 50) / 100.0f;
+	float bigGrassY = (rand() % 50) / 100.0f;
+	float negPos = rand() % 2;
+
+	if (negPos == 1)
+	{
+		bigGrassX *= -1;
+	}
+
+	negPos = rand() % 2;
+
+	if (negPos == 1)
+	{
+		bigGrassY *= -1;
+	}
+
+	k2->getTransform().place(bigGrassX + p_tileX, -1.0f, bigGrassY + p_tileZ);
 	
 	return list;
 }

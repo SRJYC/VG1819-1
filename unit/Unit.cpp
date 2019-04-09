@@ -15,7 +15,7 @@
 
 namespace unit
 {
-	Unit::Unit() : m_healthBarState(none), m_healthBar(nullptr), m_unitSelect(nullptr)
+	Unit::Unit() : m_healthBarState(none), m_healthBar(nullptr), m_unitSelect(nullptr), m_lateDestroy(false), m_queuedDestroy(false), m_framesToWaitForDestroy(1)
 	{
 		m_itemGO = nullptr;
 
@@ -76,6 +76,7 @@ namespace unit
 		}
 		//m_isStructure = flag;*/
 
+		/*
 		//check if unit has auto cast ability
 		for (auto ad : m_ADList)
 		{
@@ -85,14 +86,14 @@ namespace unit
 				if(found->second)//auto cast property exist and it's 1
 					setAutoAbility(ad->m_stringValue[ABILITY_NAME]);
 			}
-		}
+		}*/
 	}
-
+	/*
 	void Unit::setAutoAbility(const std::string & p_name)
 	{
 		m_autoCast = true;
 		m_autoAbility = p_name;
-	}
+	}*/
 
 	//status
 	/*
@@ -236,6 +237,15 @@ namespace unit
 		{
 			m_turn->checkTurn();
 		}
+
+		if (m_queuedDestroy)
+		{
+			//Intentionally not --m_...
+			if (m_framesToWaitForDestroy-- == 0)
+			{
+				destroy();
+			}
+		}
 	}
 
 	//turn
@@ -274,13 +284,14 @@ namespace unit
 			m_turn->act = true;
 		}
 
+		/*
 		//if has auto cast ability, use it
-		if (m_autoCast)
+		if (m_autoCast && networking::ClientGame::getClientId() == m_clientId)
 		{
 			useAbility(m_autoAbility);
-		}
+		}*/
 		kitten::Event* eventData = new kitten::Event(kitten::Event::Next_Units_Turn_Start);
-		kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Next_Units_Turn_Start, eventData);
+		kitten::EventManager::getInstance()->queueEvent(kitten::Event::Next_Units_Turn_Start, eventData);
 	}
 
 	bool Unit::canMove()
@@ -550,6 +561,11 @@ namespace unit
 
 		//remove from intiative tracker
 		InitiativeTracker::getInstance()->removeUnit(m_attachedObject);
+	}
+
+	void Unit::queueDestroy()
+	{
+		m_queuedDestroy = true;
 	}
 
 	void Unit::destroy()
