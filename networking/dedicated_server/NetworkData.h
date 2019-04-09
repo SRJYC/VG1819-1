@@ -44,7 +44,8 @@ enum PacketTypes
 	UPDATE_SERVER_INFO,
 	QUICKPLAY_FOUND_GAME,
 	SESSION_ENDED,
-	MAP_DATA
+	MAP_DATA,
+	NO_MAP_ID
 };
 
 struct UnitPrimitiveData

@@ -71,8 +71,9 @@
 								},
 								{
 									"name" : "TriggerEventButton",
-									"regularTexture" : "textures/ui/buttons/join_button_small.tga",
-									"highlightedTexture" : "textures/ui/buttons/join_button_small_h.tga",
+									"regularTexture" : "textures/ui/buttons/join_button_small.dds",
+									"highlightedTexture" : "textures/ui/buttons/join_button_small_h.dds",
+									"inactiveTexture" : "textures/ui/buttons/join_button_small_i.dds",
 									"event" : "Join_Localhost"
 								},
 								{
@@ -87,7 +88,7 @@
 							"components" : [
 								{
 									"name" : "UIObject",
-									"texture" : "textures/ui/buttons/join_button_small.tga"
+									"texture" : "textures/ui/buttons/join_button_small.dds"
 								},
 								{
 									"name" : "PlayUniversalSoundOnUIClick",
@@ -95,8 +96,9 @@
 								},
 								{
 									"name" : "TriggerEventButton",
-									"regularTexture" : "textures/ui/buttons/join_button_small.tga",
-									"highlightedTexture" : "textures/ui/buttons/join_button_small_h.tga",
+									"regularTexture" : "textures/ui/buttons/join_button_small.dds",
+									"highlightedTexture" : "textures/ui/buttons/join_button_small_h.dds",
+									"inactiveTexture" : "textures/ui/buttons/join_button_small_i.dds",
 									"event" : "Join_Direct_Address"
 								},
 								{

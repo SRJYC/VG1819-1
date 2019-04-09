@@ -321,7 +321,8 @@ void ConnectToHost::cancelJoinListener(kitten::Event::EventType p_type, kitten::
 }
 void ConnectToHost::cancelJoin()
 {
-	m_ipInputTextBox->setText(NO_GAME_DETECTED_MSG);
+	m_ipInputTextBox->setText("");
+	m_localHostTextBox->setText(NO_GAME_DETECTED_MSG);
 	networking::ClientGame::getInstance()->disconnectFromNetwork();
 	networking::ClientGame::destroyInstance();
 
