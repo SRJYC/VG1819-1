@@ -3,7 +3,7 @@
     "components" : [
         {
             "name" : "UIObject",
-            "texture" : "textures/ui/icons/power_icon.tga"
+            "texture" : "textures/ui/icons/power_icon.png"
         }
     ],
     "scale2d" : [100,100],

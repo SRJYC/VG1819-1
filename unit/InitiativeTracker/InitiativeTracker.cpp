@@ -95,7 +95,7 @@ int unit::InitiativeTracker::getUnitObjectIndex(kitten::K_GameObject * p_uGO)
 	return 0;
 }
 
-unit::InitiativeTracker::InitiativeTracker()
+unit::InitiativeTracker::InitiativeTracker() : m_gameStarted(false)
 {
 	m_display = new TurnChangeDisplay();
 
@@ -335,6 +335,8 @@ void unit::InitiativeTracker::gameTurnStart()
 		m_uAura->getTransform().setParent(&currentUnit->getTransform());
 		m_uturn->turnStart(currentUnit);//let the unit start its turn
 	}
+
+	m_gameStarted = true;
 }
 
 void unit::InitiativeTracker::unitTurnEnd()
@@ -392,6 +394,11 @@ void unit::InitiativeTracker::addExtraTurn(kitten::K_GameObject * p_unit)
 
 void unit::InitiativeTracker::newTurnListener(kitten::Event::EventType p_type, kitten::Event* p_event)
 {
+	if (!m_gameStarted)
+	{
+		return;
+	}
+
 	unit::Unit* currentUnit = getCurrentUnit()->getComponent<unit::Unit>();
 	if (networking::ClientGame::getInstance()->getClientId() == currentUnit->m_clientId)
 	{

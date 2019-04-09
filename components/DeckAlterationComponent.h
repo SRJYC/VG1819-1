@@ -15,6 +15,8 @@ public:
 	void setDeckId(int p_id) { m_deckId = p_id; }
 	void saveDeck();
 	void discardChanges();
+	void clearDeck();
+	void clearDeckForCommander();
 
 	DeckData* getDeckData();
 	const int getDeckId() const { return m_deckId; }

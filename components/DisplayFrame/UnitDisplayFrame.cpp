@@ -31,12 +31,22 @@ void UnitDisplayFrame::start()
 	m_currentPick = -1;
 	DisplayFrame::start();
 
+	//get commander id
+	int commanderId = DeckAlterationComponent::getActiveInstance()->getDeckData()->commanderID;
+
 	kitten::Event* e = new kitten::Event(kitten::Event::Card_Context_Set_Enabled);
 	e->putInt(CARD_CONTEXT_SET_ENABLED_KEY, TRUE);
 	kitten::EventManager::getInstance()->queueEvent(kitten::Event::Card_Context_Set_Enabled, e);
+
 	kitten::Event* updateContextEvent = new kitten::Event(kitten::Event::Update_Card_Context_By_ID);
-	updateContextEvent->putInt(UPDATE_CARD_CONTEXT_KEY, DeckAlterationComponent::getActiveInstance()->getDeckData()->commanderID);
+	updateContextEvent->putInt(UPDATE_CARD_CONTEXT_KEY, commanderId);
 	kitten::EventManager::getInstance()->queueEvent(kitten::Event::Update_Card_Context_By_ID, updateContextEvent);
+
+	//change unit vector
+	m_unitVector = kibble::getAvaliableUnitIdsForCommander(commanderId);
+
+	//reupdate display
+	updateDisplay();
 }
 
 int UnitDisplayFrame::getTargetAvailable() {
