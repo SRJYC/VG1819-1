@@ -3,7 +3,7 @@
 	"components" : [
 		{
 			"name" : "UIObject",
-			"texture" : "textures/ui/buttons/button_exit_game.tga"
+			"texture" : "textures/ui/buttons/select_map.dds"
 		},
 		{
 			"name" : "PlayUniversalSoundOnUIClick",
@@ -11,8 +11,8 @@
 		},
 		{
 			"name" : "ClickableButton",
-			"regularTexture" : "textures/ui/buttons/button_new_game.tga",
-			"highlightedTexture" : "textures/ui/buttons/button_new_game_highlighted.tga"
+			"regularTexture" : "textures/ui/buttons/select_map.dds",
+			"highlightedTexture" : "textures/ui/buttons/select_map_h.dds"
 		},
 		{
 			"name" : "ClickableFrame"

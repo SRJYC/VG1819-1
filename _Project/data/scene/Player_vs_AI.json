@@ -1,0 +1,41 @@
+{
+  "gameobjects": [
+    {
+      "name": "more scene init stuff",
+      "components": [
+        {
+          "name": "GameplayInit",
+			"testing" : false
+        },
+		{
+			"name" : "DisableAfterTime",
+			"time" : 10
+		}
+      ]
+    },
+    {
+      "name": "Projectile Manager Instance",
+      "components": [
+        {
+          "name": "ProjectileManager",
+          "list": "data/unit_projectileList.txt"
+        }
+      ]
+    },
+	{
+		"name" : "AI",
+		"components" : [
+			{
+				"name" : "AIController"
+			},
+			{
+				"name" : "DisableAfterTime",
+				"time" : 0
+			}
+		]
+	}
+  ],
+	"scenes" : [
+		"Game_Scene.json", "mountainForest.json"
+	]
+}

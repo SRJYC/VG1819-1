@@ -9,7 +9,10 @@ void SetupDeckEditOnSceneChange::onClick() {
 		DeckInitializingComponent::getActiveInstance()->getDeckData() == nullptr ||
 		DeckAlterationComponent::getActiveInstance() == nullptr
 		)// There's no point of changing scenes if there isn't a selected deck. DeckAlteration component should have been initialized alongside the Initializing component
+	{
+		DeckInitializingComponent::getActiveInstance()->toggleMessage(true);
 		return;
+	}
 	DeckAlterationComponent::getActiveInstance()->discardChanges();
 	DeckAlterationComponent::getActiveInstance()->setDeckId(DeckInitializingComponent::getActiveInstance()->getDeckId());
 	DeckAlterationComponent::getActiveInstance()->copyDeckData(DeckInitializingComponent::getActiveInstance()->getDeckData());

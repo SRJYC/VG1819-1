@@ -1,0 +1,89 @@
+{
+    "gameobjects" : [
+        {
+            "filename" : "camgameobj.txt", 
+            "translate" : [7, 13.0, 0.0],
+            "rotate" : [-70,0,0]
+        },
+		{
+			"filename" : "netmenu_console.txt",
+			"translate2d" : [950, 100]
+		},
+		{
+			"filename" : "PauseMenu.txt"
+		},
+		{
+			"filename" : "UniversalPfx.txt"
+		},
+		{
+			"filename" : "AmbientSystem.json"
+		},
+		{
+			"filename" : "card_context.json"
+		},
+		{
+			"filename" : "land_context.json"
+		},
+		{
+		  "filename" : "CommanderContext.txt"
+		},
+		{
+			"name" : "CombatTextInstance",
+			"components": [
+				{
+					"name" : "CombatText",
+					"poolsize" : 9
+				}
+			]
+		},
+		{
+			"filename" : "TurnCounter.json"
+		},
+		{
+			"name": "more scene init stuff",
+			"components": [
+				{
+					"name": "GameplayInit",
+					"testing" : false
+				},
+				{
+					"name" : "DisableAfterTime",
+					"time" : 10
+				}
+			]
+		},
+		{
+			"name": "Projectile Manager Instance",
+			"components": [
+				{
+					"name": "ProjectileManager",
+					"list": "data/unit_projectileList.txt"
+				}
+			]
+		},
+		{
+			"name" : "AI",
+			"components" : [
+				{
+					"name" : "AIController"
+				},
+				{
+					"name" : "DisableAfterTime",
+					"time" : 0
+				}
+			]
+		},
+		{
+			"name" : "AI 2",
+			"components" : [
+				{
+					"name" : "AIController"
+				},
+				{
+					"name" : "DisableAfterTime",
+					"time" : 0
+				}
+			]
+		}
+    ]
+}

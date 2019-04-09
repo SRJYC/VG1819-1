@@ -4,6 +4,7 @@
 #include "unitInteraction/UnitInteractionManager.h"
 #include "AI/Extract/Behavior.h"
 #include "board/tile/gameMode/Capture/CaptureItemController.h"
+#include "AI/controller.h"
 
 #include "_Project\UniversalPfx.h"
 
@@ -50,19 +51,21 @@ namespace unit
 
 	Unit::~Unit()
 	{
-		delete m_statusContainer;
-		delete m_cdRecorder;
-		delete m_castTimer;
+		delete m_statusContainer;m_statusContainer = nullptr;
+		delete m_cdRecorder;m_cdRecorder = nullptr;
+		delete m_castTimer;m_castTimer = nullptr;
 
 		for (auto it : m_ADList)//delete ability description
 		{
 			delete it;
 		}
+		m_ADList.clear();
 
 		if (isCommander())
 		{
 			delete m_commander;
 		}
+		m_commander = nullptr;
 	}
 
 	void Unit::start()
@@ -582,9 +585,21 @@ namespace unit
 				{
 					eventData->putInt(GAME_END_RESULT, CLIENT_COMMANDER_DIED);
 				}
-				
+
 				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Network_End_Game, eventData);
-			}			
+			}
+			else if (AI::controller::AIPresent()) {
+				kitten::Event* eventData = new kitten::Event(kitten::Event::Network_End_Game);
+				if (m_clientId)
+				{
+					eventData->putInt(GAME_END_RESULT, CLIENT_COMMANDER_DIED);
+				}
+				else
+				{
+					eventData->putInt(GAME_END_RESULT, HOST_COMMANDER_DIED);
+				}
+				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Network_End_Game, eventData);
+			}
 		}
 	}
 

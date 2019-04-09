@@ -1,0 +1,30 @@
+{
+	"name" : "AI vs AI",
+	"components" : [
+		{
+			"name" : "UIObject",
+            "texture" : "textures/ui/buttons/simulation.dds"
+		},
+		{
+			"name" : "ChangeSceneOnClick",
+			"scene" : "AI_vs_AI.json"
+		},
+		{
+			"name" : "ClickableButton",
+            "regularTexture" : "textures/ui/buttons/simulation.dds",
+            "highlightedTexture" : "textures/ui/buttons/simulation_h.dds"
+		},
+		{
+			"name" : "ClickableFrame"
+		},
+		{
+			"name" : "ShowLoadingOnClick"
+		},
+		{
+			"name" : "PlayUniversalSoundOnUIClick",
+			"sound_name" : "click"
+		}
+	],
+	"translate2d" : [995, 522],
+    "scale2d" : [128, 64]
+}

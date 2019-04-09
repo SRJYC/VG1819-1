@@ -1,0 +1,30 @@
+{
+	"name" : "Player vs AI",
+	"components" : [
+		{
+			"name" : "UIObject",
+			"texture" : "textures/ui/buttons/player_vs_ai.dds"
+		},
+		{
+			"name" : "StartGameOnClick",
+			"scene" : "Player_vs_AI.json"
+		},
+		{
+			"name" : "ClickableButton",
+			"regularTexture" : "textures/ui/buttons/player_vs_ai.dds",
+			"highlightedTexture" : "textures/ui/buttons/player_vs_ai_h.dds"
+		},
+		{
+			"name" : "ClickableFrame"
+		},
+		{
+			"name" : "ShowLoadingOnClick"
+		},
+		{
+			"name" : "PlayUniversalSoundOnUIClick",
+			"sound_name" : "click"
+		}
+	],
+	"translate2d" : [995, 322],
+	"scale2d" : [200, 64]
+}

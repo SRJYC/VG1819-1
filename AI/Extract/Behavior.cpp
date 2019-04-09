@@ -76,6 +76,7 @@ double ForEachTarget::calculateWeight(const AI::retainedInfo & p_retainedInfo, c
 			overall += behavior->calculateWeight(p_retainedInfo, p_passedInfo, p_targgetingInfo);
 		}
 	}
+	p_targgetingInfo.focusedTarget = 0;
 
 	return this->internalMultiplier * overall;
 }
