@@ -171,11 +171,11 @@ void GameModeManager::checkPoints()
 		kitten::Event* eventData = new kitten::Event(kitten::Event::Network_End_Game);
 		if (clientId == client->getClientId())
 		{
-			eventData->putInt(GAME_END_RESULT, HOST_COMMANDER_DIED);
+			eventData->putInt(GAME_END_RESULT, VICTORY);
 		}
 		else
 		{
-			eventData->putInt(GAME_END_RESULT, CLIENT_COMMANDER_DIED);
+			eventData->putInt(GAME_END_RESULT, DEFEAT);
 		}
 
 		kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Network_End_Game, eventData);
