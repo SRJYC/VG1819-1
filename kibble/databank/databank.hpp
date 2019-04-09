@@ -18,6 +18,10 @@ namespace kibble {
 
 	DeckData* getDeckDataFromId(const int& p_identifier);
 	int getDeckDataListCount();
+
+	DeckData* getAIDeckDataFromId(const int& p_identifier);
+	int getAIDeckDataListCount();
+
 	int getCommanderUnitCount();
 	int getNonCommanderUnitCount();
 
