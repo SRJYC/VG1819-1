@@ -36,6 +36,8 @@ ConnectToHost::~ConnectToHost()
 	kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Network_End_Game, this);
 	kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Quickplay, this);
 	kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::P2P_Start_Game, this);
+	kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Network_Host_Not_Ready, this);
+	kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Network_Cancel_Join, this);
 	m_inputMan->setPollMode(true);
 
 	if (m_bQuickplay && networking::ClientGame::isNetworkValid())
@@ -92,14 +94,35 @@ void ConnectToHost::start()
 		this,
 		std::bind(&ConnectToHost::startGameListener, this, std::placeholders::_1, std::placeholders::_2));
 
+	kitten::EventManager::getInstance()->addListener(
+		kitten::Event::EventType::Network_Host_Not_Ready,
+		this,
+		std::bind(&ConnectToHost::hostNotReadyListener, this, std::placeholders::_1, std::placeholders::_2));
+
+	kitten::EventManager::getInstance()->addListener(
+		kitten::Event::EventType::Network_Cancel_Join,
+		this,
+		std::bind(&ConnectToHost::cancelJoinListener, this, std::placeholders::_1, std::placeholders::_2));
+
 	// Create loading message game object to display when directly connecting to a host
 	auto goMan = kitten::K_GameObjectManager::getInstance();
 	m_loadingMessage = goMan->createNewGameObject("UI/loading_screen.json");
 	m_loadingMessage->setEnabled(false);
 
+	auto children = m_attachedObject->getTransform().getChildren();
+
 	// Textbox to display info when polling for a host locally
-	m_localHostTextBox = goMan->createNewGameObject("network_menu/join_screen_textbox.json")->getComponent<puppy::TextBox>();
+	m_localHostTextBox = children[0]->getAttachedGameObject().getComponent<puppy::TextBox>();
 	m_localHostTextBox->setText("");
+
+	m_networkStatusTextBox = children[1]->getAttachedGameObject().getComponent<puppy::TextBox>();
+	m_networkStatusTextBox->setText("Waiting to connect to a host...");
+
+	m_refreshButton = children[2]->getAttachedGameObject().getComponent<userinterface::TriggerEventButton>();
+	m_joinLocalHostButton = children[3]->getAttachedGameObject().getComponent<userinterface::TriggerEventButton>();
+	m_joinDirectHostButton = children[4]->getAttachedGameObject().getComponent<userinterface::TriggerEventButton>();
+	m_cancelButton = children[5]->getAttachedGameObject().getComponent<userinterface::TriggerEventButton>();
+	m_cancelButton->setActive(false);
 
 	// Disable polling so the player can immediately start typing an address
 	m_inputMan->setPollMode(false);
@@ -116,19 +139,19 @@ void ConnectToHost::update()
 	if (m_bConnect)
 	{
 		m_bConnect = false;
-		joinDirectAddress();
+		kitten::K_Instance::changeScene("mainscene.json");
 	}
 
 	if (m_bLoadingMsgEnabled)
 	{
 		m_bLoadingMsgEnabled = false;
+		m_loadingMessage->setEnabled(true);
 		m_bConnect = true;
 	}
 
 	if (m_inputMan->keyDown(GLFW_KEY_ENTER) && !m_inputMan->keyDownLast(GLFW_KEY_ENTER))
 	{
 		m_bLoadingMsgEnabled = true;
-		m_loadingMessage->setEnabled(true);
 	}
 
 	// Update ClientGame if there is an instance
@@ -140,8 +163,7 @@ void ConnectToHost::update()
 
 void ConnectToHost::joinDirectAddressListener(kitten::Event::EventType p_type, kitten::Event* p_event)
 {
-	m_loadingMessage->setEnabled(true);
-	m_bLoadingMsgEnabled = true;
+	joinDirectAddress();
 }
 
 void ConnectToHost::joinDirectAddress()
@@ -167,11 +189,18 @@ void ConnectToHost::joinDirectAddress()
 
 	if (networking::ClientGame::isNetworkValid())
 	{
+		m_refreshButton->setActive(false);
+		m_joinLocalHostButton->setActive(false);
+		m_joinDirectHostButton->setActive(false);
+		m_cancelButton->setActive(true);
+
 		m_ipInputTextBox->setText("Joined host");
+		m_networkStatusTextBox->setText("Connected, waiting for host...");
 		networking::ClientGame::getInstance()->sendBasicPacket(JOIN_GAME);
 	} 
 	else
 	{
+		m_networkStatusTextBox->setText("Could not connect to " + address);
 		m_ipInputTextBox->setText("Network Error");
 		m_inputMan->setPollMode(false);
 		m_loadingMessage->setEnabled(false);
@@ -206,11 +235,14 @@ void ConnectToHost::pollForLocalhost()
 
 	if (networking::ClientGame::isNetworkValid())
 	{
+		m_joinLocalHostButton->setActive(true);
 		m_localHostTextBox->setText(GAME_DETECTED_MSG);
 	}
 	else
 	{
+		m_joinLocalHostButton->setActive(false);
 		m_localHostTextBox->setText(NO_GAME_DETECTED_MSG);
+		m_networkStatusTextBox->setText("Could not connect to localhost");
 	}
 }
 
@@ -223,11 +255,13 @@ void ConnectToHost::joinLocalhost()
 {
 	if (networking::ClientGame::isNetworkValid())
 	{
+		m_refreshButton->setActive(false);
+		m_joinLocalHostButton->setActive(false);
+		m_joinDirectHostButton->setActive(false);
+		m_cancelButton->setActive(true);
+
+		m_networkStatusTextBox->setText("Connected, waiting for host...");
 		networking::ClientGame::getInstance()->sendBasicPacket(JOIN_GAME);
-	}
-	else
-	{
-		kitten::EventManager::getInstance()->queueEvent(kitten::Event::Remove_Loading_Screen, nullptr);
 	}
 }
 
@@ -243,16 +277,26 @@ void ConnectToHost::joinDedicatedServer()
 	m_bConnect = false;
 }
 
+void ConnectToHost::hostNotReadyListener(kitten::Event::EventType p_type, kitten::Event* p_event)
+{
+	std::string message = p_event->getString(NETWORK_MESSAGE_KEY);
+	m_networkStatusTextBox->setText(message);
+	m_inputMan->setPollMode(false);
+	m_loadingMessage->setEnabled(false);
+	m_bLoadingMsgEnabled = false;
+	kitten::EventManager::getInstance()->queueEvent(kitten::Event::Remove_Loading_Screen, nullptr);
+}
+
 void ConnectToHost::startGameListener(kitten::Event::EventType p_type, kitten::Event* p_event)
 {
-	int mapId = p_event->getInt(MAP_ID_KEY);
 	startGame();
 }
 
 void ConnectToHost::startGame()
 {
+	m_networkStatusTextBox->setText("Starting Game");
 	m_bJoiningGame = true;
-	kitten::K_Instance::changeScene("mainscene.json");
+	m_bLoadingMsgEnabled = true;
 }
 
 void ConnectToHost::lostConnectionListener(kitten::Event::EventType p_type, kitten::Event* p_event)
@@ -261,7 +305,30 @@ void ConnectToHost::lostConnectionListener(kitten::Event::EventType p_type, kitt
 	if (gameResult == PLAYER_DISCONNECTED)
 	{
 		// Clean up connection
-		networking::ClientGame::getInstance()->disconnectFromNetwork(true);
+		m_networkStatusTextBox->setText("Lost connection");
+		networking::ClientGame::getInstance()->disconnectFromNetwork();
 		m_localHostTextBox->setText(LOST_CONNECTION_MSG);
+		m_refreshButton->setActive(true);
+		m_joinLocalHostButton->setActive(false);
+		m_joinDirectHostButton->setActive(true);
+		m_cancelButton->setActive(false);
 	}
+}
+
+void ConnectToHost::cancelJoinListener(kitten::Event::EventType p_type, kitten::Event* p_event)
+{
+	cancelJoin();
+}
+void ConnectToHost::cancelJoin()
+{
+	m_ipInputTextBox->setText("");
+	m_localHostTextBox->setText(NO_GAME_DETECTED_MSG);
+	networking::ClientGame::getInstance()->disconnectFromNetwork();
+	networking::ClientGame::destroyInstance();
+
+	m_networkStatusTextBox->setText("Waiting to connect to a host...");
+	m_refreshButton->setActive(true);
+	m_joinLocalHostButton->setActive(false);
+	m_joinDirectHostButton->setActive(true);
+	m_cancelButton->setActive(false);
 }

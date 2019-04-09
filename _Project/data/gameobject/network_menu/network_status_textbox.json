@@ -1,0 +1,13 @@
+{
+    "name" : "Network Status TextBox",
+    "components" : [
+        {
+            "name" : "TextBox",
+			"font" : "../fonts/nsimsun_18pt.fnt",
+			"color" : [1,1,1],
+            "alignment" : "center",
+            "width" : 250,
+            "height" : 125
+        }
+    ]
+}
