@@ -361,13 +361,14 @@ namespace AI {
 
 				if (targets.size() == 0 || (targets.size() < ability.targets && !ability.selectRepeat)) continue;
 
-				abilityTargetLoop(p_retainedInfo, p_passedInfo, targetInfo, targets,this).loop();
+				if(ability.targets > 0)
+					abilityTargetLoop(p_retainedInfo, p_passedInfo, targetInfo, targets,this).loop();
 			}
 
 			if (p_retainedInfo.source.isCommander) {
 				// Logic for Tile Manipulation
 				{
-					targettingInfo targetInfo = targettingInfo(Extract::manipulateTile);
+					targettingInfo targetInfo = targettingInfo(p_retainedInfo.source.manipulateTile);
 
 					for (auto tile : getTargetsInRange(p_retainedInfo,p_passedInfo,targetInfo)) {
 						targetInfo.targets = std::vector<std::pair<int, int>>(1, tile);

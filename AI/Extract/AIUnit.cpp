@@ -20,8 +20,8 @@ namespace AI {
 				if (origAbility->m_intValue[UNIT_LV] > p_data->m_attributes[UNIT_LV]
 					|| (p_data->checkCD(LOOKUPSTR(ABILITY_NAME)) > 0)
 					|| (CHECKINTEXISTS("area_fix")) // Delete later
-					|| (LOOKUPSTR(ABILITY_NAME) == ABILITY_MANIPULATE_TILE)
 					|| (CHECKINTEXISTS(COUNTER_MIN) && p_data->m_attributes[LOOKUPSTR(COUNTER_NAME)] < LOOKUPINT(COUNTER_MIN)) 
+					|| (CHECKINTEXISTS(ABILITY_DISABLE) && LOOKUPINT(ABILITY_DISABLE) > 0)
 					) continue;
 
 				this->ability.push_back(Ability());
@@ -67,9 +67,19 @@ namespace AI {
 
 				lastAbility.status.encourage = CHECKSTREXISTS(std::string("status_name_") + STATUS_ENCOURAGE);
 
+				lastAbility.demonicPresence = CHECKINTEXISTS(DEMONIC_PRESENCE) ? LOOKUPINT(DEMONIC_PRESENCE) : 0;
+				lastAbility.duration = CHECKINTEXISTS(UNIT_DURATION) ? LOOKUPINT(UNIT_DURATION) : 0;
+				lastAbility.powerLimit = (lastAbility.hasPowerLimit = CHECKINTEXISTS(UNIT_POWER_LIMIT)) ? LOOKUPINT(UNIT_POWER_LIMIT) : 999;
+
 
 				// TODO ADD the counter buildup map setter. 
 				//std::map<std::string, int> counter, counterLimit;
+
+
+				if (lastAbility.name == ABILITY_MANIPULATE_TILE) {
+					this->manipulateTile = lastAbility;
+					ability.pop_back();
+				}
 			}
 
 			this->status.encourage = p_data->m_attributes.find(std::string("status_name_") + STATUS_ENCOURAGE) != p_data->m_attributes.end();

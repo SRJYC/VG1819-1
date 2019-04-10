@@ -28,12 +28,13 @@ namespace AI {
 			struct Ability {
 				Filter filter; Status status;
 				bool selectRepeat = false,
-					hasPower = false
+					hasPower = false, hasPowerLimit = false
 					;
 
 				int minRange = 0, maxRange = 0,
 					power = 0, targets = 1,
-					counterPower = 0, counterChange = 0;
+					counterPower = 0, counterChange = 0,
+					demonicPresence = 0, powerLimit = 999, duration;
 
 				std::map<std::string, int> counter, counterLimit;
 
@@ -44,6 +45,7 @@ namespace AI {
 
 			int hp = 0, mv = 0, cost = 0, lv = 0, turnsChanneling = 0, clientId, kibbleId;
 			bool isCommander = false;
+			Ability manipulateTile;
 			Status status;
 			unit::Unit* source;
 			std::vector<Ability> ability;

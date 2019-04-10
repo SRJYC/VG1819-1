@@ -51,7 +51,88 @@
 				"description":"Deal damage to target. Need store power."
 			}
 		],
-		"portrait_texture" : "textures/cards/500x500/DemonLord.tga"
+		"portrait_texture" : "textures/cards/500x500/DemonLord.tga",
+		"AI" : [
+			{
+				"ability" : "Manipulate Tile",
+				"behavior" : {
+					"name" : "ForEachTarget",
+					"subBehavior" : [
+						{
+							"name" : "NearestUnit",
+							"multiplier" : 0.1,
+							"flip" : true,
+							"target" : "enemy"
+						},
+						{
+							"name" : "TileOwnership",
+							"ownTeam" : false,
+							"multiplier" : 1.1
+						}
+					]
+				}
+			},
+			{
+				"ability" : "mv",
+				"behavior" : {
+					"name" : "NearestUnit",
+					"target" : "enemy"
+				}
+			},
+			{
+				"ability" : "Ancient Offering",
+				"behavior" : {
+					"name" : "OwnAttribute",
+					"attribute" : "power",
+					"attFrom" : 15,
+					"attTo" : 0,
+					"wTo" : 1.1,
+					"subBehavior" : [
+						{
+							"name" : "NearestUnit",
+							"multiplier" : 0.1,
+							"target" : "ally"
+						},
+						{
+							"name" : "TargetAttributePercentage",
+							"multiplier" : 1,
+							"attribute" : "hp",
+							"attFrom" : 0,
+							"attTo" : 2,
+							"wFrom" : 0,
+							"wTo" : 2
+						}
+					]
+				}
+			},
+			{
+				"ability" : "Ancient Gift",
+				"behavior" : {
+					"name" : "OwnAttribute",
+					"attribute" : "power",
+					"attFrom" : 0,
+					"attTo" : 15,
+					"wTo" : 1,
+					"subBehavior" : [
+						{
+							"name" : "NearestUnit",
+							"multiplier" : 0.1,
+							"target" : "enemy"
+						},
+						{
+							"name" : "TargetAttributePercentage",
+							"multiplier" : 1,
+							"attribute" : "hp",
+							"attFrom" : 0,
+							"attTo" : 2,
+							"wFrom" : 0,
+							"wTo" : 2
+						}
+					]
+				}
+			
+			}
+		]
 	},
 	"components" : [
 		{
