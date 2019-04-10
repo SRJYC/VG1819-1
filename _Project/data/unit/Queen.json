@@ -38,7 +38,7 @@
 				"ability" : "Here is Homeland",
 				"behavior" : {
 					"name" : "ForEachTarget",
-					"multiplier" : 0.25,
+					"multiplier" : 0.275,
 					"subBehavior" : [
 						{
 							"name" : "TileType",
@@ -52,8 +52,20 @@
 			{
 				"ability" : "Manipulate Tile",
 				"behavior" : {
-					"name" : "TileOwnership",
-					"ownTeam" : false
+					"name" : "ForEachTarget",
+					"subBehavior" : [
+						{
+							"name" : "NearestUnit",
+							"multiplier" : 0.1,
+							"flip" : true,
+							"target" : "enemy"
+						},
+						{
+							"name" : "TileOwnership",
+							"ownTeam" : false,
+							"multiplier" : 0.9
+						}
+					]
 				}
 			},
 			{

@@ -25,6 +25,12 @@ namespace AI {
 			Sequence();
 			~Sequence();
 
+			bool operator>( const Sequence& r) const { 
+				if (this->weight > r.weight) 
+					return this->weight > r.weight;
+				else 
+					return this->actions.size() > r.actions.size();
+			}
 			struct weightComp {
 				bool operator()(const Sequence& l, const Sequence& r) const { return l.weight > r.weight; }
 			};

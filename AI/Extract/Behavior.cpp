@@ -20,6 +20,7 @@ void setupBehaviors() {
 	ADDTOMAP(TileType);
 	ADDTOMAP(TargetAlignment);
 	ADDTOMAP(OwnAttribute);
+	ADDTOMAP(OwnAttributePercentage);
 	ADDTOMAP(TargetAttribute);
 	ADDTOMAP(TargetAttributePercentage);
 	ADDTOMAP(RepeatedTarget);
@@ -42,6 +43,7 @@ Behavior::Behavior(nlohmann::json & p_json)
 	}
 
 	internalMultiplier = LOOKUPDEF("multiplier", 1);
+	flip = LOOKUPDEF("flip", false);
 }
 
 Behavior::Behavior(const Behavior * source)
@@ -54,7 +56,7 @@ double Behavior::calculateWeight(const AI::retainedInfo & p_retainedInfo, const 
 	if (this->subBehaviors.size() > 0) {
 		double total = 0;
 		for (auto behavior : subBehaviors) {
-			total += behavior->calculateWeight(p_retainedInfo, p_passedInfo, p_targgetingInfo);
+			total += behavior->calculateWeight(p_retainedInfo, p_passedInfo, p_targgetingInfo) * ((flip)?-1:1);
 		}
 		return this->internalMultiplier * this->calculateMultiplier(p_retainedInfo, p_passedInfo, p_targgetingInfo) * total;
 	}
@@ -278,6 +280,31 @@ double OwnAttribute::calculateMultiplier(const AI::retainedInfo & p_retainedInfo
 	else if (unitAttVal < attributeTo) unitAttVal = attributeTo;
 	double percentage = (double)std::abs(unitAttVal- attributeFrom) / std::abs(attributeTo - attributeFrom);
 	return (double)(weightRangeTo-weightRangeFrom) * percentage + weightRangeFrom;
+}
+
+OwnAttributePercentage::OwnAttributePercentage(nlohmann::json & p_json) : Behavior(p_json)
+{
+	attribute = LOOKUP("attribute").get<std::string>();
+	attributeFrom = LOOKUPDEF("attFrom", 0);
+	attributeTo = LOOKUPDEF("attTo", 0);
+	weightRangeFrom = LOOKUPDEF("wFrom", 0);
+	weightRangeTo = LOOKUPDEF("wTo", 1);
+}
+
+double OwnAttributePercentage::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo & p_targgetingInfo)
+{
+	int unitAttVal = p_retainedInfo.source.source->m_attributes[attribute];
+	int unitOrigAttVal = kibble::getUnitFromId(p_retainedInfo.source.source->m_kibbleID)->m_attributes[attribute];
+	double oPercentage = (double)unitAttVal / unitOrigAttVal;
+	if (attributeFrom < attributeTo) {
+		if (oPercentage < attributeFrom) oPercentage = attributeFrom;
+		else if (oPercentage > attributeTo) oPercentage = attributeTo;
+	}
+	else if (oPercentage > attributeFrom) oPercentage = attributeFrom;
+	else if (oPercentage < attributeTo) oPercentage = attributeTo;
+
+	double percentage = (double)std::abs(oPercentage - attributeFrom) / std::abs(attributeTo - attributeFrom);
+	return (double)(weightRangeTo - weightRangeFrom) * percentage + weightRangeFrom;
 }
 
 TargetAttribute::TargetAttribute(nlohmann::json & p_json) : Behavior(p_json)

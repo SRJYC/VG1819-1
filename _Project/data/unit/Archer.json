@@ -56,9 +56,10 @@
 					"same" : -50,
 					"subBehavior" : [
 						{
-							"name" : "TargetAttribute",
+							"name" : "TargetAttributePercentage",
 							"attribute" : "hp",
-							"attFrom" : 50,
+							"multiplier" : 1.5,
+							"attFrom" : 1.8,
 							"attTo" : 0
 						}
 					]

@@ -22,6 +22,7 @@ namespace AI {
 	struct retainedInfo {
 		Extract::Unit source;
 		std::vector<Extract::Sequence> generatedSequences;
+		Extract::Sequence bestSequence;
 		std::vector<unit::Unit*> allUnits, enemyUnits, allyUnits;
 		Extract::Hand& hand;
 		Extract::Deck& deck;

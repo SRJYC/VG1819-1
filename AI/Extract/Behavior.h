@@ -5,6 +5,7 @@
 struct Behavior {
 	std::vector<Behavior*> subBehaviors;
 	double internalMultiplier = 1;
+	bool flip = false;
 	Behavior(){}
 	Behavior(nlohmann::json& p_json);
 	Behavior(const Behavior* source);
@@ -66,6 +67,14 @@ struct OwnAttribute : public Behavior {
 	double weightRangeFrom, weightRangeTo;
 	int attributeFrom, attributeTo;
 	OwnAttribute(nlohmann::json& p_json);
+	virtual double calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) override;
+};
+
+struct OwnAttributePercentage : public Behavior {
+	std::string attribute;
+	double weightRangeFrom, weightRangeTo;
+	double attributeFrom, attributeTo;
+	OwnAttributePercentage(nlohmann::json& p_json);
 	virtual double calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) override;
 };
 

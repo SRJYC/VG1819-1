@@ -52,12 +52,13 @@
 				"behavior" : {
 					"name" : "TargetAlignment",
 					"same" : 1,
-					"different" : -100,
+					"different" : 0,
 					"subBehavior" : [
 						{
 							"name" : "TargetAttributePercentage",
 							"attribute" : "hp",
-							"attFrom" : 1,
+							"multiplier" : 1.5,
+							"attFrom" : 1.8,
 							"attTo" : 0
 						}
 					]
@@ -66,23 +67,23 @@
 			{
 				"ability" : "Encourage",
 				"behavior" : {
-					"name" : "TargetAlignment",
-					"same" : 1,
-					"different" : -1,
+					"name" : "TargetHasStatus",
+					"multiplier" : 1,
+					"status": "Status_Encourage",
+					"weightIfHas": 0,
+					"weightIfNot" : 1,
 					"subBehavior" : [
 						{
 							"name" : "TargetAttribute",
-							"multiplier" : 0.4,
+							"multiplier" : 1,
 							"attribute" : "hp",
 							"attFrom" : 0,
-							"attTo" : 15
+							"attTo" : 10
 						}, 
 						{
-							"name" : "TargetHasStatus",
-							"multiplier" : 0.8,
-							"status": "Status_Encourage",
-							"weightIfHas": 0,
-							"weightIfNot" : 1
+							"name" : "TargetAlignment",
+							"same" : 1,
+							"different" : -2
 						}
 					]
 				}

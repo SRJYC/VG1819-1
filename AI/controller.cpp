@@ -67,17 +67,8 @@ namespace AI {
 		// Run generator of possible sequences
 		generateSequences(rInfo, pInfo);
 
-		// Sort Sequences and pick one
-		// TODO bother looking for one based on externally set choices instead of the best.
-		std::sort(rInfo.generatedSequences.begin(), rInfo.generatedSequences.end(), Extract::Sequence::weightComp());
 		m_unit = p_unit;
-		if (rInfo.generatedSequences.size() > 0) {
-			m_sequence = rInfo.generatedSequences[0];
-		}
-		else
-		{
-			m_sequence = Extract::Sequence();
-		}
+		m_sequence = rInfo.bestSequence;
 		kitten::EventManager::getInstance()->queueEvent(kitten::Event::Action_Complete, new kitten::Event(kitten::Event::Action_Complete));
 	}
 
@@ -294,7 +285,9 @@ namespace AI {
 					info.sequence.actions.push_back(
 						std::make_shared<Extract::MultiTargetAbility>(Extract::MultiTargetAbility(tInfo.targets, tInfo.source.name))
 					);
-					rInfo.generatedSequences.push_back(info.sequence);
+
+					if (info.sequence > rInfo.bestSequence) rInfo.bestSequence = info.sequence;
+					//rInfo.generatedSequences.push_back(info.sequence);
 
 					cont->generateSequences(rInfo, info);
 
@@ -343,7 +336,8 @@ namespace AI {
 				info.sequence.actions.push_back(
 					std::make_shared<Extract::Move>(move)
 				);
-				p_retainedInfo.generatedSequences.push_back(info.sequence);
+				if (info.sequence > p_retainedInfo.bestSequence) p_retainedInfo.bestSequence = info.sequence;
+				//p_retainedInfo.generatedSequences.push_back(info.sequence);
 
 				generateSequences(p_retainedInfo, info);
 			}
@@ -391,7 +385,8 @@ namespace AI {
 						info.sequence.actions.push_back(
 							std::make_shared<Extract::ManipulateTile>(Extract::ManipulateTile(tile.first, tile.second))
 						);
-						p_retainedInfo.generatedSequences.push_back(info.sequence);
+						if (info.sequence > p_retainedInfo.bestSequence) p_retainedInfo.bestSequence = info.sequence;
+						//p_retainedInfo.generatedSequences.push_back(info.sequence);
 
 						generateSequences(p_retainedInfo, info);
 					}
@@ -434,7 +429,8 @@ namespace AI {
 								info.sequence.weight += defaultBehavior.calculateWeight(p_retainedInfo, info, targetInfo);
 							}
 
-							p_retainedInfo.generatedSequences.push_back(info.sequence);
+							if (info.sequence > p_retainedInfo.bestSequence) p_retainedInfo.bestSequence = info.sequence;
+							//p_retainedInfo.generatedSequences.push_back(info.sequence);
 
 							generateSequences(p_retainedInfo, info);
 						}
@@ -462,7 +458,8 @@ namespace AI {
 					info.sequence.actions.push_back(
 						std::make_shared<Extract::Join>(Extract::Join(unit.first, unit.second))
 					);
-					p_retainedInfo.generatedSequences.push_back(info.sequence);
+					if (info.sequence > p_retainedInfo.bestSequence) p_retainedInfo.bestSequence = info.sequence;
+					//p_retainedInfo.generatedSequences.push_back(info.sequence);
 
 					generateSequences(p_retainedInfo, info);
 				}
