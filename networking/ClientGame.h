@@ -63,7 +63,7 @@ namespace networking
 		void setCastTime(AbilityPacket& p_packet);
 		void sendCastTimeAbilityPacket(unit::AbilityDescription * p_ad, ability::AbilityInfoPackage * p_info);
 		void sendStartingData();
-		void boardLoadedListener(kitten::Event::EventType p_type, kitten::Event* p_event);
+		void eventListener(kitten::Event::EventType p_type, kitten::Event* p_event);
 
 		// Compare units via their position
 		bool checkSync(int p_x, int p_y);

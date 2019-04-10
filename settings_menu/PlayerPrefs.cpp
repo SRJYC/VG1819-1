@@ -174,11 +174,7 @@ void PlayerPrefs::privateSetPlayerName(const std::string& p_name)
 	m_playerName = p_name;
 	m_hasUnsavedChanges = true;
 
-	GameModeManager::getInstance()->setPointTextBoxes();
-	if (networking::ClientGame::isNetworkValid())
-	{
-		networking::ClientGame::getInstance()->sendPlayerNamePacket(m_playerName);
-	}
+	kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Player_Name_Change, nullptr);
 }
 
 const std::string& PlayerPrefs::getPlayerName()

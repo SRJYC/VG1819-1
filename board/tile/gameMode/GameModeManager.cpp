@@ -52,6 +52,11 @@ void GameModeManager::listenEvent(kitten::Event::EventType p_type, kitten::Event
 			}
 			break;
 		}
+		case kitten::Event::Player_Name_Change:
+		{
+			setPointTextBoxes();
+			break;
+		}
 	}
 }
 
@@ -226,12 +231,18 @@ void GameModeManager::registerEvent()
 		kitten::Event::EventType::Network_Spawn_Item,
 		this,
 		std::bind(&GameModeManager::listenEvent, this, std::placeholders::_1, std::placeholders::_2));
+
+	kitten::EventManager::getInstance()->addListener(
+		kitten::Event::EventType::Player_Name_Change,
+		this,
+		std::bind(&GameModeManager::listenEvent, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void GameModeManager::deregisterEvent()
 {
 	kitten::EventManager::getInstance()->removeListener(kitten::Event::Game_Turn_End, this);
 	kitten::EventManager::getInstance()->removeListener(kitten::Event::Network_Spawn_Item, this);
+	kitten::EventManager::getInstance()->removeListener(kitten::Event::Player_Name_Change, this);
 }
 
 void GameModeManager::checkPoints()

@@ -74,7 +74,12 @@ namespace networking
 		kitten::EventManager::getInstance()->addListener(
 			kitten::Event::EventType::Board_Loaded,
 			this,
-			std::bind(&ClientGame::boardLoadedListener, this, std::placeholders::_1, std::placeholders::_2));
+			std::bind(&ClientGame::eventListener, this, std::placeholders::_1, std::placeholders::_2));
+
+		kitten::EventManager::getInstance()->addListener(
+			kitten::Event::EventType::Player_Name_Change,
+			this,
+			std::bind(&ClientGame::eventListener, this, std::placeholders::_1, std::placeholders::_2));
 	}
 	
 	ClientGame::~ClientGame()
@@ -95,6 +100,7 @@ namespace networking
 		sm_enemyName = "Opponent";
 
 		kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Board_Loaded, this);
+		kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Player_Name_Change, this);
 	}
 
 	void ClientGame::setupNetwork(const std::string &p_strAddr)
@@ -736,16 +742,28 @@ namespace networking
 		}
 	}
 
-	void ClientGame::boardLoadedListener(kitten::Event::EventType p_type, kitten::Event* p_event)
+	void ClientGame::eventListener(kitten::Event::EventType p_type, kitten::Event* p_event)
 	{
-		// Board loaded before getting ID from the server, so set flag so we can sendStartingData when we get our ID
-		if (sm_iClientId < 0)
+		switch (p_type)
 		{
-			m_boardLoaded = true;
-		}
-		else // Otherwise, we have already gotten our ID, now that the board is loaded, we can send our starting data
-		{
-			sendStartingData();
+			case kitten::Event::Board_Loaded:
+			{
+				// Board loaded before getting ID from the server, so set flag so we can sendStartingData when we get our ID
+				if (sm_iClientId < 0)
+				{
+					m_boardLoaded = true;
+				}
+				else // Otherwise, we have already gotten our ID, now that the board is loaded, we can send our starting data
+				{
+					sendStartingData();
+				}
+				break;
+			}
+			case kitten::Event::Player_Name_Change:
+			{
+				sendPlayerNamePacket(PlayerPrefs::getPlayerName());
+				break;
+			}
 		}
 	}
 
