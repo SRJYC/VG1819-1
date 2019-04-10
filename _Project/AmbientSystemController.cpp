@@ -10,7 +10,7 @@
 AmbientSystemController* AmbientSystemController::sm_instance = nullptr;
 
 AmbientSystemController::AmbientSystemController(const std::vector<AmbientEvent>& p_ambientEvents, const std::vector<kitten::AudioSource*> p_persistentSounds)
-	: m_kTime(nullptr), m_ambientEvents(p_ambientEvents)
+	: m_kTime(nullptr), m_ambientEvents(p_ambientEvents), m_persistentSoundDelay(3)
 {
 	auto end = m_ambientEvents.cend();
 	for (auto it = m_ambientEvents.cbegin(); it != end; ++it)
@@ -62,17 +62,24 @@ void AmbientSystemController::start()
 	assert(m_kTime != nullptr);
 
 	setVolume((float)PlayerPrefs::getAmbientVolume() / 100.0f);
-
-	// Play persistent sounds
-	auto end = m_persistentSounds.cend();
-	for (auto it = m_persistentSounds.cbegin(); it != end; ++it)
-	{
-		(*it).sound->play();
-	}
 }
 
 void AmbientSystemController::update()
 {
+	if (m_persistentSoundDelay > 0)
+	{
+		--m_persistentSoundDelay;
+		if (m_persistentSoundDelay == 0)
+		{
+			// Start playing persistent sounds
+			auto end = m_persistentSounds.cend();
+			for (auto it = m_persistentSounds.cbegin(); it != end; ++it)
+			{
+				(*it).sound->play();
+			}
+		}
+	}
+
 	float deltaTime = m_kTime->getDeltaTime();
 
 	auto end = m_ambientEvents.end();
