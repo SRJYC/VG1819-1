@@ -50,7 +50,9 @@ private:
 	std::vector<AmbientEvent> m_ambientEvents;
 	std::vector<PersistentSound> m_persistentSounds;
 
+	int m_persistentSoundDelay;
 	float m_volume;
+
 
 	virtual void start() override;
 	virtual bool hasUpdate() const override { return true; };
