@@ -639,6 +639,27 @@ namespace unit
 		m_statusObserverList.push_back(p_status);
 	}
 
+	void Unit::deregisterDestroy(ability::Status * p_status)
+	{
+		if (!m_hasObserver)//ignore it since no observer
+			return;
+
+		auto end = m_statusObserverList.end();
+		for (auto it = m_statusObserverList.begin(); it != end; it++)
+		{
+			if (*it == p_status)//found it
+			{
+				//remove it
+				m_statusObserverList.erase(it);
+				break;
+			}
+		}
+
+		//check if no observer
+		if (m_statusObserverList.size() == 0)
+			m_hasObserver = false;
+	}
+
 	//hp bar
 	void Unit::onScaleLerpFinished(kitten::K_GameObject* p_obj) //Called when healthbar is done animating
 	{

@@ -171,5 +171,6 @@ namespace unit
 
 		//register observer
 		void registerDestroy(ability::Status* p_status);
+		void deregisterDestroy(ability::Status* p_status);
 	};
 }

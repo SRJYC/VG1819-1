@@ -56,6 +56,14 @@ namespace ability
 		}
 	}
 
+	void Status::tryDeregisterDestroy()
+	{
+		if (m_caster != nullptr)//has registered to units
+		{
+			m_caster->deregisterDestroy(this);
+		}
+	}
+
 	Status::Status()
 		:m_caster(nullptr),
 		m_unit(nullptr)
@@ -64,7 +72,8 @@ namespace ability
 
 	Status::~Status()
 	{
-		//effectEnd();
+		//deregister from observered
+		tryDeregisterDestroy();
 	}
 
 	void Status::changeName(const std::string & p_msg)
