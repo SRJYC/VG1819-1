@@ -4,7 +4,6 @@
 // Has update loop to always check for incoming data from the server
 //
 // @Ken
-
 #include "networking\ClientGame.h"
 #include "kitten/K_Time.h"
 #include <assert.h>
@@ -74,7 +73,7 @@ namespace networking
 			std::bind(&ClientGame::boardLoadedListener, this, std::placeholders::_1, std::placeholders::_2));
 
 		kitten::EventManager::getInstance()->addListener(
-			kitten::Event::EventType::Card_Drawn,
+			kitten::Event::EventType::Send_Deck_Count,
 			this,
 			std::bind(&ClientGame::cardDrawnListener, this, std::placeholders::_1, std::placeholders::_2));
 	}
@@ -575,7 +574,7 @@ namespace networking
 
 				// Send the Server info to the Quickplay class
 				kitten::Event* eventData = new kitten::Event(kitten::Event::Enemy_Draw_Card);
-				eventData->putInt(CARD_COUNT, countPacket.m_clientId);
+				eventData->putInt(CARD_COUNT, countPacket.m_count);
 				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Enemy_Draw_Card, eventData);
 
 				break;

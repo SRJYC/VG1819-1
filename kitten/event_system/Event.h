@@ -125,6 +125,7 @@ namespace kitten
 			Network_Host_Not_Ready,
 			Network_Cancel_Join,
 			Enemy_Draw_Card,
+			Send_Deck_Count,
 
 			Test_Event, 
 			MAX_VAL = Test_Event

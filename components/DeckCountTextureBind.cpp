@@ -27,9 +27,9 @@ void DeckCountTextureBind::deckEventReceiver(kitten::Event::EventType p_type, ki
 		kitten::K_GameObjectManager::getInstance()->destroyGameObject(&m_countText->getGameObject());
 	}
 
-	kitten::Event* t = new kitten::Event(kitten::Event::EventType::Card_Drawn);
+	kitten::Event* t = new kitten::Event(kitten::Event::EventType::Send_Deck_Count);
 	t->putInt(CARD_COUNT, deckCount);
-	kitten::EventManager::getInstance()->triggerEvent(kitten::Event::EventType::Card_Drawn, t);
+	kitten::EventManager::getInstance()->triggerEvent(kitten::Event::EventType::Send_Deck_Count, t);
 }
 
 void DeckCountTextureBind::enemyDrawEventReceiver(kitten::Event::EventType p_type, kitten::Event* p_data)
