@@ -65,6 +65,10 @@ namespace unit
 
 		//item
 		kitten::K_GameObject* m_itemGO;
+
+		//status from other units that care about this unit
+		std::vector<ability::Status*> m_statusObserverList;
+		bool m_hasObserver;
 	public:
 		//members
 
@@ -164,5 +168,8 @@ namespace unit
 		void addItem(kitten::K_GameObject* p_item);
 		void removeItem();
 		kitten::K_GameObject* getItem() const;
+
+		//register observer
+		void registerDestroy(ability::Status* p_status);
 	};
 }

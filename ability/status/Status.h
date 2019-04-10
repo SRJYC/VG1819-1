@@ -97,6 +97,8 @@ namespace ability
 		//for test
 		void print();
 
+		//register detroy notifier
+		void notifyUnitDestroy(unit::Unit* p_u);
 	protected:
 		//the text that will be showed to player
 		std::string m_name;
@@ -143,6 +145,9 @@ namespace ability
 
 		//actually change
 		void changeEffectedAD(bool p_reverse = false);
+
+
+		void tryRemoveCaster(unit::Unit* p_u);
 	};
 
 	/*

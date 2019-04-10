@@ -43,6 +43,19 @@ namespace ability
 		}
 	}
 
+	void Status::notifyUnitDestroy(unit::Unit * p_u)
+	{
+		tryRemoveCaster(p_u);
+	}
+
+	void Status::tryRemoveCaster(unit::Unit * p_u)
+	{
+		if (p_u == m_caster)
+		{
+			m_caster = nullptr;
+		}
+	}
+
 	Status::Status()
 		:m_caster(nullptr),
 		m_unit(nullptr)
@@ -116,6 +129,7 @@ namespace ability
 	void Status::setCaster(unit::Unit * p_u)
 	{
 		m_caster = p_u;
+		p_u->registerDestroy(this);
 	}
 
 	void Status::endEffectAt(const TimePointEvent::TPEventType& p_value)

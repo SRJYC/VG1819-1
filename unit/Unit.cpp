@@ -15,7 +15,8 @@
 
 namespace unit
 {
-	Unit::Unit() : m_healthBarState(none), m_healthBar(nullptr), m_unitSelect(nullptr), m_lateDestroy(false), m_queuedDestroy(false), m_framesToWaitForDestroy(1)
+	Unit::Unit() : m_healthBarState(none), m_healthBar(nullptr), m_unitSelect(nullptr), m_lateDestroy(false), m_queuedDestroy(false), m_framesToWaitForDestroy(1),
+		m_hasObserver(false)
 	{
 		m_itemGO = nullptr;
 
@@ -559,6 +560,15 @@ namespace unit
 		//trigger unit destroy event
 		triggerTP(ability::TimePointEvent::Unit_Destroy);
 
+		//notify observer
+		if (m_hasObserver)
+		{
+			for (auto status : m_statusObserverList)
+			{
+				status->notifyUnitDestroy(this);
+			}
+		}
+
 		//remove from intiative tracker
 		InitiativeTracker::getInstance()->removeUnit(m_attachedObject);
 	}
@@ -621,6 +631,12 @@ namespace unit
 	kitten::K_GameObject * Unit::getItem() const
 	{
 		return m_itemGO;
+	}
+
+	void Unit::registerDestroy(ability::Status * p_status)
+	{
+		m_hasObserver = true;
+		m_statusObserverList.push_back(p_status);
 	}
 
 	//hp bar
