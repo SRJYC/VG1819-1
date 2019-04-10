@@ -30,6 +30,8 @@
 #include "_Project\UniversalSounds.h"
 #include "components\DeckInitializingComponent.h"
 #include "kitten\event_system\EventManager.h"
+#include "settings_menu/PlayerPrefs.h"
+#include "board/tile/gameMode/GameModeManager.h"
 
 #define PING_PACKET_DELAY 5.0f
 
@@ -38,6 +40,7 @@ namespace networking
 	ClientGame* ClientGame::sm_clientGameInstance = nullptr;
 	bool ClientGame::sm_networkValid = false;
 	int ClientGame::sm_iClientId = -1;
+	std::string ClientGame::sm_enemyName = "Opponent";
 
 	std::string ClientGame::sm_dedicatedServerAddress = "localhost";
 
@@ -89,6 +92,7 @@ namespace networking
 
 		sm_networkValid = false;
 		sm_iClientId = -1;
+		sm_enemyName = "Opponent";
 
 		kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Board_Loaded, this);
 	}
@@ -455,8 +459,31 @@ namespace networking
 				// Queue event to update ReadyCheck component to indicate other player has joined
 				kitten::EventManager::getInstance()->queueEvent(kitten::Event::Player_Joined, nullptr);
 				UniversalSounds::playSound("fanfare");
+				sendPlayerNamePacket(PlayerPrefs::getPlayerName());
 
 				i += STARTING_COMMANDERS_PACKET_SIZE;
+				break;
+			}
+			case PacketTypes::PLAYER_NAME:
+			{
+				printf("[Client: %d] received PLAYER_NAME packet from server\n", sm_iClientId);
+				Buffer buffer;
+				buffer.m_data = &(m_network_data[i]);
+				buffer.m_size = TEXTCHAT_MESSAGE_PACKET_SIZE;
+
+				TextChatMessagePacket messagePacket;
+				messagePacket.deserialize(buffer);
+
+				sm_enemyName = messagePacket.getMessage();
+
+				std::stringstream message;
+				message << "Client:" << sm_iClientId << " received PLAYER_NAME from Client: " << messagePacket.m_clientId;
+				message << "\tMessage: " << messagePacket.getMessage();
+				m_log->logMessage(message.str());
+
+				GameModeManager::getInstance()->setPointTextBoxes();
+
+				i += TEXTCHAT_MESSAGE_PACKET_SIZE;
 				break;
 			}
 			case PacketTypes::TEXTCHAT_MESSAGE:
@@ -798,6 +825,29 @@ namespace networking
 		message << "Client:" << sm_iClientId << " sending SUMMON_UNIT\n";
 		message << "\tUnit ID:" << p_iUnitId << ", X:" << p_iPosX << ", Y:" << p_iPosY;
 		m_log->logMessage(message.str());
+	}
+
+	void ClientGame::sendPlayerNamePacket(const std::string& p_name)
+	{
+		char data[TEXTCHAT_MESSAGE_PACKET_SIZE];
+
+		Buffer buffer;
+		buffer.m_data = data;
+		buffer.m_size = TEXTCHAT_MESSAGE_PACKET_SIZE;
+
+		TextChatMessagePacket packet;
+		packet.m_packetType = PLAYER_NAME;
+		packet.m_clientId = sm_iClientId;
+		packet.addMessage(p_name);
+		packet.serialize(buffer);
+		int result = NetworkServices::sendMessage(m_network->m_connectSocket, data, TEXTCHAT_MESSAGE_PACKET_SIZE);
+
+		std::stringstream message;
+		message << "Client:" << sm_iClientId << " sending PLAYER_NAME\n";
+		message << "\tName: " << p_name;
+		m_log->logMessage(message.str());
+
+		GameModeManager::getInstance()->setPointTextBoxes();
 	}
 
 	void ClientGame::sendTextChatMessagePacket(const std::string& p_message)

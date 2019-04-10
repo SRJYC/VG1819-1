@@ -19,6 +19,7 @@ public:
 	void listenEvent(kitten::Event::EventType p_type, kitten::Event* p_data);
 
 	void gainPoint(int p_clientId, int p_points);
+	void setPointTextBoxes();
 
 	void initComponents();
 	void removeModeComponent(GameModeComponent* p_comp);
@@ -35,7 +36,6 @@ private:
 	void registerEvent();
 	void deregisterEvent();
 
-	void setPointTextBoxes();
 	void checkPoints();
 private:
 	std::unordered_map<GameModeComponent::TileType, GameModeComponent*> m_modeComponentMap;

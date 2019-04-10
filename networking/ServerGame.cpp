@@ -537,6 +537,13 @@ namespace networking
 						i += UNIT_PACKET_SIZE;
 						break;
 					}
+					case PLAYER_NAME:
+					{
+						i += TEXTCHAT_MESSAGE_PACKET_SIZE;
+						printf("Server received PLAYER_NAME packet from [Client: %d]\n", iter->first);
+						m_network->sendToOthers(iter->first, defaultBuffer.m_data, TEXTCHAT_MESSAGE_PACKET_SIZE);
+						break;
+					}
 					case TEXTCHAT_MESSAGE:
 					{
 						i += TEXTCHAT_MESSAGE_PACKET_SIZE;

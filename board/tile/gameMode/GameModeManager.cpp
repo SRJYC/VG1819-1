@@ -8,6 +8,7 @@
 // For Point Display
 #include "kitten/K_GameObjectManager.h"
 #include "settings_menu/PlayerPrefs.h"
+#include "board/boardManager.h"
 
 GameModeManager* GameModeManager::sm_instance = nullptr;
 
@@ -47,25 +48,43 @@ void GameModeManager::gainPoint(int p_clientId, int p_points)
 
 void GameModeManager::setPointTextBoxes()
 {
-	if (networking::ClientGame::getClientId() == 0)
-	{
-		const std::string& name = PlayerPrefs::getPlayerName();
-		int points = m_points[0];
-		m_playerPointTextBox->setText(name + ": " + std::to_string(points));
+	if (BoardManager::getInstance()->getMapId() == 0 || m_playerPointTextBox == nullptr)
+		return;
 
-		const std::string& enemyName = "123456789012345";//networking::ClientGame::getInstance()->getOpponentName();
-		points = m_points[1];
-		m_enemyPointTextBox->setText(std::to_string(points) + " :" + enemyName);
-	}
-	else
+	switch (networking::ClientGame::getClientId())
 	{
-		const std::string& name = PlayerPrefs::getPlayerName();
-		int points = m_points[1];
-		m_playerPointTextBox->setText(name + ": " + std::to_string(points));
+		case 0:
+		{
+			const std::string& name = PlayerPrefs::getPlayerName();
+			int points = m_points[0];
+			m_playerPointTextBox->setText(name + ": " + std::to_string(points));
 
-		const std::string& enemyName = "123456789012345";//networking::ClientGame::getInstance()->getOpponentName();
-		points = m_points[0];
-		m_enemyPointTextBox->setText(std::to_string(points) + " :" + enemyName);
+			const std::string& enemyName = networking::ClientGame::getEnemyName();
+			points = m_points[1];
+			m_enemyPointTextBox->setText(std::to_string(points) + " :" + enemyName);
+			break;
+		}
+		case 1:
+		{
+			const std::string& name = PlayerPrefs::getPlayerName();
+			int points = m_points[1];
+			m_playerPointTextBox->setText(name + ": " + std::to_string(points));
+
+			const std::string& enemyName = networking::ClientGame::getEnemyName();
+			points = m_points[0];
+			m_enemyPointTextBox->setText(std::to_string(points) + " :" + enemyName);
+			break;
+		}
+		default:
+		{
+			const std::string& name = PlayerPrefs::getPlayerName();
+			int points = m_points[0];
+			m_playerPointTextBox->setText(name + ": " + std::to_string(points));
+
+			const std::string& enemyName = networking::ClientGame::getEnemyName();
+			points = m_points[1];
+			m_enemyPointTextBox->setText(std::to_string(points) + " :" + enemyName);
+		}
 	}
 }
 
@@ -91,11 +110,14 @@ void GameModeManager::initComponents()
 		}
 	}
 
-	kitten::K_GameObject* pointDisplay = kitten::K_GameObjectManager::getInstance()->createNewGameObject(POINT_DISPLAY_JSON);
-	auto children = pointDisplay->getTransform().getChildren();
-	m_playerPointTextBox = children[0]->getAttachedGameObject().getComponent<puppy::TextBox>();
-	m_enemyPointTextBox = children[1]->getAttachedGameObject().getComponent<puppy::TextBox>();
-	setPointTextBoxes();
+	if (BoardManager::getInstance()->getMapId() != 0) // default map is not point based
+	{
+		kitten::K_GameObject* pointDisplay = kitten::K_GameObjectManager::getInstance()->createNewGameObject(POINT_DISPLAY_JSON);
+		auto children = pointDisplay->getTransform().getChildren();
+		m_playerPointTextBox = children[0]->getAttachedGameObject().getComponent<puppy::TextBox>();
+		m_enemyPointTextBox = children[1]->getAttachedGameObject().getComponent<puppy::TextBox>();
+		setPointTextBoxes();
+	}
 }
 
 void GameModeManager::removeModeComponent(GameModeComponent * p_comp)

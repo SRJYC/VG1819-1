@@ -30,6 +30,7 @@ namespace networking
 		static bool sm_networkValid;
 		static ClientGame* sm_clientGameInstance;
 		static std::string sm_dedicatedServerAddress;
+		static std::string sm_enemyName;
 
 		float m_timeElapsed;
 		bool m_boardLoaded = false;
@@ -44,6 +45,7 @@ namespace networking
 		static void destroyInstance();
 		static ClientGame* getInstance();
 		static bool isNetworkValid() { return sm_networkValid; }
+		static const std::string& getEnemyName() { return sm_enemyName; }
 
 		static void setDedicatedServerAddress(const std::string& p_address) { sm_dedicatedServerAddress = p_address; }
 		static const std::string& getDedicatedServerAddress() { return sm_dedicatedServerAddress; }
@@ -70,6 +72,7 @@ namespace networking
 		kitten::K_GameObject* summonUnit(int p_iClientId, int p_iUnitId, int p_iPosX, int p_iPosY);
 		void sendSummonUnitPacket(int p_iUnitId, int p_iPosX, int p_iPosY);
 
+		void sendPlayerNamePacket(const std::string& p_name);
 		void sendTextChatMessagePacket(const std::string& p_message);
 		int sendBasicPacket(PacketTypes p_packetType);
 
