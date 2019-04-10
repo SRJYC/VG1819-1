@@ -606,11 +606,11 @@ namespace unit
 				kitten::Event* eventData = new kitten::Event(kitten::Event::Network_End_Game);
 				if (m_clientId)
 				{
-					eventData->putInt(GAME_END_RESULT, CLIENT_COMMANDER_DIED);
+					eventData->putInt(GAME_END_RESULT, DEFEAT);
 				}
 				else
 				{
-					eventData->putInt(GAME_END_RESULT, HOST_COMMANDER_DIED);
+					eventData->putInt(GAME_END_RESULT, VICTORY);
 				}
 				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Network_End_Game, eventData);
 			}
