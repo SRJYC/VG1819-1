@@ -472,7 +472,7 @@ namespace AI {
 	{
 		unit::Unit* currentUnit = unit::InitiativeTracker::getInstance()->getCurrentUnit()->getComponent<unit::Unit>();
 		if (currentUnit->m_clientId != m_playerID || !m_unit->isTurn()) return;
-		this->m_attachedObject->getComponent<DisableAfterTime>()->setTime(1.5);
+		this->m_attachedObject->getComponent<DisableAfterTime>()->setTime(1);
 		if (!m_attachedObject->isEnabled())
 			this->m_attachedObject->setEnabled(true);
 		else

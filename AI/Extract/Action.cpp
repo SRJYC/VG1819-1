@@ -93,9 +93,8 @@ void AI::Extract::MultiTargetAbility::run(unit::Unit * p_unit)
 	std::cout << "Ability " + abilityName + " run \n";
 	Board& board = controller::getAIModel(p_unit->m_clientId)->board;
 	p_unit->useAbility(abilityName);
-	int targetsToHit = p_unit->m_ADMap[abilityName]->m_intValue[UNIT_TARGETS];
 
-	for (int i = 0; i < targetsToHit;i++) {
+	for (int i = 0; i < targetPositions.size();i++) {
 		std::cout << "Used  on tile x=" + std::to_string(targetPositions[i].first) + " y=" + std::to_string(targetPositions[i].second) + "\n";
 		BoardManager::getInstance()->autoClick(&board.tile[targetPositions[i].first][targetPositions[i].second]->getGameObject());
 	}
