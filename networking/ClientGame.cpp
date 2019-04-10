@@ -30,6 +30,8 @@
 #include "_Project\UniversalSounds.h"
 #include "components\DeckInitializingComponent.h"
 #include "kitten\event_system\EventManager.h"
+#include "settings_menu/PlayerPrefs.h"
+#include "board/tile/gameMode/GameModeManager.h"
 
 #define PING_PACKET_DELAY 5.0f
 
@@ -38,6 +40,7 @@ namespace networking
 	ClientGame* ClientGame::sm_clientGameInstance = nullptr;
 	bool ClientGame::sm_networkValid = false;
 	int ClientGame::sm_iClientId = -1;
+	std::string ClientGame::sm_enemyName = "Opponent";
 
 	std::string ClientGame::sm_dedicatedServerAddress = "localhost";
 
@@ -71,7 +74,12 @@ namespace networking
 		kitten::EventManager::getInstance()->addListener(
 			kitten::Event::EventType::Board_Loaded,
 			this,
-			std::bind(&ClientGame::boardLoadedListener, this, std::placeholders::_1, std::placeholders::_2));
+			std::bind(&ClientGame::eventListener, this, std::placeholders::_1, std::placeholders::_2));
+
+		kitten::EventManager::getInstance()->addListener(
+			kitten::Event::EventType::Player_Name_Change,
+			this,
+			std::bind(&ClientGame::eventListener, this, std::placeholders::_1, std::placeholders::_2));
 	}
 	
 	ClientGame::~ClientGame()
@@ -89,8 +97,10 @@ namespace networking
 
 		sm_networkValid = false;
 		sm_iClientId = -1;
+		sm_enemyName = "Opponent";
 
 		kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Board_Loaded, this);
+		kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Player_Name_Change, this);
 	}
 
 	void ClientGame::setupNetwork(const std::string &p_strAddr)
@@ -330,6 +340,23 @@ namespace networking
 				}
 				break;
 			}
+			case PacketTypes::SPAWN_ITEM:
+			{
+				Buffer buffer;
+				buffer.m_data = &(m_network_data[i]);
+				buffer.m_size = UNIT_PACKET_SIZE;
+
+				UnitPacket packet;
+				packet.deserialize(buffer);
+
+				kitten::Event* eventData = new kitten::Event(kitten::Event::Network_Spawn_Item);
+				eventData->putInt(POSITION_X, packet.m_posX);
+				eventData->putInt(POSITION_Z, packet.m_posY);
+				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Network_Spawn_Item, eventData);
+
+				i += UNIT_PACKET_SIZE;
+				break;
+			}
 			case PacketTypes::SUMMON_UNIT:
 			{
 				printf("[Client: %d] received CLIENT_SUMMON_UNIT packet from server\n", sm_iClientId);
@@ -455,8 +482,31 @@ namespace networking
 				// Queue event to update ReadyCheck component to indicate other player has joined
 				kitten::EventManager::getInstance()->queueEvent(kitten::Event::Player_Joined, nullptr);
 				UniversalSounds::playSound("fanfare");
+				sendPlayerNamePacket(PlayerPrefs::getPlayerName());
 
 				i += STARTING_COMMANDERS_PACKET_SIZE;
+				break;
+			}
+			case PacketTypes::PLAYER_NAME:
+			{
+				printf("[Client: %d] received PLAYER_NAME packet from server\n", sm_iClientId);
+				Buffer buffer;
+				buffer.m_data = &(m_network_data[i]);
+				buffer.m_size = TEXTCHAT_MESSAGE_PACKET_SIZE;
+
+				TextChatMessagePacket messagePacket;
+				messagePacket.deserialize(buffer);
+
+				sm_enemyName = messagePacket.getMessage();
+
+				std::stringstream message;
+				message << "Client:" << sm_iClientId << " received PLAYER_NAME from Client: " << messagePacket.m_clientId;
+				message << "\tMessage: " << messagePacket.getMessage();
+				m_log->logMessage(message.str());
+
+				GameModeManager::getInstance()->setPointTextBoxes();
+
+				i += TEXTCHAT_MESSAGE_PACKET_SIZE;
 				break;
 			}
 			case PacketTypes::TEXTCHAT_MESSAGE:
@@ -692,16 +742,28 @@ namespace networking
 		}
 	}
 
-	void ClientGame::boardLoadedListener(kitten::Event::EventType p_type, kitten::Event* p_event)
+	void ClientGame::eventListener(kitten::Event::EventType p_type, kitten::Event* p_event)
 	{
-		// Board loaded before getting ID from the server, so set flag so we can sendStartingData when we get our ID
-		if (sm_iClientId < 0)
+		switch (p_type)
 		{
-			m_boardLoaded = true;
-		}
-		else // Otherwise, we have already gotten our ID, now that the board is loaded, we can send our starting data
-		{
-			sendStartingData();
+			case kitten::Event::Board_Loaded:
+			{
+				// Board loaded before getting ID from the server, so set flag so we can sendStartingData when we get our ID
+				if (sm_iClientId < 0)
+				{
+					m_boardLoaded = true;
+				}
+				else // Otherwise, we have already gotten our ID, now that the board is loaded, we can send our starting data
+				{
+					sendStartingData();
+				}
+				break;
+			}
+			case kitten::Event::Player_Name_Change:
+			{
+				sendPlayerNamePacket(PlayerPrefs::getPlayerName());
+				break;
+			}
 		}
 	}
 
@@ -800,6 +862,27 @@ namespace networking
 		m_log->logMessage(message.str());
 	}
 
+	void ClientGame::sendPlayerNamePacket(const std::string& p_name)
+	{
+		char data[TEXTCHAT_MESSAGE_PACKET_SIZE];
+
+		Buffer buffer;
+		buffer.m_data = data;
+		buffer.m_size = TEXTCHAT_MESSAGE_PACKET_SIZE;
+
+		TextChatMessagePacket packet;
+		packet.m_packetType = PLAYER_NAME;
+		packet.m_clientId = sm_iClientId;
+		packet.addMessage(p_name);
+		packet.serialize(buffer);
+		int result = NetworkServices::sendMessage(m_network->m_connectSocket, data, TEXTCHAT_MESSAGE_PACKET_SIZE);
+
+		std::stringstream message;
+		message << "Client:" << sm_iClientId << " sending PLAYER_NAME\n";
+		message << "\tName: " << p_name;
+		m_log->logMessage(message.str());
+	}
+
 	void ClientGame::sendTextChatMessagePacket(const std::string& p_message)
 	{
 		char data[TEXTCHAT_MESSAGE_PACKET_SIZE];
@@ -818,6 +901,28 @@ namespace networking
 		std::stringstream message;
 		message << "Client:" << sm_iClientId << " sending TEXTCHAT_MESSAGE\n";
 		message << "\tMessage: " << p_message;
+		m_log->logMessage(message.str());
+	}
+
+	void ClientGame::sendSpawnItemPacket(int p_x, int p_z)
+	{
+		char data[UNIT_PACKET_SIZE];
+
+		Buffer buffer;
+		buffer.m_data = data;
+		buffer.m_size = UNIT_PACKET_SIZE;
+
+		UnitPacket packet;
+		packet.m_packetType = SPAWN_ITEM;
+		packet.m_clientId = sm_iClientId;
+		packet.m_posX = p_x;
+		packet.m_posY = p_z;
+		packet.serialize(buffer);
+		int result = NetworkServices::sendMessage(m_network->m_connectSocket, data, UNIT_PACKET_SIZE);
+
+		std::stringstream message;
+		message << "Client:" << sm_iClientId << " sending SPAWN_ITEM\n";
+		message << "\tPos: " << p_x << ", " << p_z;
 		m_log->logMessage(message.str());
 	}
 

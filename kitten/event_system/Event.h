@@ -124,6 +124,8 @@ namespace kitten
 			Update_Deck_Builder_Frame,
 			Network_Host_Not_Ready,
 			Network_Cancel_Join,
+			Network_Spawn_Item,
+			Player_Name_Change,
 
 			Test_Event, 
 			MAX_VAL = Test_Event
