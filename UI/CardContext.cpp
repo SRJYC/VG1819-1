@@ -123,24 +123,12 @@ void CardContext::onDisabled()
 	m_cardTexture->setEnabled(false);
 	m_unitPortrait->setEnabled(false);
 	m_statusContext->getGameObject().setEnabled(false);
-
 	m_nonLevelStatus = 0;
 }
 
-// For testing only, changes the unit on the hovered card by pressing the B key
 void CardContext::update()
 {
 	input::InputManager* inputMan = input::InputManager::getInstance();
-	// Test feature to cycle through units
-	if (inputMan->keyDown('B') && !inputMan->keyDownLast('B'))
-	{
-		setUnit(kibble::getUnitFromId(m_unitId));
-
-		m_unitId = (m_unitId + 1) % 15;
-		if (m_unitId == 0 || m_unitId == 6)
-			m_unitId++;
-	}
-
 	if (inputMan->keyDown(m_statusContextKey) && !inputMan->keyDownLast(m_statusContextKey) && m_nonLevelStatus > 0)
 	{
 		m_statusContext->lerpContext();
@@ -171,7 +159,7 @@ void CardContext::updateUnitData()
 		m_nameBox->getTransform().move2D(0.0f, -2.0f);
 		m_currentNameFont = m_smallNameFont;
 	}
-	else if (m_currentNameFont != m_defaultNameFont)
+	else if (name.length() < DEFAULT_MAX_NAME_LENGTH && m_currentNameFont != m_defaultNameFont)
 	{
 		m_nameBox->setFont(m_defaultNameFont);
 		m_nameBox->getTransform().move2D(0.0f, 2.0f);
@@ -339,15 +327,15 @@ void CardContext::updateUnitStatus()
 		{
 			m_statusContext->updateContext(unitStatusIcons->m_statusList);
 		}
-	}
 
-	if (m_nonLevelStatus > 0 && m_isEnabled)
-	{
-		m_statusContext->getGameObject().setEnabled(true);
-	}
-	else
-	{
-		m_statusContext->getGameObject().setEnabled(false);
+		if (m_isEnabled)
+		{
+			m_statusContext->getGameObject().setEnabled(true);
+		}
+		else
+		{
+			m_statusContext->getGameObject().setEnabled(false);
+		}
 	}
 }
 
