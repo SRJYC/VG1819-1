@@ -14,8 +14,11 @@ namespace AI {
 		unit::Unit* m_unit = nullptr;
 		int m_playerID;
 
+	public:
+
 		void runTurn(unit::Unit* p_unit);
 
+		inline bool controller::targetChecks(std::pair<int, int> pos, const retainedInfo & p_retainedInfo, const passedInfo & p_passedInfo, const targettingInfo& p_targgetingInfo);
 		std::vector<std::pair<int, int>> getTargetsInRange(const retainedInfo & p_retainedInfo, const passedInfo & p_passedInfo, const targettingInfo& p_targgetingInfo);
 		std::vector<AI::Extract::Move> getAvailableMoves(const retainedInfo & p_retainedInfo, const passedInfo & p_passedInfo, const targettingInfo& p_targgetingInfo);
 		std::vector<Extract::UnitCard> getSummonableCards();
@@ -23,8 +26,6 @@ namespace AI {
 
 		// it's under the assumption that the passed info is a newly setup one in the previous level.
 		void generateSequences(retainedInfo& p_retainedInfo, passedInfo& p_passedInfo);
-
-	public:
 
 		controller();
 		~controller();

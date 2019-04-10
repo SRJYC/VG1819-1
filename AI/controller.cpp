@@ -15,48 +15,9 @@
 #include "AI/Extract/Behavior.h"
 #include "AI/Extract/Action.h"
 
-template <typename Iterator>
-inline bool next_combination(const Iterator first, Iterator k, const Iterator last)
-{
-	/* Credits: Thomas Draper */
-	// http://stackoverflow.com/a/5097100/8747
-	if ((first == last) || (first == k) || (last == k))
-		return false;
-	Iterator itr1 = first;
-	Iterator itr2 = last;
-	++itr1;
-	if (last == itr1)
-		return false;
-	itr1 = last;
-	--itr1;
-	itr1 = k;
-	--itr2;
-	while (first != itr1)
-	{
-		if (*--itr1 < *itr2)
-		{
-			Iterator j = k;
-			while (!(*itr1 < *j)) ++j;
-			std::iter_swap(itr1, j);
-			++itr1;
-			++j;
-			itr2 = k;
-			std::rotate(itr1, j, last);
-			while (last != j)
-			{
-				++j;
-				++itr2;
-			}
-			std::rotate(k, itr2, last);
-			return true;
-		}
-	}
-	std::rotate(first, k, last);
-	return false;
-}
 
 namespace AI {
-	std::map<int,controller*> AIcontrollers;
+	std::map<int, controller*> AIcontrollers;
 	std::vector<controller*> AIcontrollerlist;
 	NearestUnit defaultBehavior;
 
@@ -132,7 +93,7 @@ namespace AI {
 		// Setup related Abilities of extracted units
 		Extract::setupUniqueAbilities();
 
-		for (controller* controller: AIcontrollerlist) {
+		for (controller* controller : AIcontrollerlist) {
 			controller->m_playerID = ++startingId;
 			controller->m_model.playerId = controller->m_playerID;
 			AIcontrollers[controller->m_playerID] = controller;
@@ -154,7 +115,7 @@ namespace AI {
 
 			// Spawn Commander
 			kitten::K_GameObject* unitGO = unit::UnitSpawn::getInstance()->spawnUnitObject(controller->m_model.deck.m_deckSource->commanderID);
-			unitGO->getComponent<unit::UnitMove>()->setTile(BoardManager::getInstance()->getSpawnPoint(controller->m_playerID ));
+			unitGO->getComponent<unit::UnitMove>()->setTile(BoardManager::getInstance()->getSpawnPoint(controller->m_playerID));
 			unitGO->getComponent<unit::Unit>()->m_clientId = controller->m_playerID;
 
 			// Set up board reference
@@ -163,13 +124,30 @@ namespace AI {
 		}
 	}
 
+	inline bool controller::targetChecks(std::pair<int,int> pos, const retainedInfo & p_retainedInfo, const passedInfo & p_passedInfo, const targettingInfo& p_targgetingInfo) {
+		Extract::Board& board = m_model.board;
+		Extract::Unit::Filter& filter = p_targgetingInfo.source.filter;
+		return (!filter.tilesOwnedByAny || board.tile[pos.first][pos.second]->getOwnerId() < 0)
+			&& (!filter.tilesOwnedByTeam || board.tile[pos.first][pos.second]->getOwnerId() != p_retainedInfo.source.clientId)
+			&& (!filter.tilesNotOwnedByTeam || board.tile[pos.first][pos.second]->getOwnerId() == p_retainedInfo.source.clientId)
+			&& (!filter.occupiedTiles || (!board.tile[pos.first][pos.second]->hasUnit()
+				&& std::find(p_passedInfo.blockedPos.begin(), p_passedInfo.blockedPos.end(), pos) == p_passedInfo.blockedPos.end()))
+			&& (!filter.unoccupiedTiles || (board.tile[pos.first][pos.second]->hasUnit() && board.unit[pos.first][pos.second] != p_retainedInfo.source.source
+				&& board.unit[pos.first][pos.second]->m_attributes[UNIT_HP] > 0)
+				|| std::find(p_passedInfo.blockedPos.begin(), p_passedInfo.blockedPos.end(), pos) != p_passedInfo.blockedPos.end())
+			&& (!filter.water || board.tile[pos.first][pos.second]->getType() != LandInformation::Water_land) // uber frog filter salesman
+			&& (!filter.enemies || board.unit[pos.first][pos.second] == nullptr || board.unit[pos.first][pos.second]->m_clientId == p_retainedInfo.source.clientId)
+			&& (!filter.allies || board.unit[pos.first][pos.second] == nullptr || board.unit[pos.first][pos.second]->m_clientId != p_retainedInfo.source.clientId)
+			&& (!filter.sameUnitKind || board.unit[pos.first][pos.second] == nullptr || board.unit[pos.first][pos.second]->m_kibbleID != p_retainedInfo.source.kibbleId)
+			&& (!filter.differentUnitKind || board.unit[pos.first][pos.second] == nullptr || board.unit[pos.first][pos.second]->m_kibbleID == p_retainedInfo.source.kibbleId)
+			;
+	}
+
 	std::vector<std::pair<int, int>> controller::getTargetsInRange(const retainedInfo & p_retainedInfo, const passedInfo & p_passedInfo, const targettingInfo& p_targgetingInfo)
 	{
 		std::vector<std::pair<int, int>> tilePos;
 		int sides[4][2] = { {1,0},{0,1},{-1,0},{0,-1} };
 		std::pair<int, int> boardDimensions = BoardManager::getInstance()->getDimension();
-		Extract::Board& board = m_model.board;
-		Extract::Unit::Filter& filter = p_targgetingInfo.source.filter;
 
 		for (int i = 1; i <= p_targgetingInfo.source.maxRange; ++i) {
 			for (int j = 0; j <= p_targgetingInfo.source.maxRange - i; ++j) {
@@ -183,19 +161,7 @@ namespace AI {
 						temp.first >= 0 && temp.first < boardDimensions.first
 						&& temp.second >= 0 && temp.second < boardDimensions.second
 						// Now that the coordinates are valid, start filter checks
-						&& (!filter.tilesOwnedByAny || board.tile[temp.first][temp.second]->getOwnerId() < 0)
-						&& (!filter.tilesOwnedByTeam || board.tile[temp.first][temp.second]->getOwnerId() != p_retainedInfo.source.clientId)
-						&& (!filter.tilesNotOwnedByTeam || board.tile[temp.first][temp.second]->getOwnerId() == p_retainedInfo.source.clientId)
-						&& (!filter.occupiedTiles || (!board.tile[temp.first][temp.second]->hasUnit()
-							&& std::find(p_passedInfo.blockedPos.begin(), p_passedInfo.blockedPos.end(), temp) == p_passedInfo.blockedPos.end()))
-						&& (!filter.unoccupiedTiles || (board.tile[temp.first][temp.second]->hasUnit() && board.unit[temp.first][temp.second] != p_retainedInfo.source.source)
-								|| std::find(p_passedInfo.blockedPos.begin(), p_passedInfo.blockedPos.end(), temp) != p_passedInfo.blockedPos.end())
-						&& (!filter.water || board.tile[temp.first][temp.second]->getType() != LandInformation::Water_land) // uber frog filter salesman
-						&& (!filter.enemies || board.unit[temp.first][temp.second] == nullptr || board.unit[temp.first][temp.second]->m_clientId == p_retainedInfo.source.clientId)
-						&& (!filter.allies || board.unit[temp.first][temp.second] == nullptr || board.unit[temp.first][temp.second]->m_clientId != p_retainedInfo.source.clientId)
-						&& (!filter.sameUnitKind || board.unit[temp.first][temp.second] == nullptr || board.unit[temp.first][temp.second]->m_kibbleID != p_retainedInfo.source.kibbleId)
-						&& (!filter.differentUnitKind || board.unit[temp.first][temp.second] == nullptr || board.unit[temp.first][temp.second]->m_kibbleID == p_retainedInfo.source.kibbleId)
-						)
+						&& targetChecks(temp,p_retainedInfo,p_passedInfo,p_targgetingInfo))
 					{
 						tilePos.push_back(temp);
 					}
@@ -203,8 +169,9 @@ namespace AI {
 			}
 		}
 
-		if (p_targgetingInfo.source.minRange == 0) 
+		if (p_targgetingInfo.source.minRange == 0 && targetChecks(p_passedInfo.curPos, p_retainedInfo, p_passedInfo, p_targgetingInfo)) {
 			tilePos.push_back(p_passedInfo.curPos);
+		}
 
 		return tilePos;
 	}
@@ -281,6 +248,63 @@ namespace AI {
 		return summonableCards;
 	}
 
+	class abilityTargetLoop {
+	public:
+		std::vector<int> reps;
+		std::vector<std::pair<int, int>> &targets, effectiveTargets;
+		int allowedReps;
+		retainedInfo & rInfo;
+		passedInfo & pInfo;
+		targettingInfo & tInfo;
+		controller* cont;
+		abilityTargetLoop(retainedInfo & p_retainedInfo, passedInfo & p_passedInfo, targettingInfo& p_targettingInfo, std::vector<std::pair<int,int>>& targets, controller* cont) 
+			: rInfo(p_retainedInfo), pInfo(p_passedInfo), tInfo(p_targettingInfo), targets(targets), cont(cont){
+			allowedReps = (tInfo.source.selectRepeat) ? MAX(tInfo.source.targets, 1) : 1;
+			effectiveTargets = std::vector<std::pair<int, int>>(tInfo.source.targets, targets[0]);
+			reps = std::vector<int>(targets.size(), 0);
+		}
+
+		void loop(int depth = 0, int tIndex = 0) {
+			// set up the index and reps
+			int oIndex = tIndex;
+			if (reps[tIndex] >= allowedReps) 
+				++tIndex;
+
+			for (int i = tIndex; i < targets.size(); i++)
+			{
+				effectiveTargets[depth] = targets[i];
+				reps[i]++;
+				// Go down in depth if it's not the last
+				if (depth + 1 < tInfo.source.targets) {
+					loop(depth + 1, i);
+				}
+				else {
+					// this is the last target to set. 
+					tInfo.targets = effectiveTargets;
+					passedInfo info(pInfo);
+					info.canAct = false;
+					info.sequence = Extract::Sequence(pInfo.sequence);
+
+					if (rInfo.source.source->m_AbilityBehavior.find(tInfo.source.name) != rInfo.source.source->m_AbilityBehavior.end()) {
+						info.sequence.weight += rInfo.source.source->m_AbilityBehavior[tInfo.source.name]->calculateWeight(rInfo, info, tInfo);
+					}
+					else {
+						info.sequence.weight += defaultBehavior.calculateWeight(rInfo, info, tInfo);
+					}
+					info.sequence.actions.push_back(
+						std::make_shared<Extract::MultiTargetAbility>(Extract::MultiTargetAbility(tInfo.targets, tInfo.source.name))
+					);
+					rInfo.generatedSequences.push_back(info.sequence);
+
+					cont->generateSequences(rInfo, info);
+
+				}
+				reps[i]--;
+			}
+		}
+	};
+
+
 	void controller::setUnitLists(retainedInfo & rInfo)
 	{
 		std::vector<unit::Unit*> units;
@@ -327,7 +351,7 @@ namespace AI {
 
 		if (p_passedInfo.canAct) {
 			// Logic for abilities
-			for (auto ability : p_retainedInfo.source.ability) {				
+			for (auto ability : p_retainedInfo.source.ability) {
 				// TODO let the target max and min be controlled through datadriving 
 				// give the damage a value boost of difference it does to enemy, which can be a lot. 
 
@@ -337,55 +361,13 @@ namespace AI {
 				// this will be stripped down to essentials based on what ability information we get. 
 				// TODO add general unit preferences, and ability preferences that override the general. these should affect the target and move
 
-				std::vector<std::pair<int, int>> possibleTargets;
 				targettingInfo targetInfo = targettingInfo(ability);
 
-				// Now go through the list of target units available and pickout the ones we can target.
-				for (auto pos : getTargetsInRange(p_retainedInfo, p_passedInfo, targetInfo)) {
-					if (
-						(ability.filter.unoccupiedTiles && m_model.board.unit[pos.first][pos.second]->m_attributes[UNIT_HP] <= 0) // if no HP left
-						)
-						continue;
+				auto targets = getTargetsInRange(p_retainedInfo, p_passedInfo, targetInfo);
 
-					int numberOfRepetitionsPossibleOnATarget = 1;
-					unit::Unit* target = m_model.board.unit[pos.first][pos.second];
-					if (ability.selectRepeat) // if the targets can be repeatedly selected
-						numberOfRepetitionsPossibleOnATarget = MAX(ability.targets, 1);
-					possibleTargets.resize(possibleTargets.size() + numberOfRepetitionsPossibleOnATarget, pos);
-				}
+				if (targets.size() == 0 || (targets.size() < ability.targets && !ability.selectRepeat)) continue;
 
-				if (possibleTargets.size() == 0
-					|| (!ability.selectRepeat && possibleTargets.size() < ability.targets)
-					) continue;
-
-				// If the number of possible targets end up being less than the target needed, repeat the last one over again. 
-				// Due to the earlier repeat check, this will always get triggered only if the target can be repeatedly targetted.
-				if (possibleTargets.size() < ability.targets)
-				{
-					possibleTargets.resize(ability.targets, possibleTargets.back());
-				}
-
-				std::sort(possibleTargets.begin(), possibleTargets.end());
-				do {
-					targetInfo.targets = std::vector<std::pair<int, int>>(possibleTargets.begin(), possibleTargets.begin() + ability.targets);
-					passedInfo info(p_passedInfo);
-					info.canAct = false;
-					info.sequence = Extract::Sequence(p_passedInfo.sequence);
-
-					if (p_retainedInfo.source.source->m_AbilityBehavior.find(ability.name) != p_retainedInfo.source.source->m_AbilityBehavior.end()) {
-						info.sequence.weight += p_retainedInfo.source.source->m_AbilityBehavior[ability.name]->calculateWeight(p_retainedInfo, info, targetInfo);
-					}
-					else {
-						info.sequence.weight += defaultBehavior.calculateWeight(p_retainedInfo, info, targetInfo);
-					}
-					info.sequence.actions.push_back(
-						std::make_shared<Extract::MultiTargetAbility>(Extract::MultiTargetAbility(targetInfo.targets, ability.name))
-					);
-					p_retainedInfo.generatedSequences.push_back(info.sequence);
-
-					generateSequences(p_retainedInfo, info);
-
-				} while (next_combination(possibleTargets.begin(), possibleTargets.begin() + ability.targets, possibleTargets.end()));
+				abilityTargetLoop(p_retainedInfo, p_passedInfo, targetInfo, targets,this).loop();
 			}
 
 			if (p_retainedInfo.source.isCommander) {

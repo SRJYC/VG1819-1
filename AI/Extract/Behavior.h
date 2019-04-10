@@ -54,6 +54,13 @@ struct TargetAlignment : public Behavior {
 	virtual double calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) override;
 };
 
+struct TileType : public Behavior {
+	LandInformation::TileType type;
+	double sameTeamWeight, differentTeamWeight;
+	TileType(nlohmann::json& p_json);
+	virtual double calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) override;
+};
+
 struct OwnAttribute : public Behavior {
 	std::string attribute;
 	double weightRangeFrom, weightRangeTo;
@@ -67,6 +74,14 @@ struct TargetAttribute : public Behavior {
 	double weightRangeFrom, weightRangeTo;
 	int attributeFrom, attributeTo;
 	TargetAttribute(nlohmann::json& p_json);
+	virtual double calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) override;
+};
+
+struct TargetAttributePercentage : public Behavior {
+	std::string attribute;
+	double weightRangeFrom, weightRangeTo;
+	double attributeFrom, attributeTo;
+	TargetAttributePercentage(nlohmann::json& p_json);
 	virtual double calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo& p_targgetingInfo) override;
 };
 

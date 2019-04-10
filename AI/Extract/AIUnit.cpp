@@ -55,12 +55,15 @@ namespace AI {
 						else if (filter.compare("owned_tile") == 0) {
 							lastAbility.filter.tilesOwnedByTeam = true;
 						}
+						else if (filter.compare("unowned_tile") == 0) {
+							lastAbility.filter.tilesNotOwnedByTeam = true;
+						}
 						else if (filter.compare("water") == 0) {
 							lastAbility.filter.water = true;
 						}
 					}
 				}
-				lastAbility.filter.unoccupiedTiles = LOOKUPINT(UNIT_NEED_UNIT);
+				lastAbility.filter.unoccupiedTiles = LOOKUPINT(UNIT_NEED_UNIT) == 1;
 
 				lastAbility.status.encourage = CHECKSTREXISTS(std::string("status_name_") + STATUS_ENCOURAGE);
 

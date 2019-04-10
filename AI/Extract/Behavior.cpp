@@ -1,5 +1,6 @@
 #include "Behavior.h"
 #include "AI/controller.h"
+#include "kibble/databank/databank.hpp"
 
 #define LOOKUP(var) p_json[var]
 #define LOOKUPDEF(var,def) ((p_json.find(var) != p_json.end())? p_json[var]: def)
@@ -16,9 +17,11 @@ void setupBehaviors() {
 	ADDTOMAP(LowestAttribUnit);
 	ADDTOMAP(HighestAttribUnit);
 	ADDTOMAP(TileOwnership);
+	ADDTOMAP(TileType);
 	ADDTOMAP(TargetAlignment);
 	ADDTOMAP(OwnAttribute);
 	ADDTOMAP(TargetAttribute);
+	ADDTOMAP(TargetAttributePercentage);
 	ADDTOMAP(RepeatedTarget);
 	ADDTOMAP(ForEachTarget);
 	ADDTOMAP(SelfHasStatus);
@@ -231,6 +234,30 @@ double TargetAlignment::calculateMultiplier(const AI::retainedInfo & p_retainedI
 		return differentTeamWeight;
 }
 
+TileType::TileType(nlohmann::json & p_json) : Behavior(p_json)
+{
+	std::string stype = LOOKUP("type");
+
+	if (stype == "Grass_land") type = LandInformation::Grass_land;
+	else if (stype == "Swamp_land") type = LandInformation::Swamp_land;
+	else if (stype == "Sand_land") type = LandInformation::Sand_land;
+	else if (stype == "Forest_land") type = LandInformation::Forest_land;
+	else if (stype == "Garden_land") type = LandInformation::Garden_land;
+	else if (stype == "Water_land") type = LandInformation::Water_land;
+	else if (stype == "Home_land") type = LandInformation::Home_land;
+	else type = LandInformation::Unknown;
+	sameTeamWeight = LOOKUPDEF("same", -1);
+	differentTeamWeight = LOOKUPDEF("different", 1);
+}
+
+double TileType::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo & p_targgetingInfo)
+{
+	if (p_retainedInfo.board.tile[p_targgetingInfo.targets[p_targgetingInfo.focusedTarget].first][p_targgetingInfo.targets[p_targgetingInfo.focusedTarget].second]->getType() == type )
+		return sameTeamWeight;
+	else
+		return differentTeamWeight;
+}
+
 OwnAttribute::OwnAttribute(nlohmann::json & p_json) : Behavior(p_json)
 {
 	attribute = LOOKUP("attribute").get<std::string>();
@@ -273,6 +300,32 @@ double TargetAttribute::calculateMultiplier(const AI::retainedInfo & p_retainedI
 	else if (unitAttVal < attributeTo) unitAttVal = attributeTo;
 
 	double percentage = (double)std::abs(unitAttVal- attributeFrom) / std::abs(attributeTo - attributeFrom);
+	return (double)(weightRangeTo-weightRangeFrom) * percentage + weightRangeFrom;
+}
+
+TargetAttributePercentage::TargetAttributePercentage(nlohmann::json & p_json) : Behavior(p_json)
+{
+	attribute = LOOKUP("attribute").get<std::string>();
+	attributeFrom = LOOKUPDEF("attFrom", 0);
+	attributeTo = LOOKUPDEF("attTo", 0);
+	weightRangeFrom = LOOKUPDEF("wFrom", 0);
+	weightRangeTo = LOOKUPDEF("wTo", 1);
+}
+
+double TargetAttributePercentage::calculateMultiplier(const AI::retainedInfo & p_retainedInfo, const AI::passedInfo & p_passedInfo, AI::targettingInfo & p_targgetingInfo)
+{
+	unit::Unit* target = p_retainedInfo.board.unit[p_targgetingInfo.targets[p_targgetingInfo.focusedTarget].first][p_targgetingInfo.targets[p_targgetingInfo.focusedTarget].second];
+	int unitAttVal = target->m_attributes[attribute];
+	int unitOrigAttVal = kibble::getUnitFromId(target->m_kibbleID)->m_attributes[attribute];
+	double oPercentage = (double)unitAttVal / unitOrigAttVal;
+	if (attributeFrom < attributeTo) {
+		if (oPercentage < attributeFrom) oPercentage = attributeFrom;
+		else if (oPercentage > attributeTo) oPercentage = attributeTo;
+	}
+	else if (oPercentage > attributeFrom) oPercentage = attributeFrom;
+	else if (oPercentage < attributeTo) oPercentage = attributeTo;
+
+	double percentage = (double)std::abs(oPercentage - attributeFrom) / std::abs(attributeTo - attributeFrom);
 	return (double)(weightRangeTo-weightRangeFrom) * percentage + weightRangeFrom;
 }
 
