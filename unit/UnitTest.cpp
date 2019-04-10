@@ -169,8 +169,8 @@ namespace unit
 //		kitten::K_GameObject* u17 = UnitSpawn::getInstance()->spawnUnitObject(21);//evil fiend
 //		u17->getComponent<unit::UnitMove>()->setTile(6, 3);
 
-//		kitten::K_GameObject* u18 = UnitSpawn::getInstance()->spawnUnitObject(22);//horror lord
-//		u18->getComponent<unit::UnitMove>()->setTile(5, 4);
+		kitten::K_GameObject* u18 = UnitSpawn::getInstance()->spawnUnitObject(22);//horror lord
+		u18->getComponent<unit::UnitMove>()->setTile(5, 4);
 
 //		kitten::K_GameObject* u19 = UnitSpawn::getInstance()->spawnUnitObject(23);//wraith
 //		u19->getComponent<unit::UnitMove>()->setTile(7, 1);
@@ -188,8 +188,8 @@ namespace unit
 //		u21->getComponent<unit::UnitMove>()->setTile(4, 7);
 //		u21->getComponent<unit::Unit>()->m_clientId = 0;
 
-//		kitten::K_GameObject* u22 = UnitSpawn::getInstance()->spawnUnitObject(25);//monument
-//		u22->getComponent<unit::UnitMove>()->setTile(5, 4);
+		kitten::K_GameObject* u22 = UnitSpawn::getInstance()->spawnUnitObject(25);//monument
+		u22->getComponent<unit::UnitMove>()->setTile(6, 4);
 //		u22->getComponent<unit::Unit>()->m_clientId = 0;
 
 		//test unit 
