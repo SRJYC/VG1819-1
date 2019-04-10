@@ -20,6 +20,7 @@ namespace AI {
 				if (origAbility->m_intValue[UNIT_LV] > p_data->m_attributes[UNIT_LV]
 					|| (p_data->checkCD(LOOKUPSTR(ABILITY_NAME)) > 0)
 					|| (CHECKINTEXISTS("area_fix")) // Delete later
+					|| (CHECKINTEXISTS("ct")) // Delete Later
 					|| (CHECKINTEXISTS(COUNTER_MIN) && p_data->m_attributes[LOOKUPSTR(COUNTER_NAME)] < LOOKUPINT(COUNTER_MIN)) 
 					|| (CHECKINTEXISTS(ABILITY_DISABLE) && LOOKUPINT(ABILITY_DISABLE) > 0)
 					) continue;

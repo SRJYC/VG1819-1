@@ -127,10 +127,10 @@ namespace AI {
 				&& board.unit[pos.first][pos.second]->m_attributes[UNIT_HP] > 0)
 				|| std::find(p_passedInfo.blockedPos.begin(), p_passedInfo.blockedPos.end(), pos) != p_passedInfo.blockedPos.end())
 			&& (!filter.water || board.tile[pos.first][pos.second]->getType() != LandInformation::Water_land) // uber frog filter salesman
-			&& (!filter.enemies || board.unit[pos.first][pos.second] == nullptr || board.unit[pos.first][pos.second]->m_clientId == p_retainedInfo.source.clientId)
-			&& (!filter.allies || board.unit[pos.first][pos.second] == nullptr || board.unit[pos.first][pos.second]->m_clientId != p_retainedInfo.source.clientId)
-			&& (!filter.sameUnitKind || board.unit[pos.first][pos.second] == nullptr || board.unit[pos.first][pos.second]->m_kibbleID != p_retainedInfo.source.kibbleId)
-			&& (!filter.differentUnitKind || board.unit[pos.first][pos.second] == nullptr || board.unit[pos.first][pos.second]->m_kibbleID == p_retainedInfo.source.kibbleId)
+			&& (!filter.enemies || (board.unit[pos.first][pos.second] != nullptr && board.unit[pos.first][pos.second]->m_clientId == p_retainedInfo.source.clientId))
+			&& (!filter.allies || (board.unit[pos.first][pos.second] != nullptr && board.unit[pos.first][pos.second]->m_clientId != p_retainedInfo.source.clientId))
+			&& (!filter.sameUnitKind || (board.unit[pos.first][pos.second] != nullptr && board.unit[pos.first][pos.second]->m_kibbleID != p_retainedInfo.source.kibbleId))
+			&& (!filter.differentUnitKind || (board.unit[pos.first][pos.second] != nullptr && board.unit[pos.first][pos.second]->m_kibbleID == p_retainedInfo.source.kibbleId))
 			;
 	}
 

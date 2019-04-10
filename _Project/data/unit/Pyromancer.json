@@ -58,7 +58,40 @@
 				"hp":6
 			}
 		],
-		"portrait_texture" : "textures/cards/500x500/Pyromancer.tga"
+		"portrait_texture" : "textures/cards/500x500/Pyromancer.tga",
+		"AI" : [
+			{
+				"ability" : "Burn",
+				"behavior" : {
+					"name" : "TargetAlignment",
+					"same" : -50,
+					"subBehavior" : [
+						{
+							"name" : "TargetAttributePercentage",
+							"attribute" : "hp",
+							"attFrom" : 1.8,
+							"attTo" : 0
+						}
+					]
+				}
+			},
+			{
+				"ability" : "mv",
+				"behavior" : {
+					"name" : "NearestUnit",
+					"target" : "enemy"
+				}
+			},
+			{
+				"ability" : "Join",
+				"behavior" : {
+					"name" : "OwnAttribute",
+					"attribute" : "hp",
+					"attFrom" : 16,
+					"attTo" : 4
+				}
+			}
+		]
 	},
 	"components" : [
 		{
