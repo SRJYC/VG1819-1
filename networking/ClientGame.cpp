@@ -334,6 +334,23 @@ namespace networking
 				}
 				break;
 			}
+			case PacketTypes::SPAWN_ITEM:
+			{
+				Buffer buffer;
+				buffer.m_data = &(m_network_data[i]);
+				buffer.m_size = UNIT_PACKET_SIZE;
+
+				UnitPacket packet;
+				packet.deserialize(buffer);
+
+				kitten::Event* eventData = new kitten::Event(kitten::Event::Network_Spawn_Item);
+				eventData->putInt(POSITION_X, packet.m_posX);
+				eventData->putInt(POSITION_Z, packet.m_posY);
+				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Network_Spawn_Item, eventData);
+
+				i += UNIT_PACKET_SIZE;
+				break;
+			}
 			case PacketTypes::SUMMON_UNIT:
 			{
 				printf("[Client: %d] received CLIENT_SUMMON_UNIT packet from server\n", sm_iClientId);
@@ -868,6 +885,28 @@ namespace networking
 		std::stringstream message;
 		message << "Client:" << sm_iClientId << " sending TEXTCHAT_MESSAGE\n";
 		message << "\tMessage: " << p_message;
+		m_log->logMessage(message.str());
+	}
+
+	void ClientGame::sendSpawnItemPacket(int p_x, int p_z)
+	{
+		char data[UNIT_PACKET_SIZE];
+
+		Buffer buffer;
+		buffer.m_data = data;
+		buffer.m_size = UNIT_PACKET_SIZE;
+
+		UnitPacket packet;
+		packet.m_packetType = SPAWN_ITEM;
+		packet.m_clientId = sm_iClientId;
+		packet.m_posX = p_x;
+		packet.m_posY = p_z;
+		packet.serialize(buffer);
+		int result = NetworkServices::sendMessage(m_network->m_connectSocket, data, UNIT_PACKET_SIZE);
+
+		std::stringstream message;
+		message << "Client:" << sm_iClientId << " sending SPAWN_ITEM\n";
+		message << "\tPos: " << p_x << ", " << p_z;
 		m_log->logMessage(message.str());
 	}
 

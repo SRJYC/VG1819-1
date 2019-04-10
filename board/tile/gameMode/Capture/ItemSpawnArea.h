@@ -11,7 +11,7 @@ public:
 
 	virtual void check() override;
 	virtual void setProperty(nlohmann::json* p_jsonfile) override;
-
+	void directSpawnItem(TileInfo* p_tile);
 	//this item is dropped on drop area
 	void dropItem(kitten::K_GameObject* p_item);
 private:

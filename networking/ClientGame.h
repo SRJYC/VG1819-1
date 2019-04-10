@@ -46,6 +46,8 @@ namespace networking
 		static ClientGame* getInstance();
 		static bool isNetworkValid() { return sm_networkValid; }
 		static const std::string& getEnemyName() { return sm_enemyName; }
+		static int getClientId() { return sm_iClientId; }
+		static void setClientId(int p_id) { sm_iClientId = p_id; }
 
 		static void setDedicatedServerAddress(const std::string& p_address) { sm_dedicatedServerAddress = p_address; }
 		static const std::string& getDedicatedServerAddress() { return sm_dedicatedServerAddress; }
@@ -74,12 +76,10 @@ namespace networking
 
 		void sendPlayerNamePacket(const std::string& p_name);
 		void sendTextChatMessagePacket(const std::string& p_message);
+		void sendSpawnItemPacket(int p_x, int p_z);
 		int sendBasicPacket(PacketTypes p_packetType);
 
 		unit::Unit* getCommander() { return m_commander; }
-		
-		static int getClientId() { return sm_iClientId; }
-		static void setClientId(int p_id) { sm_iClientId = p_id; }
     
 		bool isServerCalling() { return m_bServerCalling; }
 		void setServerCalling(bool p_value) { m_bServerCalling = p_value; }
