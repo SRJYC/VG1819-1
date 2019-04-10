@@ -79,6 +79,7 @@ namespace AI {
 
 				if (lastAbility.name == ABILITY_MANIPULATE_TILE) {
 					this->manipulateTile = lastAbility;
+					this->manipulateTile.filter.tilesOwnedByAny = true;
 					ability.pop_back();
 				}
 			}
