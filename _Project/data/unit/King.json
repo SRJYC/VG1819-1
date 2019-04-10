@@ -66,6 +66,13 @@
 					"name" : "NearestUnit",
 					"target" : "enemy"
 				}
+			},
+			{
+				"ability" : "Rally",
+				"behavior" : {
+					"name" : "Behavior",
+					"multiplier" : -1
+				}
 			}
 		]
 	},

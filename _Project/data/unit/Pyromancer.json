@@ -76,6 +76,20 @@
 				}
 			},
 			{
+				"ability" : "Fire Dance",
+				"behavior" : {
+					"name" : "Behavior",
+					"multiplier" : -1
+				}
+			},
+			{
+				"ability" : "Blast",
+				"behavior" : {
+					"name" : "Behavior",
+					"multiplier" : -1
+				}
+			},
+			{
 				"ability" : "mv",
 				"behavior" : {
 					"name" : "NearestUnit",

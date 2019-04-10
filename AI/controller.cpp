@@ -368,7 +368,7 @@ namespace AI {
 			if (p_retainedInfo.source.isCommander) {
 				// Logic for Tile Manipulation
 				{
-					targettingInfo targetInfo = targettingInfo(p_retainedInfo.source.manipulateTile);
+					targettingInfo targetInfo = targettingInfo(Extract::manipulateTile);
 
 					for (auto tile : getTargetsInRange(p_retainedInfo,p_passedInfo,targetInfo)) {
 						targetInfo.targets = std::vector<std::pair<int, int>>(1, tile);

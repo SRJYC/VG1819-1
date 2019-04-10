@@ -57,9 +57,9 @@
 						{
 							"name" : "TargetAttributePercentage",
 							"attribute" : "hp",
-							"multiplier" : 1.5,
+							"multiplier" : 1,
 							"attFrom" : 1.8,
-							"attTo" : 0
+							"attTo" : 0.2
 						}
 					]
 				}
@@ -91,9 +91,22 @@
 			{
 				"ability" : "mv",
 				"behavior" : {
-					"name" : "LowestAttribUnit",
-					"target" : "ally",
-					"attribute" : "hp"
+					"name" : "Behavior",
+					"multiplier" : 1,
+					"subBehavior" : [
+						{
+							"name" : "LowestAttribUnit",
+							"target" : "ally",
+							"attribute" : "hp",
+							"multiplier" : 1.2
+						},
+						{
+							"name" : "NearestUnit",
+							"target": "enemy",
+							"multiplier" : 0.3,
+							"flip" : true
+						}
+					]
 				}
 			},
 			{
@@ -101,7 +114,7 @@
 				"behavior" : {
 					"name" : "OwnAttribute",
 					"attribute" : "hp",
-					"attFrom" : 16,
+					"attFrom" : 20,
 					"attTo" : 0
 				}
 			}
