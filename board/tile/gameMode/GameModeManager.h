@@ -3,8 +3,10 @@
 #include <assert.h>
 #include "kitten/event_system/EventManager.h"
 #include "GameModeComponent.h"
+#include "puppy/Text/TextBox.h"
 
 #define GAME_MODE_DATA "data/map/GameMode.json"
+#define POINT_DISPLAY_JSON "UI/point_display.json"
 class GameModeManager
 {
 public:
@@ -21,6 +23,9 @@ public:
 	void initComponents();
 	void removeModeComponent(GameModeComponent* p_comp);
 private:
+	puppy::TextBox* m_playerPointTextBox = nullptr;
+	puppy::TextBox* m_enemyPointTextBox = nullptr;
+
 	static GameModeManager* sm_instance;
 	GameModeManager();
 	~GameModeManager();
@@ -30,6 +35,7 @@ private:
 	void registerEvent();
 	void deregisterEvent();
 
+	void setPointTextBoxes();
 	void checkPoints();
 private:
 	std::unordered_map<GameModeComponent::TileType, GameModeComponent*> m_modeComponentMap;

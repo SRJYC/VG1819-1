@@ -5,6 +5,10 @@
 #include "Capture/ItemSpawnArea.h"
 #include "Capture/ItemDropArea.h"
 
+// For Point Display
+#include "kitten/K_GameObjectManager.h"
+#include "settings_menu/PlayerPrefs.h"
+
 GameModeManager* GameModeManager::sm_instance = nullptr;
 
 void GameModeManager::registerTile(kitten::K_GameObject * p_tileGO, GameModeComponent::TileType p_type)
@@ -34,7 +38,35 @@ void GameModeManager::listenEvent(kitten::Event::EventType p_type, kitten::Event
 void GameModeManager::gainPoint(int p_clientId, int p_points)
 {
 	if (p_clientId >= 0)
+	{
 		m_points[p_clientId] += p_points;
+
+		setPointTextBoxes();
+	}
+}
+
+void GameModeManager::setPointTextBoxes()
+{
+	if (networking::ClientGame::getClientId() == 0)
+	{
+		const std::string& name = PlayerPrefs::getPlayerName();
+		int points = m_points[0];
+		m_playerPointTextBox->setText(name + ": " + std::to_string(points));
+
+		const std::string& enemyName = "123456789012345";//networking::ClientGame::getInstance()->getOpponentName();
+		points = m_points[1];
+		m_enemyPointTextBox->setText(std::to_string(points) + " :" + enemyName);
+	}
+	else
+	{
+		const std::string& name = PlayerPrefs::getPlayerName();
+		int points = m_points[1];
+		m_playerPointTextBox->setText(name + ": " + std::to_string(points));
+
+		const std::string& enemyName = "123456789012345";//networking::ClientGame::getInstance()->getOpponentName();
+		points = m_points[0];
+		m_enemyPointTextBox->setText(std::to_string(points) + " :" + enemyName);
+	}
 }
 
 void GameModeManager::initComponents()
@@ -58,6 +90,12 @@ void GameModeManager::initComponents()
 			comp++;
 		}
 	}
+
+	kitten::K_GameObject* pointDisplay = kitten::K_GameObjectManager::getInstance()->createNewGameObject(POINT_DISPLAY_JSON);
+	auto children = pointDisplay->getTransform().getChildren();
+	m_playerPointTextBox = children[0]->getAttachedGameObject().getComponent<puppy::TextBox>();
+	m_enemyPointTextBox = children[1]->getAttachedGameObject().getComponent<puppy::TextBox>();
+	setPointTextBoxes();
 }
 
 void GameModeManager::removeModeComponent(GameModeComponent * p_comp)
