@@ -450,6 +450,14 @@ namespace networking
 
 						break;
 					}
+					case SPAWN_ITEM:
+					{
+						printf("Server received SPAWN_ITEM packet from [Client: %d]\n", iter->first);
+
+						m_network->sendToOthers(iter->first, defaultBuffer.m_data, UNIT_PACKET_SIZE);
+						i += UNIT_PACKET_SIZE;
+						break;
+					}
 					case SUMMON_UNIT:
 					{
 						printf("Server received SUMMON_UNIT packet from [Client: %d]\n", iter->first);

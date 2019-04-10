@@ -73,7 +73,7 @@ namespace networking
 		void sendSummonUnitPacket(int p_iUnitId, int p_iPosX, int p_iPosY);
 
 		void sendTextChatMessagePacket(const std::string& p_message);
-		void sendSpawnItemPacket(int p_x, int p_y);
+		void sendSpawnItemPacket(int p_x, int p_z);
 		int sendBasicPacket(PacketTypes p_packetType);
 
 		unit::Unit* getCommander() { return m_commander; }

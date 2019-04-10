@@ -339,9 +339,10 @@ namespace networking
 				UnitPacket packet;
 				packet.deserialize(buffer);
 
-				// TODO: Create event to send to GameModeManager/ItemSpawnArea to actually spawn the item
-				//kitten::Event* eventdata = new kitten::Event(kitten::Event::Network_Spawn_Item);
-				//eventData->putInt();
+				kitten::Event* eventData = new kitten::Event(kitten::Event::Network_Spawn_Item);
+				eventData->putInt(POSITION_X, packet.m_posX);
+				eventData->putInt(POSITION_Z, packet.m_posY);
+				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Network_Spawn_Item, eventData);
 
 				i += UNIT_PACKET_SIZE;
 				break;
@@ -837,7 +838,7 @@ namespace networking
 		m_log->logMessage(message.str());
 	}
 
-	void ClientGame::sendSpawnItemPacket(int p_x, int p_y)
+	void ClientGame::sendSpawnItemPacket(int p_x, int p_z)
 	{
 		char data[UNIT_PACKET_SIZE];
 
@@ -849,13 +850,13 @@ namespace networking
 		packet.m_packetType = SPAWN_ITEM;
 		packet.m_clientId = sm_iClientId;
 		packet.m_posX = p_x;
-		packet.m_posY = p_y;
+		packet.m_posY = p_z;
 		packet.serialize(buffer);
-		int result = NetworkServices::sendMessage(m_network->m_connectSocket, data, TEXTCHAT_MESSAGE_PACKET_SIZE);
+		int result = NetworkServices::sendMessage(m_network->m_connectSocket, data, UNIT_PACKET_SIZE);
 
 		std::stringstream message;
 		message << "Client:" << sm_iClientId << " sending SPAWN_ITEM\n";
-		message << "\tPos: " << p_x << ", " << p_y;
+		message << "\tPos: " << p_x << ", " << p_z;
 		m_log->logMessage(message.str());
 	}
 

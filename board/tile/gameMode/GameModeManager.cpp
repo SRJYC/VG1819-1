@@ -20,21 +20,43 @@ void GameModeManager::registerTile(kitten::K_GameObject * p_tileGO, GameModeComp
 
 void GameModeManager::listenEvent(kitten::Event::EventType p_type, kitten::Event * p_data)
 {
-	if (p_type == kitten::Event::Game_Turn_End)
+	switch (p_type)
 	{
-		for (auto component : m_modeComponentMap)
+		case kitten::Event::Game_Turn_End:
 		{
-			component.second->check();
-		}
+			for (auto component : m_modeComponentMap)
+			{
+				component.second->check();
+			}
 
-		checkPoints();
+			checkPoints();
+			break;
+		}
+		case kitten::Event::Network_Spawn_Item:
+		{
+			int x = p_data->getInt(POSITION_X);
+			int z = p_data->getInt(POSITION_Z);
+			
+			TileInfo* tile = BoardManager::getInstance()->getTile(x, z)->getComponent<TileInfo>();
+
+			auto found = m_modeComponentMap.find(GameModeComponent::ItemSpawn);
+			if (found != m_modeComponentMap.end())
+			{
+				ItemSpawnArea* spawnArea = static_cast<ItemSpawnArea*>(found->second);
+				spawnArea->directSpawnItem(tile);
+			}
+			break;
+		}
 	}
 }
 
 void GameModeManager::gainPoint(int p_clientId, int p_points)
 {
 	if (p_clientId >= 0)
+	{
 		m_points[p_clientId] += p_points;
+		printf("Client: %d gains %d points, total: %d\n", p_clientId, p_points, m_points[p_clientId]);
+	}
 }
 
 void GameModeManager::initComponents()
@@ -139,11 +161,17 @@ void GameModeManager::registerEvent()
 		kitten::Event::EventType::Game_Turn_End,
 		this,
 		std::bind(&GameModeManager::listenEvent, this, std::placeholders::_1, std::placeholders::_2));
+
+	kitten::EventManager::getInstance()->addListener(
+		kitten::Event::EventType::Network_Spawn_Item,
+		this,
+		std::bind(&GameModeManager::listenEvent, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void GameModeManager::deregisterEvent()
 {
 	kitten::EventManager::getInstance()->removeListener(kitten::Event::Game_Turn_End, this);
+	kitten::EventManager::getInstance()->removeListener(kitten::Event::Network_Spawn_Item, this);
 }
 
 void GameModeManager::checkPoints()

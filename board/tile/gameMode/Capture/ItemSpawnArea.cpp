@@ -1,6 +1,7 @@
 #include "ItemSpawnArea.h"
 #include "kitten/K_GameObjectManager.h"
 #include "CaptureItemController.h"
+#include "networking/ClientGame.h"
 ItemSpawnArea::ItemSpawnArea()
 {
 }
@@ -11,6 +12,12 @@ ItemSpawnArea::~ItemSpawnArea()
 
 void ItemSpawnArea::check()
 {
+	// Host will determine crystal spawn location and send the location to others
+	if (networking::ClientGame::getClientId() != 0)
+	{
+		return;
+	}
+
 	if (m_delay > 0)//there's delay before first spawn
 	{
 		m_delay--;
@@ -78,6 +85,11 @@ void ItemSpawnArea::check()
 
 		//that tile is no longer empty, remove from list
 		emptyList.erase(emptyList.begin()+index);
+
+		if (networking::ClientGame::isNetworkValid())
+		{
+			networking::ClientGame::getInstance()->sendSpawnItemPacket(tile->getPosX(), tile->getPosY());
+		}
 	}
 
 }
