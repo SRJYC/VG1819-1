@@ -45,7 +45,9 @@ enum PacketTypes
 	QUICKPLAY_FOUND_GAME,
 	SESSION_ENDED,
 	MAP_DATA,
-	NO_MAP_ID
+	NO_MAP_ID,
+	PLAYER_NAME,
+	SPAWN_ITEM
 };
 
 struct UnitPrimitiveData

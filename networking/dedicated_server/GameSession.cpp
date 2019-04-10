@@ -146,6 +146,14 @@ namespace networking
 
 					break;
 				}
+				case SPAWN_ITEM:
+				{
+					printf("Server received SPAWN_ITEM packet from [Client: %d]\n", iter->first);
+
+					m_network->sendToOthers(iter->first, defaultBuffer.m_data, UNIT_PACKET_SIZE);
+					i += UNIT_PACKET_SIZE;
+					break;
+				}
 				case SUMMON_UNIT:
 				{
 					printf("[GameSession: %d] received SUMMON_UNIT packet from [Client: %d]\n", m_sessionId, sessionClientId);
@@ -229,6 +237,13 @@ namespace networking
 						sendToAll(data, STARTING_COMMANDERS_PACKET_SIZE);
 					}
 					i += UNIT_PACKET_SIZE;
+					break;
+				}
+				case PLAYER_NAME:
+				{
+					i += TEXTCHAT_MESSAGE_PACKET_SIZE;
+					printf("Server received PLAYER_NAME packet from [Client: %d]\n", iter->first);
+					m_network->sendToOthers(iter->first, defaultBuffer.m_data, TEXTCHAT_MESSAGE_PACKET_SIZE);
 					break;
 				}
 				case TEXTCHAT_MESSAGE:
