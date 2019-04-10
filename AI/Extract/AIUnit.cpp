@@ -19,8 +19,6 @@ namespace AI {
 			for (auto origAbility : p_data->m_ADList) {
 				if (origAbility->m_intValue[UNIT_LV] > p_data->m_attributes[UNIT_LV]
 					|| (p_data->checkCD(LOOKUPSTR(ABILITY_NAME)) > 0)
-					|| (CHECKINTEXISTS("area_fix")) // Delete later
-					|| (CHECKINTEXISTS("ct")) // Delete Later
 					|| (LOOKUPSTR(ABILITY_NAME) == ABILITY_MANIPULATE_TILE) 
 					|| (CHECKINTEXISTS(COUNTER_MIN) && p_data->m_attributes[LOOKUPSTR(COUNTER_NAME)] < LOOKUPINT(COUNTER_MIN)) 
 					|| (CHECKINTEXISTS(ABILITY_DISABLE) && LOOKUPINT(ABILITY_DISABLE) > 0)

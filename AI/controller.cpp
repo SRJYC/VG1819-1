@@ -121,9 +121,9 @@ namespace AI {
 		return (!filter.tilesOwnedByAny || board.tile[pos.first][pos.second]->getOwnerId() < 0)
 			&& (!filter.tilesOwnedByTeam || board.tile[pos.first][pos.second]->getOwnerId() != p_retainedInfo.source.clientId)
 			&& (!filter.tilesNotOwnedByTeam || board.tile[pos.first][pos.second]->getOwnerId() == p_retainedInfo.source.clientId)
-			&& (!filter.occupiedTiles || (!board.tile[pos.first][pos.second]->hasUnit()
+			&& (!filter.occupiedTiles || (board.unit[pos.first][pos.second] == nullptr
 				&& std::find(p_passedInfo.blockedPos.begin(), p_passedInfo.blockedPos.end(), pos) == p_passedInfo.blockedPos.end()))
-			&& (!filter.unoccupiedTiles || (board.tile[pos.first][pos.second]->hasUnit() && board.unit[pos.first][pos.second] != p_retainedInfo.source.source
+			&& (!filter.unoccupiedTiles || (board.unit[pos.first][pos.second] != nullptr && board.unit[pos.first][pos.second] != p_retainedInfo.source.source
 				&& board.unit[pos.first][pos.second]->m_attributes[UNIT_HP] > 0)
 				|| std::find(p_passedInfo.blockedPos.begin(), p_passedInfo.blockedPos.end(), pos) != p_passedInfo.blockedPos.end())
 			&& (!filter.water || board.tile[pos.first][pos.second]->getType() != LandInformation::Water_land) // uber frog filter salesman
@@ -472,7 +472,7 @@ namespace AI {
 	{
 		unit::Unit* currentUnit = unit::InitiativeTracker::getInstance()->getCurrentUnit()->getComponent<unit::Unit>();
 		if (currentUnit->m_clientId != m_playerID || !m_unit->isTurn()) return;
-		this->m_attachedObject->getComponent<DisableAfterTime>()->setTime(1);
+		this->m_attachedObject->getComponent<DisableAfterTime>()->setTime(1.5);
 		if (!m_attachedObject->isEnabled())
 			this->m_attachedObject->setEnabled(true);
 		else

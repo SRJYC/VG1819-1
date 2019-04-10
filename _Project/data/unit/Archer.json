@@ -53,14 +53,16 @@
 				"ability" : "Shoot",
 				"behavior" : {
 					"name" : "TargetAlignment",
-					"same" : -50,
+					"same" : -1,
 					"subBehavior" : [
 						{
 							"name" : "TargetAttributePercentage",
 							"attribute" : "hp",
 							"multiplier" : 1.5,
 							"attFrom" : 1.8,
-							"attTo" : 0
+							"attTo" : 0,
+							"wFrom" : 0,
+							"wTo" : 1.2
 						}
 					]
 				}
