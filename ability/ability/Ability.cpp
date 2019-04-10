@@ -10,6 +10,9 @@
 #include "networking\ClientGame.h"
 #include "_Project\UniversalPfx.h"
 
+#include "kitten\event_system\EventManager.h"
+#include "kitten\event_system\Event.h"
+
 #include "UI/HandFrame.h"
 
 #include <iostream>
@@ -37,11 +40,10 @@ void ability::Ability::singleTargetDamage(AbilityInfoPackage* p_info, bool p_fir
 
 void ability::Ability::singleTargetProjectileFinished(AbilityInfoPackage* p_package)
 {
+	unit::Unit* target = p_package->m_targets[0];
+
 	//trigger deal damage event
 	triggerTPEvent(ability::TimePointEvent::Deal_Damage, p_package->m_source, p_package);
-
-	//trigger receive damage event
-	unit::Unit* target = p_package->m_targets[0];
 
 	triggerTPEvent(ability::TimePointEvent::Receive_Damage, target, p_package);
 
@@ -52,6 +54,14 @@ void ability::Ability::singleTargetProjectileFinished(AbilityInfoPackage* p_pack
 
 	//delete package
 	done(p_package);
+
+	//trigger commander damage event if they are the target
+	if (target->isCommander() && (target->m_clientId == networking::ClientGame::getClientId()))
+	{
+		kitten::Event* eventData = new kitten::Event(kitten::Event::Damage_Commander);
+		eventData->putInt(DAMAGE_AS_INT, power);
+		kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Damage_Commander, eventData);
+	}
 }
 
 void ability::Ability::multiTargetDamage(AbilityInfoPackage* p_info, bool p_fireProjectile)

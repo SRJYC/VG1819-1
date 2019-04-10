@@ -881,10 +881,10 @@ namespace networking
 		buffer.m_data = data;
 		buffer.m_size = COUNT_SIZE;
 
-		Packet packet;
+		CardCountPacket packet;
 		packet.m_packetType = PacketTypes::CARD_DRAW;
 		packet.m_clientId = sm_iClientId;
-		packet.writeInt(buffer, p_count);
+		packet.m_count = p_count;
 
 
 		packet.serialize(buffer);

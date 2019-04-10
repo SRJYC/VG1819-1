@@ -53,6 +53,11 @@ namespace userinterface
 			attachCommander(kibble::getUnitFromId(29));
 			//REMOVE WHEN NOT TESTING
 		}
+
+		kitten::EventManager::getInstance()->addListener(
+			kitten::Event::EventType::Damage_Commander,
+			this,
+			std::bind(&CommanderContext::receiveCommanderDamage, this, std::placeholders::_1, std::placeholders::_2));
 	}
 
 	void CommanderContext::commanderLoadListener(kitten::Event::EventType p_type, kitten::Event* p_event)
@@ -144,6 +149,8 @@ namespace userinterface
 
 		kitten::K_GameObject* hpText = kitten::K_GameObjectManager::getInstance()->createNewGameObject("context_number_3digits.txt");
 		puppy::TextBox* hptxtComp = hpText->getComponent<puppy::TextBox>();
+		m_HP = hptxtComp;
+		m_currentHP = m_attachedCommander->m_attributes["hp"];
 		hptxtComp->setText(std::to_string(m_attachedCommander->m_attributes["hp"]));
 
 		ctxElement hptxtEm;
@@ -232,5 +239,12 @@ namespace userinterface
 		const glm::vec2 bgScale = backGround->getTransform().getScale2D();
 		nextTurnButton->getTransform().place(winX - 160, winY - bgScale.y - 5, -0.01f);
 		nextTurnButton->getTransform().scale2D(160, 105);
+	}
+
+	void CommanderContext::receiveCommanderDamage(kitten::Event::EventType p_type, kitten::Event* p_event)
+	{
+		int dmg = p_event->getInt(DAMAGE_AS_INT);
+		m_currentHP += dmg;
+		m_HP->setText(std::to_string(m_currentHP));
 	}
 }

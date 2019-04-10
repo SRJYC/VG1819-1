@@ -2,6 +2,7 @@
 #include "kitten/event_system/EventManager.h"
 #include "kitten/K_GameObjectManager.h"
 #include "UI/UIFrame.h"
+#include "networking\ClientGame.h"
 
 void DeckCountTextureBind::deckEventReceiver(kitten::Event::EventType p_type, kitten::Event * p_data)
 {
@@ -59,17 +60,37 @@ void DeckCountTextureBind::start()
 	const glm::vec2 deckScale = getTransform().getScale2D();
 	const glm::vec3 deckTrans = getTransform().getTranslation();
 
+	bool host = false;
+	if (networking::ClientGame::getClientId == 0)
+	{
+		host = true;
+	}
+
+	//make the tex
 	kitten::K_GameObject* counter = kitten::K_GameObjectManager::getInstance()->createNewGameObject("ui/deck/deck_counter_textbox.json");
 	puppy::TextBox* txtBoxComp = counter->getComponent<puppy::TextBox>();
-	txtBoxComp->setText("Loading...");
+	txtBoxComp->setText("?");
 	counter->getTransform().place2D(deckTrans.x + 20, deckTrans.y + deckScale.y);
 	m_countText = txtBoxComp;
 
 	kitten::K_GameObject* enemyCounter = kitten::K_GameObjectManager::getInstance()->createNewGameObject("ui/deck/deck_counter_textbox.json");
 	puppy::TextBox* entxtBoxComp = enemyCounter->getComponent<puppy::TextBox>();
-	enemyCounter->getTransform().place2D(deckTrans.x + 40, deckTrans.y + deckScale.y);
+	entxtBoxComp->setColor(1, 0, 0);
+	enemyCounter->getTransform().place2D(deckTrans.x + 70, deckTrans.y + deckScale.y);
 	m_enemyCountText = entxtBoxComp;
 	entxtBoxComp->setText("?");
+
+	//set colors
+	if (host)
+	{
+		txtBoxComp->setColor(0.1, 0.1, 1);
+		entxtBoxComp->setColor(1, 1, 0);
+
+	}
+	else {
+		entxtBoxComp->setColor(1, 1, 0);
+		entxtBoxComp->setColor(0.1, 0.1, 1);
+	}
 
 }
 
