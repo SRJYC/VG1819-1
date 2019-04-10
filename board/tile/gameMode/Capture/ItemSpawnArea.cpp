@@ -73,12 +73,47 @@ void ItemSpawnArea::check()
 		m_activeItemList.push_back(item);
 
 		//put it on tile
-		item->getComponent<CaptureItemController>()->setParent(emptyList[index]);
+		TileInfo* tile = emptyList[index];
+		item->getComponent<CaptureItemController>()->setParent(tile);
 
 		//that tile is no longer empty, remove from list
 		emptyList.erase(emptyList.begin()+index);
 	}
 
+}
+
+// For networking, directly spawn an item on a given tile, with no regards to empty list
+// Host player determines the tile traditionally through this->check() and sends the tile to the 
+// connecting client
+void ItemSpawnArea::directSpawnItem(TileInfo* p_tile)
+{
+	//spawn item
+	kitten::K_GameObject* item;
+	if (m_inactiveItemList.size() == 0)//no inactive game object
+	{
+		//create one
+		item = kitten::K_GameObjectManager::getInstance()->createNewGameObject(m_itemPath);
+
+		//set spawner
+		item->getComponent<CaptureItemController>()->setSpawner(this);
+	}
+	else
+	{
+		//get one item from inactive list
+		item = m_inactiveItemList.back();
+
+		//remove from list
+		m_inactiveItemList.pop_back();
+
+		//set enable
+		item->setEnabled(true);
+	}
+
+	//put it into active item list
+	m_activeItemList.push_back(item);
+
+	//put it on tile
+	item->getComponent<CaptureItemController>()->setParent(p_tile);
 }
 
 void ItemSpawnArea::setProperty(nlohmann::json * p_jsonfile)
