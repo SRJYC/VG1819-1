@@ -70,11 +70,16 @@ void GameModeManager::setPointTextBoxes()
 	if (BoardManager::getInstance()->getMapId() == 0 || m_playerPointTextBox == nullptr)
 		return;
 
+	std::string name = PlayerPrefs::getPlayerName();
+	if (name == "")
+	{
+		name = "Player";
+	}
+
 	switch (networking::ClientGame::getClientId())
 	{
 		case 0:
 		{
-			const std::string& name = PlayerPrefs::getPlayerName();
 			int points = m_points[0];
 			m_playerPointTextBox->setText(name + ": " + std::to_string(points));
 
@@ -85,7 +90,6 @@ void GameModeManager::setPointTextBoxes()
 		}
 		case 1:
 		{
-			const std::string& name = PlayerPrefs::getPlayerName();
 			int points = m_points[1];
 			m_playerPointTextBox->setText(name + ": " + std::to_string(points));
 
@@ -96,7 +100,6 @@ void GameModeManager::setPointTextBoxes()
 		}
 		default:
 		{
-			const std::string& name = PlayerPrefs::getPlayerName();
 			int points = m_points[0];
 			m_playerPointTextBox->setText(name + ": " + std::to_string(points));
 

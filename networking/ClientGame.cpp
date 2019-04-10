@@ -863,8 +863,6 @@ namespace networking
 		message << "Client:" << sm_iClientId << " sending PLAYER_NAME\n";
 		message << "\tName: " << p_name;
 		m_log->logMessage(message.str());
-
-		GameModeManager::getInstance()->setPointTextBoxes();
 	}
 
 	void ClientGame::sendTextChatMessagePacket(const std::string& p_message)
