@@ -105,6 +105,7 @@ namespace networking
 
 		kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Board_Loaded, this);
 		kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Player_Name_Change, this);
+		kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Send_Deck_Count, this);
 	}
 
 	void ClientGame::setupNetwork(const std::string &p_strAddr)
