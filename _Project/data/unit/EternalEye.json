@@ -39,7 +39,7 @@
 				"name":"Status_Eternal_Eye_LV3",
 				"lv":3,
 				"hp":3,
-				"description":"Curse damage increase. Oppose increased to 3 tiles",
+				"description":"Curse dmg increase. Oppose inc to 3 tiles",
 				"effectedAD":2,
 				"ad_name_0":"Curse",
 				"ad_attribute_num_0":1,
@@ -52,7 +52,7 @@
 			},
 			{
 				"name":"Status_DR_Eternal_Eye",
-				"description":"Cannot Oppose units that are not on [Demonic Presence] tiles"
+				"description":"Can only Oppose units on DP tiles"
 			}
 		],
 		"portrait_texture" : "textures/cards/500x500/EternalEye.tga"

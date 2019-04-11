@@ -31,12 +31,9 @@ void HoverOverCardBehavior::onHoverStart()
 	m_isHovered = true;
 
 	// Get CardUIO attached unit ID
-	kitten::Event* updateContextEvent = new kitten::Event(kitten::Event::Update_Card_Context_By_ID);
-	if (m_unit == nullptr)
-		updateContextEvent->putInt(UPDATE_CARD_CONTEXT_KEY, 2);
-	else
-		updateContextEvent->putInt(UPDATE_CARD_CONTEXT_KEY, m_unit->m_kibbleID);
-	kitten::EventManager::getInstance()->queueEvent(kitten::Event::Update_Card_Context_By_ID, updateContextEvent);
+	kitten::Event* updateContextEvent = new kitten::Event(kitten::Event::Update_Card_Context_By_GO);
+	updateContextEvent->putGameObj(UPDATE_CARD_CONTEXT_KEY, m_attachedObject);
+	kitten::EventManager::getInstance()->queueEvent(kitten::Event::Update_Card_Context_By_GO, updateContextEvent);
 
 	// Enable Card Context
 	kitten::Event* enableContextEvent = new kitten::Event(kitten::Event::Card_Context_Set_Enabled);
