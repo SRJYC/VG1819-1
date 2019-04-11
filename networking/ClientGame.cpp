@@ -4,7 +4,6 @@
 // Has update loop to always check for incoming data from the server
 //
 // @Ken
-
 #include "networking\ClientGame.h"
 #include "kitten/K_Time.h"
 #include <assert.h>
@@ -80,6 +79,11 @@ namespace networking
 			kitten::Event::EventType::Player_Name_Change,
 			this,
 			std::bind(&ClientGame::eventListener, this, std::placeholders::_1, std::placeholders::_2));
+
+		kitten::EventManager::getInstance()->addListener(
+			kitten::Event::EventType::Send_Deck_Count,
+			this,
+			std::bind(&ClientGame::cardDrawnListener, this, std::placeholders::_1, std::placeholders::_2));
 	}
 	
 	ClientGame::~ClientGame()
@@ -606,7 +610,27 @@ namespace networking
 				i += BASIC_PACKET_SIZE;
 				break;
 			}
+			case PacketTypes::CARD_DRAW:
+			{
+				Buffer buffer;
+				buffer.m_data = &(m_network_data[i]);
+				buffer.m_size = COUNT_SIZE;
+
+				CardCountPacket countPacket;
+				countPacket.deserialize(buffer);
+
+				printf("[Client: %d] received CARD_DRAW packet from server\n", sm_iClientId);
+				i += COUNT_SIZE;
+
+				// Send the Server info to the Quickplay class
+				kitten::Event* eventData = new kitten::Event(kitten::Event::Enemy_Draw_Card);
+				eventData->putInt(CARD_COUNT, countPacket.m_count);
+				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Enemy_Draw_Card, eventData);
+
+				break;
+			}
 			default:
+
 				std::stringstream message;
 				message << "Client:" << sm_iClientId << " received error in packet types, received: " << packetType;
 				m_log->logMessage(message.str());
@@ -764,6 +788,23 @@ namespace networking
 				sendPlayerNamePacket(PlayerPrefs::getPlayerName());
 				break;
 			}
+		}
+	}
+	void ClientGame::cardDrawnListener(kitten::Event::EventType p_type, kitten::Event* p_event)
+	{
+		sendDrawPacket(p_event->getInt(CARD_COUNT));
+	}
+
+	void ClientGame::boardLoadedListener(kitten::Event::EventType p_type, kitten::Event* p_event)
+	{
+		// Board loaded before getting ID from the server, so set flag so we can sendStartingData when we get our ID
+		if (sm_iClientId < 0)
+		{
+			m_boardLoaded = true;
+		}
+		else // Otherwise, we have already gotten our ID, now that the board is loaded, we can send our starting data
+		{
+			sendStartingData();
 		}
 	}
 
@@ -948,5 +989,24 @@ namespace networking
 		}
 
 		return NetworkServices::sendMessage(m_network->m_connectSocket, data, BASIC_PACKET_SIZE);
+	}
+
+	int ClientGame::sendDrawPacket(const int p_count)
+	{
+		char data[COUNT_SIZE];
+
+		Buffer buffer;
+		buffer.m_data = data;
+		buffer.m_size = COUNT_SIZE;
+
+		CardCountPacket packet;
+		packet.m_packetType = PacketTypes::CARD_DRAW;
+		packet.m_clientId = sm_iClientId;
+		packet.m_count = p_count;
+
+
+		packet.serialize(buffer);
+
+		return NetworkServices::sendMessage(m_network->m_connectSocket, data, COUNT_SIZE);
 	}
 }

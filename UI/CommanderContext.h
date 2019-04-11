@@ -17,6 +17,10 @@ namespace userinterface
 		unit::Unit* m_attachedCommander;
 		void attachCommander(unit::Unit* p_commanderToAttach);
 		void commanderLoadListener(kitten::Event::EventType p_type, kitten::Event* p_event);
+		void receiveCommanderDamage(kitten::Event::EventType p_type, kitten::Event* p_event);
+
+		puppy::TextBox* m_HP;
+		int m_currentHP;
 		
 	};
 }

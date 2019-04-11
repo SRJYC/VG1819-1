@@ -1,5 +1,5 @@
 {
-    "name" : "TextChat Message TextBox",
+    "name" : "Deck Counter Textbox",
     "components" : [
         {
             "name" : "TextBox",

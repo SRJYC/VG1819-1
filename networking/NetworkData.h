@@ -23,6 +23,7 @@
 #define SERVER_INFO_PACKET_SIZE sizeof(ServerInfoPacket)
 #define TEST_PACKET_SIZE sizeof(TestPacket)
 #define MAP_DATA_PACKET_SIZE sizeof(MapDataPacket)
+#define COUNT_SIZE sizeof(CardCountPacket)
 
 enum PacketTypes 
 {
@@ -50,7 +51,8 @@ enum PacketTypes
 	MAP_DATA,
 	NO_MAP_ID,
 	PLAYER_NAME,
-	SPAWN_ITEM
+	SPAWN_ITEM,
+	CARD_DRAW
 };
 
 struct UnitPrimitiveData
@@ -295,6 +297,23 @@ struct ServerInfoPacket : Packet
 		Packet::deserialize(p_buffer);
 		m_playerCount = readInt(p_buffer);
 		m_activeSessions = readInt(p_buffer);
+	}
+};
+
+struct CardCountPacket : Packet
+{
+	int m_count;
+
+	void serialize(Buffer& p_buffer)
+	{
+		Packet::serialize(p_buffer);
+		writeInt(p_buffer, m_count);
+	}
+
+	void deserialize(Buffer& p_buffer)
+	{
+		Packet::deserialize(p_buffer);
+		m_count = readInt(p_buffer);
 	}
 };
 
