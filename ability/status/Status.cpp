@@ -135,10 +135,13 @@ namespace ability
 		m_TPList[p_value] = p_priority;
 	}
 
-	void Status::setCaster(unit::Unit * p_u)
+	void Status::setCaster(unit::Unit * p_u, bool p_register)
 	{
 		m_caster = p_u;
-		p_u->registerDestroy(this);
+		if (p_register)
+		{
+			p_u->registerDestroy(this);
+		}
 	}
 
 	void Status::endEffectAt(const TimePointEvent::TPEventType& p_value)

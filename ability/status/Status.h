@@ -69,7 +69,7 @@ namespace ability
 		void addCounter(const std::string & p_key, int p_value);
 		void addAttributeChange(const std::string & p_key, int p_value);
 		void addTimePoint(const TimePointEvent::TPEventType& p_value, int p_priority = 0);
-		void setCaster(unit::Unit* p_u);
+		void setCaster(unit::Unit* p_u, bool p_register = true);
 
 		//change when to reduce duration counter, turn end is default
 		void endEffectAt(const TimePointEvent::TPEventType& p_value = TimePointEvent::Turn_End);

@@ -67,6 +67,12 @@ namespace unit
 			delete m_commander;
 		}
 		m_commander = nullptr;
+
+		auto end = m_statusObserverList.end();
+		for (auto it = m_statusObserverList.begin(); it != end; ++it)
+		{
+			(*it)->setCaster(nullptr, false);
+		}
 	}
 
 	void Unit::start()
