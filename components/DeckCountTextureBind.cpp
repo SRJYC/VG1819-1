@@ -60,12 +60,8 @@ void DeckCountTextureBind::start()
 	const glm::vec2 deckScale = getTransform().getScale2D();
 	const glm::vec3 deckTrans = getTransform().getTranslation();
 
-	bool host = false;
-	if (networking::ClientGame::getClientId == 0)
-	{
-		host = true;
-	}
-
+	bool host = (networking::ClientGame::getClientId == 0);
+	
 	//make the tex
 	kitten::K_GameObject* counter = kitten::K_GameObjectManager::getInstance()->createNewGameObject("ui/deck/deck_counter_textbox.json");
 	puppy::TextBox* txtBoxComp = counter->getComponent<puppy::TextBox>();
