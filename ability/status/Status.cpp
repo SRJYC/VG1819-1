@@ -43,12 +43,37 @@ namespace ability
 		}
 	}
 
+	void Status::notifyUnitDestroy(unit::Unit * p_u)
+	{
+		tryRemoveCaster(p_u);
+	}
+
+	void Status::tryRemoveCaster(unit::Unit * p_u)
+	{
+		if (p_u == m_caster)
+		{
+			m_caster = nullptr;
+		}
+	}
+
+	void Status::tryDeregisterDestroy()
+	{
+		if (m_caster != nullptr)//has registered to units
+		{
+			m_caster->deregisterDestroy(this);
+		}
+	}
+
 	Status::Status()
+		:m_caster(nullptr),
+		m_unit(nullptr)
 	{
 	}
+
 	Status::~Status()
 	{
-		//effectEnd();
+		//deregister from observered
+		tryDeregisterDestroy();
 	}
 
 	void Status::changeName(const std::string & p_msg)
@@ -113,6 +138,7 @@ namespace ability
 	void Status::setCaster(unit::Unit * p_u)
 	{
 		m_caster = p_u;
+		p_u->registerDestroy(this);
 	}
 
 	void Status::endEffectAt(const TimePointEvent::TPEventType& p_value)

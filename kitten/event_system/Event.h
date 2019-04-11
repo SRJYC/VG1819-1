@@ -34,8 +34,8 @@
 
 // Networking Events
 #define GAME_END_RESULT "game_end_result_key"
-#define HOST_COMMANDER_DIED 0
-#define CLIENT_COMMANDER_DIED 1
+#define DEFEAT 0
+#define VICTORY 1
 #define PLAYER_DISCONNECTED 2
 #define CLIENT_DESYNCED 3
 
@@ -126,6 +126,8 @@ namespace kitten
 			Update_Deck_Builder_Frame,
 			Network_Host_Not_Ready,
 			Network_Cancel_Join,
+			Network_Spawn_Item,
+			Player_Name_Change,
 			Enemy_Draw_Card,
 			Send_Deck_Count,
 			Damage_Commander,

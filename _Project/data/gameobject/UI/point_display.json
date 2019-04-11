@@ -1,0 +1,43 @@
+{
+	"name" : "Point Display",
+	"components" : 
+	[
+		{
+			"name" : "UIObject",
+			"texture" : "textures/ui/point_display.dds"
+		}
+	],
+	"translate" : [318, 125, -0.9],
+	"worldscale" : [645, 25, 1],
+	
+	"gameobjects" :
+	[
+		{
+			"name" : "Player TextBox",
+			"components" : [
+				{
+					"name" : "TextBox",
+					"font" : "../fonts/nsimsun_14pt.fnt",
+					"width" : 145 , 
+					"height" : 25 ,
+					"color" : [1,1,1]
+				}
+			],
+			"translate" : [5, 20, 0.1]
+		},
+		{
+			"name" : "Enemy TextBox",
+			"components" : [
+				{
+					"name" : "TextBox",
+					"font" : "../fonts/nsimsun_14pt.fnt",
+					"alignment" : "right",
+					"width" : 145 , 
+					"height" : 25 ,
+					"color" : [1,1,1]
+				}
+			],
+			"translate" : [494, 20, 0.1]
+		}
+	]
+}

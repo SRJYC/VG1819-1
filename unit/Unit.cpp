@@ -15,7 +15,8 @@
 
 namespace unit
 {
-	Unit::Unit() : m_healthBarState(none), m_healthBar(nullptr), m_unitSelect(nullptr), m_lateDestroy(false), m_queuedDestroy(false), m_framesToWaitForDestroy(1)
+	Unit::Unit() : m_healthBarState(none), m_healthBar(nullptr), m_unitSelect(nullptr), m_lateDestroy(false), m_queuedDestroy(false), m_framesToWaitForDestroy(1),
+		m_hasObserver(false)
 	{
 		m_itemGO = nullptr;
 
@@ -559,6 +560,15 @@ namespace unit
 		//trigger unit destroy event
 		triggerTP(ability::TimePointEvent::Unit_Destroy);
 
+		//notify observer
+		if (m_hasObserver)
+		{
+			for (auto status : m_statusObserverList)
+			{
+				status->notifyUnitDestroy(this);
+			}
+		}
+
 		//remove from intiative tracker
 		InitiativeTracker::getInstance()->removeUnit(m_attachedObject);
 	}
@@ -590,11 +600,11 @@ namespace unit
 				kitten::Event* eventData = new kitten::Event(kitten::Event::Network_End_Game);
 				if (m_clientId == client->getClientId())
 				{
-					eventData->putInt(GAME_END_RESULT, HOST_COMMANDER_DIED);
+					eventData->putInt(GAME_END_RESULT, DEFEAT);
 				}
 				else
 				{
-					eventData->putInt(GAME_END_RESULT, CLIENT_COMMANDER_DIED);
+					eventData->putInt(GAME_END_RESULT, VICTORY);
 				}
 				
 				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Network_End_Game, eventData);
@@ -621,6 +631,33 @@ namespace unit
 	kitten::K_GameObject * Unit::getItem() const
 	{
 		return m_itemGO;
+	}
+
+	void Unit::registerDestroy(ability::Status * p_status)
+	{
+		m_hasObserver = true;
+		m_statusObserverList.push_back(p_status);
+	}
+
+	void Unit::deregisterDestroy(ability::Status * p_status)
+	{
+		if (!m_hasObserver)//ignore it since no observer
+			return;
+
+		auto end = m_statusObserverList.end();
+		for (auto it = m_statusObserverList.begin(); it != end; it++)
+		{
+			if (*it == p_status)//found it
+			{
+				//remove it
+				m_statusObserverList.erase(it);
+				break;
+			}
+		}
+
+		//check if no observer
+		if (m_statusObserverList.size() == 0)
+			m_hasObserver = false;
 	}
 
 	//hp bar

@@ -50,6 +50,9 @@ enum PacketTypes
 	SESSION_ENDED,
 	MAP_DATA,
 	NO_MAP_ID,
+	PLAYER_NAME,
+	SPAWN_ITEM
+	NO_MAP_ID,
 	CARD_DRAW
 };
 
@@ -205,8 +208,8 @@ public:
 
 struct UnitPacket : Packet
 {
-	int m_unitId;
-	int m_posX, m_posY;
+	int m_unitId = -1;
+	int m_posX = -1, m_posY = -1;
 
 	void serialize(Buffer& p_buffer) 
 	{

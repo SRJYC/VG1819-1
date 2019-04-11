@@ -7,6 +7,8 @@
 #include "_Project\AmbientSystemController.h"
 
 #include "kitten\K_GameObjectManager.h"
+#include "networking\ClientGame.h"
+#include "board\tile\gameMode\GameModeManager.h"
 
 #include <fstream>
 
@@ -171,6 +173,8 @@ void PlayerPrefs::privateSetPlayerName(const std::string& p_name)
 {
 	m_playerName = p_name;
 	m_hasUnsavedChanges = true;
+
+	kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Player_Name_Change, nullptr);
 }
 
 const std::string& PlayerPrefs::getPlayerName()

@@ -5,6 +5,11 @@
 #include "Capture/ItemSpawnArea.h"
 #include "Capture/ItemDropArea.h"
 
+// For Point Display
+#include "kitten/K_GameObjectManager.h"
+#include "settings_menu/PlayerPrefs.h"
+#include "board/boardManager.h"
+
 GameModeManager* GameModeManager::sm_instance = nullptr;
 
 void GameModeManager::registerTile(kitten::K_GameObject * p_tileGO, GameModeComponent::TileType p_type)
@@ -20,21 +25,94 @@ void GameModeManager::registerTile(kitten::K_GameObject * p_tileGO, GameModeComp
 
 void GameModeManager::listenEvent(kitten::Event::EventType p_type, kitten::Event * p_data)
 {
-	if (p_type == kitten::Event::Game_Turn_End)
+	switch (p_type)
 	{
-		for (auto component : m_modeComponentMap)
+		case kitten::Event::Game_Turn_End:
 		{
-			component.second->check();
-		}
+			for (auto component : m_modeComponentMap)
+			{
+				component.second->check();
+			}
 
-		checkPoints();
+			checkPoints();
+			break;
+		}
+		case kitten::Event::Network_Spawn_Item:
+		{
+			int x = p_data->getInt(POSITION_X);
+			int z = p_data->getInt(POSITION_Z);
+			
+			TileInfo* tile = BoardManager::getInstance()->getTile(x, z)->getComponent<TileInfo>();
+
+			auto found = m_modeComponentMap.find(GameModeComponent::ItemSpawn);
+			if (found != m_modeComponentMap.end())
+			{
+				ItemSpawnArea* spawnArea = static_cast<ItemSpawnArea*>(found->second);
+				spawnArea->directSpawnItem(tile);
+			}
+			break;
+		}
+		case kitten::Event::Player_Name_Change:
+		{
+			setPointTextBoxes();
+			break;
+		}
 	}
 }
 
 void GameModeManager::gainPoint(int p_clientId, int p_points)
 {
 	if (p_clientId >= 0)
+	{
 		m_points[p_clientId] += p_points;
+
+		setPointTextBoxes();
+	}
+}
+
+void GameModeManager::setPointTextBoxes()
+{
+	if (BoardManager::getInstance()->getMapId() == 0 || m_playerPointTextBox == nullptr)
+		return;
+
+	std::string name = PlayerPrefs::getPlayerName();
+	if (name == "")
+	{
+		name = "Player";
+	}
+
+	switch (networking::ClientGame::getClientId())
+	{
+		case 0:
+		{
+			int points = m_points[0];
+			m_playerPointTextBox->setText(name + ": " + std::to_string(points));
+
+			const std::string& enemyName = networking::ClientGame::getEnemyName();
+			points = m_points[1];
+			m_enemyPointTextBox->setText(std::to_string(points) + " :" + enemyName);
+			break;
+		}
+		case 1:
+		{
+			int points = m_points[1];
+			m_playerPointTextBox->setText(name + ": " + std::to_string(points));
+
+			const std::string& enemyName = networking::ClientGame::getEnemyName();
+			points = m_points[0];
+			m_enemyPointTextBox->setText(std::to_string(points) + " :" + enemyName);
+			break;
+		}
+		default:
+		{
+			int points = m_points[0];
+			m_playerPointTextBox->setText(name + ": " + std::to_string(points));
+
+			const std::string& enemyName = networking::ClientGame::getEnemyName();
+			points = m_points[1];
+			m_enemyPointTextBox->setText(std::to_string(points) + " :" + enemyName);
+		}
+	}
 }
 
 void GameModeManager::initComponents()
@@ -57,6 +135,15 @@ void GameModeManager::initComponents()
 		{
 			comp++;
 		}
+	}
+
+	if (BoardManager::getInstance()->getMapId() != 0) // default map is not point based
+	{
+		kitten::K_GameObject* pointDisplay = kitten::K_GameObjectManager::getInstance()->createNewGameObject(POINT_DISPLAY_JSON);
+		auto children = pointDisplay->getTransform().getChildren();
+		m_playerPointTextBox = children[0]->getAttachedGameObject().getComponent<puppy::TextBox>();
+		m_enemyPointTextBox = children[1]->getAttachedGameObject().getComponent<puppy::TextBox>();
+		setPointTextBoxes();
 	}
 }
 
@@ -139,11 +226,23 @@ void GameModeManager::registerEvent()
 		kitten::Event::EventType::Game_Turn_End,
 		this,
 		std::bind(&GameModeManager::listenEvent, this, std::placeholders::_1, std::placeholders::_2));
+
+	kitten::EventManager::getInstance()->addListener(
+		kitten::Event::EventType::Network_Spawn_Item,
+		this,
+		std::bind(&GameModeManager::listenEvent, this, std::placeholders::_1, std::placeholders::_2));
+
+	kitten::EventManager::getInstance()->addListener(
+		kitten::Event::EventType::Player_Name_Change,
+		this,
+		std::bind(&GameModeManager::listenEvent, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void GameModeManager::deregisterEvent()
 {
 	kitten::EventManager::getInstance()->removeListener(kitten::Event::Game_Turn_End, this);
+	kitten::EventManager::getInstance()->removeListener(kitten::Event::Network_Spawn_Item, this);
+	kitten::EventManager::getInstance()->removeListener(kitten::Event::Player_Name_Change, this);
 }
 
 void GameModeManager::checkPoints()
@@ -171,11 +270,11 @@ void GameModeManager::checkPoints()
 		kitten::Event* eventData = new kitten::Event(kitten::Event::Network_End_Game);
 		if (clientId == client->getClientId())
 		{
-			eventData->putInt(GAME_END_RESULT, HOST_COMMANDER_DIED);
+			eventData->putInt(GAME_END_RESULT, VICTORY);
 		}
 		else
 		{
-			eventData->putInt(GAME_END_RESULT, CLIENT_COMMANDER_DIED);
+			eventData->putInt(GAME_END_RESULT, DEFEAT);
 		}
 
 		kitten::EventManager::getInstance()->triggerEvent(kitten::Event::Network_End_Game, eventData);
