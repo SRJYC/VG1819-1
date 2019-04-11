@@ -20,13 +20,19 @@ void DeckCountTextureBind::deckEventReceiver(kitten::Event::EventType p_type, ki
 	}
 
 	m_deckCount = deckCount;
-	if (m_deckCount > 0)
+	if (m_countText != nullptr)
 	{
-		m_countText->setText(std::to_string(deckCount));
+		if (m_deckCount > 0)
+		{
+			m_countText->setText(std::to_string(deckCount));
+		}
+		else
+		{
+			kitten::K_GameObjectManager::getInstance()->destroyGameObject(&m_countText->getGameObject());
+			m_countText = nullptr;
+		}
 	}
-	else {
-		kitten::K_GameObjectManager::getInstance()->destroyGameObject(&m_countText->getGameObject());
-	}
+	
 
 	kitten::Event* t = new kitten::Event(kitten::Event::EventType::Send_Deck_Count);
 	t->putInt(CARD_COUNT, deckCount);
@@ -83,7 +89,8 @@ void DeckCountTextureBind::start()
 		entxtBoxComp->setColor(1, 1, 0);
 
 	}
-	else {
+	else 
+	{
 		entxtBoxComp->setColor(1, 1, 0);
 		entxtBoxComp->setColor(0.2, 0.2, 1);
 	}
@@ -95,7 +102,7 @@ void DeckCountTextureBind::addTexPair(int p_atCount, const std::string& p_tex)
 	m_texPairs[p_atCount] = p_tex;
 }
 
-DeckCountTextureBind::DeckCountTextureBind()
+DeckCountTextureBind::DeckCountTextureBind() : m_countText(nullptr)
 {
 }
 
