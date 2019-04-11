@@ -35,6 +35,7 @@ namespace userinterface
 			delete r;
 		}
 		kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Client_Commander_Loaded, this);
+		kitten::EventManager::getInstance()->removeListener(kitten::Event::EventType::Damage_Commander, this);
 	}
 
 
