@@ -33,9 +33,9 @@ void DeckCountTextureBind::deckEventReceiver(kitten::Event::EventType p_type, ki
 		}
 	}
 	
-
+	int numCardsLeft = p_data->getInt(DECK_CARD_COUNT_LEFT);
 	kitten::Event* t = new kitten::Event(kitten::Event::EventType::Send_Deck_Count);
-	t->putInt(CARD_COUNT, deckCount);
+	t->putInt(CARD_COUNT, numCardsLeft);
 	kitten::EventManager::getInstance()->triggerEvent(kitten::Event::EventType::Send_Deck_Count, t);
 }
 
