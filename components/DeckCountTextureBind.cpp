@@ -6,7 +6,7 @@
 
 void DeckCountTextureBind::deckEventReceiver(kitten::Event::EventType p_type, kitten::Event * p_data)
 {
-	int deckCount = p_data->getInt("count");
+	int deckCount = p_data->getInt(DECK_CARD_COUNT_LEFT);
 	if (m_deckCount > deckCount)
 	{
 		if (m_currentTexPair->first > deckCount)
@@ -32,10 +32,9 @@ void DeckCountTextureBind::deckEventReceiver(kitten::Event::EventType p_type, ki
 			m_countText = nullptr;
 		}
 	}
-	
-	int numCardsLeft = p_data->getInt(DECK_CARD_COUNT_LEFT);
+
 	kitten::Event* t = new kitten::Event(kitten::Event::EventType::Send_Deck_Count);
-	t->putInt(CARD_COUNT, numCardsLeft);
+	t->putInt(CARD_COUNT, deckCount);
 	kitten::EventManager::getInstance()->triggerEvent(kitten::Event::EventType::Send_Deck_Count, t);
 }
 
