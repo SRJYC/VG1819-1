@@ -27,7 +27,7 @@
 				"need_unit":1,
 				"filter":1,
 				"filter0":"enemy",
-				"description":"For next 3 turns, [Eldritch Lord] will restore same amount of HP when target ally is damaged. And when target ally dealing damage, it and its targets will lose 2 HP(Not damage)",
+				"description":"For 3 turns, this unit will restore HP = dmg target ally takes. When target ally deals dmg, it and its targets lose 2 HP(Not dmg)",
 				"status_name_Status_Lord_Order":"Lord's Order",
 				"status_description_Status_Lord_Order":"Heal Lord when hurt and let targets lose HP with self when attack.",
 				"duration":3,
