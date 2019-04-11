@@ -61,10 +61,15 @@ namespace unit
 		//uNEWDUMMY->getComponent<Unit>()->m_clientId = 1;
 
 		kitten::K_GameObject* uNEWDUMMY2;
-		if (DeckInitializingComponent::getActiveInstance() == nullptr)
+		if (DeckInitializingComponent::getActiveInstance() == nullptr || DeckInitializingComponent::getActiveInstance()->getDeckData() == nullptr)
+		{
 			uNEWDUMMY2 = UnitSpawn::getInstance()->spawnUnitObject(14); // queen !!!
+		}
 		else
+		{
 			uNEWDUMMY2 = UnitSpawn::getInstance()->spawnUnitObject(DeckInitializingComponent::getActiveInstance()->getDeckData()->commanderID);
+		}
+			
 		uNEWDUMMY2->getComponent<unit::UnitMove>()->setTile(BoardManager::getInstance()->getSpawnPoint(0));
 		uNEWDUMMY2->getComponent<unit::Unit>()->m_clientId = 0;
 		
