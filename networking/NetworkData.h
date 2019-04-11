@@ -51,8 +51,7 @@ enum PacketTypes
 	MAP_DATA,
 	NO_MAP_ID,
 	PLAYER_NAME,
-	SPAWN_ITEM
-	NO_MAP_ID,
+	SPAWN_ITEM,
 	CARD_DRAW
 };
 

@@ -83,13 +83,13 @@ void DeckCountTextureBind::start()
 	//set colors
 	if (host)
 	{
-		txtBoxComp->setColor(0.1, 0.1, 1);
+		txtBoxComp->setColor(0.2, 0.2, 1);
 		entxtBoxComp->setColor(1, 1, 0);
 
 	}
 	else {
 		entxtBoxComp->setColor(1, 1, 0);
-		entxtBoxComp->setColor(0.1, 0.1, 1);
+		entxtBoxComp->setColor(0.2, 0.2, 1);
 	}
 
 }

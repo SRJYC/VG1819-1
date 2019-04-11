@@ -79,7 +79,6 @@ namespace networking
 			kitten::Event::EventType::Player_Name_Change,
 			this,
 			std::bind(&ClientGame::eventListener, this, std::placeholders::_1, std::placeholders::_2));
-			std::bind(&ClientGame::boardLoadedListener, this, std::placeholders::_1, std::placeholders::_2));
 
 		kitten::EventManager::getInstance()->addListener(
 			kitten::Event::EventType::Send_Deck_Count,
@@ -631,6 +630,7 @@ namespace networking
 				break;
 			}
 			default:
+
 				std::stringstream message;
 				message << "Client:" << sm_iClientId << " received error in packet types, received: " << packetType;
 				m_log->logMessage(message.str());
@@ -789,6 +789,7 @@ namespace networking
 				break;
 			}
 		}
+	}
 	void ClientGame::cardDrawnListener(kitten::Event::EventType p_type, kitten::Event* p_event)
 	{
 		sendDrawPacket(p_event->getInt(CARD_COUNT));
