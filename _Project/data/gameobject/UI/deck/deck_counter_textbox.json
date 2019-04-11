@@ -3,7 +3,7 @@
     "components" : [
         {
             "name" : "TextBox",
-			"font" : "../fonts/nsimsun_24pt.fnt",
+			"font" : "../fonts/nsimsun_16pt.fnt",
 			"color" : [1,1,1],
             "alignment" : "left",
           "width": 200,

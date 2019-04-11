@@ -64,6 +64,9 @@ namespace networking
 		void sendCastTimeAbilityPacket(unit::AbilityDescription * p_ad, ability::AbilityInfoPackage * p_info);
 		void sendStartingData();
 		void eventListener(kitten::Event::EventType p_type, kitten::Event* p_event);
+		void boardLoadedListener(kitten::Event::EventType p_type, kitten::Event* p_event);
+		void cardDrawnListener(kitten::Event::EventType p_type, kitten::Event* p_event);
+
 
 		// Compare units via their position
 		bool checkSync(int p_x, int p_y);
@@ -78,6 +81,7 @@ namespace networking
 		void sendTextChatMessagePacket(const std::string& p_message);
 		void sendSpawnItemPacket(int p_x, int p_z);
 		int sendBasicPacket(PacketTypes p_packetType);
+		int sendDrawPacket(const int p_count);
 
 		unit::Unit* getCommander() { return m_commander; }
     

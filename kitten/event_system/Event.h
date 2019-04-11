@@ -30,6 +30,8 @@
 #define FALSE 0
 #define TRUE 1
 
+#define DAMAGE_AS_INT "intDamage"
+
 // Networking Events
 #define GAME_END_RESULT "game_end_result_key"
 #define DEFEAT 0
@@ -126,6 +128,9 @@ namespace kitten
 			Network_Cancel_Join,
 			Network_Spawn_Item,
 			Player_Name_Change,
+			Enemy_Draw_Card,
+			Send_Deck_Count,
+			Damage_Commander,
 
 			Test_Event, 
 			MAX_VAL = Test_Event
