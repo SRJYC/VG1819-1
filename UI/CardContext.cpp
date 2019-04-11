@@ -292,6 +292,10 @@ void CardContext::updateUnitStatus()
 		int lv = it->getLV();
 		if (lv > 0)
 			statusDesc += "LV:" + std::to_string(lv);
+		else if (it->getID() == STATUS_DEMONIC_RESTRICTION)
+		{
+			statusDesc += "DR: ";
+		}
 		else
 		{
 			++m_nonLevelStatus;
@@ -311,7 +315,7 @@ void CardContext::updateUnitStatus()
 			statusDesc += " MV+" + std::to_string(mv);
 
 
-		std::string description = it->getDescription();
+		std::string description = it->m_stringValue["description"];
 		if (description.length() > 0)
 		{
 			statusDesc += " " + description;
