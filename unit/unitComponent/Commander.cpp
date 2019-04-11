@@ -98,7 +98,7 @@ namespace unit
 				// Draw a card
 				int cardsDrawable = 5 - userinterface::HandFrame::getActiveInstance()->getTotalCardsInHand();
 				kitten::Event *e = new kitten::Event(kitten::Event::EventType::Draw_Card);// make a draw event
-				e->putInt(PLAYER_ID, p_clientID); // give it a player id, 0 being default TODO change this if ever needed. 0 signifies this side's instance player's id. any other should be any number other than 0 
+				e->putInt(PLAYER_ID, 0); // give it a player id, 0 being default TODO change this if ever needed. 0 signifies this side's instance player's id. any other should be any number other than 0 
 				e->putInt(CARD_COUNT,min(2,cardsDrawable)); //tell to draw at max 2 cards
 				kitten::EventManager::getInstance()->triggerEvent(kitten::Event::EventType::Draw_Card, e); // Call the event
 			}
