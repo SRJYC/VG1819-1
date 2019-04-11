@@ -11,7 +11,7 @@ std::vector<int> addableToDeckUnitVect;
 std::map<std::string, unit::AbilityDescription*> abilityDataMap;
 std::map<std::string, std::vector<int>> abilityToUnitMap, tagToUnitMap, tagToAddableToDeckUnitMap;
 std::unordered_set<unit::AbilityDescription*> lateLoadAbility;
-std::vector<DeckData*> deckDataVector;
+std::vector<DeckData*> deckDataVector, AIDeckDataVector;
 
 std::vector<std::vector<kitten::K_Component*>> unitSpecificComponentVector;
 
@@ -20,6 +20,7 @@ std::vector<int> avaliableUnitIds;
 std::vector<std::string> factionTags = { "Ancients","Terrans","Neutral" };
 
 #define DECK_LIST "data/gamedecklist.txt"
+#define AI_DECK_LIST "data/AIgamedecklist.txt"
 #define UNIT_LIST "data/gameunitlist.txt"
 #define COMMANDER "Commander"
 
@@ -105,6 +106,19 @@ void kibble::setupDatabank() {
 		throw std::exception("Something went wrong, can't open the deck List file."); // check if filename is correct.
 		return;
 	}
+
+	std::ifstream AIDeckListFile(AI_DECK_LIST);
+	if (AIDeckListFile.is_open()) {
+		std::string deckFilename;
+		while (AIDeckListFile >> deckFilename) {
+			AIDeckDataVector.push_back(kibble::getDeckDataParserInstance()->getDeckData(deckFilename));
+		}
+		AIDeckListFile.close();
+	}
+	else {
+		throw std::exception("Something went wrong, can't open the AI deck List file."); // check if filename is correct.
+		return;
+	}
 }
 
 
@@ -178,6 +192,9 @@ const std::vector<int>& kibble::getAvaliableUnitIdsForCommander(int p_commanderI
 int kibble::getDeckDataListCount() {
 	return deckDataVector.size();
 }
+int kibble::getAIDeckDataListCount() {
+	return AIDeckDataVector.size();
+}
 int kibble::getCommanderUnitCount() {
 	return tagToUnitMap[COMMANDER].size();
 }
@@ -187,6 +204,10 @@ int kibble::getNonCommanderUnitCount() {
 
 DeckData* kibble::getDeckDataFromId(const int& p_identifier) {
 	return deckDataVector[p_identifier];
+}
+
+DeckData* kibble::getAIDeckDataFromId(const int& p_identifier) {
+	return AIDeckDataVector[p_identifier];
 }
 
 int kibble::addNewDeckData(DeckData* p_data) {

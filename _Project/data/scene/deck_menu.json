@@ -14,8 +14,8 @@
 					"marginY" : 10
                 }
             ],
-			"translate2d" : [143, 0],
-            "scale2d" : [1015,400]
+			"translate2d" : [153, 170],
+            "scale2d" : [995,300]
         },
 		{
 			"filename" : "mainmenu_background.json"
@@ -48,21 +48,30 @@
         },
 		{
 			"filename" : "netmenu_host_button.txt",
-			"scale2d" : [250, 80],
-			"translate" : [565, 22, -0.1]
+			"scale2d" : [200, 64],
+			"translate" : [795, 29, -0.1]
 		},
 		{
 			"filename" : "netmenu_join_button.txt",
-			"scale2d" : [250, 80],
-			"translate" : [959, 22, -0.1]
+			"scale2d" : [200, 64],
+			"translate" : [1009, 29, -0.1]
 		},
 		{
 			"filename" : "netmenu_console.txt"
 		},
 		{
 			"filename" : "UI/map_button.json",
-			"scale2d" : [250, 80],
-			"translate" : [275, 22, -0.1]
+			"scale2d" : [200, 64],
+			"translate" : [260, 29, -0.1]
+		},
+		{
+			"filename" : "UI/player_vs_AI_button.json",
+			"translate" : [510, 29, -0.1]
+		},
+		{
+			"filename" : "UI/AI_vs_AI_button.json",
+			"translate" : [0.0, 0.0, -0.1],
+			"translate2d" : [1059, 616]
 		}
     ]
 }

@@ -33,6 +33,11 @@
         },
 		{
 			"filename" : "UI/options_menu/options_menu_main_button.json"
+		},
+		{
+			"filename" : "UI/AI_vs_AI_button.json",
+			"translate" : [0.0, 0.0, -0.1],
+			"translate2d" : [1059, 616]
 		}
     ]
 }

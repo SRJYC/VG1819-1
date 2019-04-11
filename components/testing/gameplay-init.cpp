@@ -8,6 +8,9 @@
 #include "AI/controller.h"
 #include "board/tile/GameMode/GameModeManager.h"
 #include "networking/ClientGame.h"
+#include "unit/UnitSpawn.h"
+#include "unit/unitComponent/UnitMove.h"
+#include "components/DeckInitializingComponent.h"
 
 GameplayInit::GameplayInit(bool p_testing)
 { 
@@ -38,17 +41,40 @@ void GameplayInit::start() {
 	//UnitInteractionManager::createInstance();
 	UnitInteractionManager::getInstance()->reset();
 
-	if (m_testing) {
-		unit::UnitTest::getInstanceSafe()->test();
-		DrawCardsFromDeckWithDelay::getActiveInstance()->setCardCountToDispense(5);
-		DrawCardsFromDeckWithDelay::getActiveInstance()->addDelayToStart(7);
-	}
 
 	
 	if (AI::controller::AIPresent()) {
 		if (AI::controller::getAIControllerSize() <= 1) {
 			networking::ClientGame::setClientId(0);
+			if (m_testing) {
+				unit::UnitTest::getInstanceSafe()->test();
+				DrawCardsFromDeckWithDelay::getActiveInstance()->setCardCountToDispense(5);
+				DrawCardsFromDeckWithDelay::getActiveInstance()->addDelayToStart(7);
+			}
+			else {
+
+				kitten::K_GameObject* playerCommander;
+				if (DeckInitializingComponent::getActiveInstance() == nullptr)
+					playerCommander = unit::UnitSpawn::getInstance()->spawnUnitObject(14); // queen !!!
+				else
+					playerCommander = unit::UnitSpawn::getInstance()->spawnUnitObject(DeckInitializingComponent::getActiveInstance()->getDeckData()->commanderID);
+				playerCommander->getComponent<unit::UnitMove>()->setTile(BoardManager::getInstance()->getSpawnPoint(0));
+				playerCommander->getComponent<unit::Unit>()->m_clientId = 0;
+				DrawCardsFromDeckWithDelay::getActiveInstance()->setCardCountToDispense(5);
+				DrawCardsFromDeckWithDelay::getActiveInstance()->addDelayToStart(7);
+			}
+		}
+		else {
+			networking::ClientGame::setClientId(-1);
 		}
 		AI::controller::setupAIControllers();
+	}
+	else {
+
+		if (m_testing) {
+			unit::UnitTest::getInstanceSafe()->test();
+			DrawCardsFromDeckWithDelay::getActiveInstance()->setCardCountToDispense(5);
+			DrawCardsFromDeckWithDelay::getActiveInstance()->addDelayToStart(7);
+		}
 	}
 }

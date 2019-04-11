@@ -14,9 +14,18 @@ namespace AI {
 		unit::Unit* m_unit = nullptr;
 		int m_playerID;
 
+	public:
+
 		void runTurn(unit::Unit* p_unit);
 
-	public:
+		inline bool controller::targetChecks(std::pair<int, int> pos, const retainedInfo & p_retainedInfo, const passedInfo & p_passedInfo, const targettingInfo& p_targgetingInfo);
+		std::vector<std::pair<int, int>> getTargetsInRange(const retainedInfo & p_retainedInfo, const passedInfo & p_passedInfo, const targettingInfo& p_targgetingInfo);
+		std::vector<AI::Extract::Move> getAvailableMoves(const retainedInfo & p_retainedInfo, const passedInfo & p_passedInfo, const targettingInfo& p_targgetingInfo);
+		std::vector<Extract::UnitCard> getSummonableCards();
+		void setUnitLists(retainedInfo& rInfo);
+
+		// it's under the assumption that the passed info is a newly setup one in the previous level.
+		void generateSequences(retainedInfo& p_retainedInfo, passedInfo& p_passedInfo);
 
 		controller();
 		~controller();
@@ -24,17 +33,6 @@ namespace AI {
 		void start() override;
 
 		static void setupAIControllers();
-
-		struct availableInfo{
-			bool canAct = true, canMove = true;
-			std::vector<int> summonableUnits, handCardsPicked;
-			int availableEnergy=0, summoned = 0;
-			std::pair<int,int> curPos;
-			std::vector<std::pair<int, int>> blockedPos;
-			unit::Unit* sourceUnit;
-			
-		};
-		void generateSequences(Extract::Sequence p_currentSeq, std::vector<Extract::Sequence>& p_sequences, availableInfo p_info);
 
 		void nextActionInSequenceHandler(kitten::Event::EventType p_type, kitten::Event* p_data);
 		void nextTurnHandler(kitten::Event::EventType p_type, kitten::Event* p_data);

@@ -62,6 +62,8 @@ namespace unit
 		{
 			m_timeElapsed = ICON_SWAP_DELAY;
 
+			if (m_iconTexturePaths.size() == 0) return;
+			
 			// Get the the texture at the front of the list
 			std::string texturePath = m_iconTexturePaths.front();
 			m_statusIcon->setTexture(texturePath.c_str());

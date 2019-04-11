@@ -13,11 +13,13 @@
 #include "_Project/DisableAfterTime.h"
 #include "networking/ClientGame.h"
 #include "AI/Extract/Behavior.h"
+#include "AI/Extract/Action.h"
+
 
 namespace AI {
-	std::map<int,controller*> AIcontrollers;
+	std::map<int, controller*> AIcontrollers;
 	std::vector<controller*> AIcontrollerlist;
-	NearestEnemy defaultBehavior;
+	NearestUnit defaultBehavior;
 
 	controller::controller() { // TODO make an ID dispensor, i hate this already. 
 		setupEventListeners();
@@ -36,9 +38,6 @@ namespace AI {
 		// Disable the previous timer
 		this->m_attachedObject->setEnabled(false);
 
-		// Generated Sequences will be stored here
-		std::vector<Extract::Sequence> sequences;
-		
 		// Check if it's a commander poiting out this controller's start of a new round
 		if (p_unit->isCommander()) {
 			// Reset PowerTracker
@@ -53,28 +52,23 @@ namespace AI {
 				m_model.hand.addCard(unit);
 			}
 		}
+		m_model.board.refreshBoards();
 
-		// Setup info
-		availableInfo info;
-		info.sourceUnit = p_unit;
-		info.summonableUnits = m_model.getSummonableCards();
-		info.curPos = p_unit->getTile()->getComponent<TileInfo>()->getPos();
-		info.availableEnergy = m_model.powerTracker.m_iCurrentPower;
+		// Setup retained info
+		retainedInfo rInfo(p_unit, m_model);
+		setUnitLists(rInfo);
+
+		// Setup initial passed info
+		passedInfo pInfo;
+		pInfo.availableEnergy = m_model.powerTracker.m_iCurrentPower;
+		pInfo.curPos = p_unit->getTile()->getComponent<TileInfo>()->getPos();
+		pInfo.summonableUnits = getSummonableCards();
 
 		// Run generator of possible sequences
-		generateSequences(Extract::Sequence(), sequences, info);
+		generateSequences(rInfo, pInfo);
 
-		// Sort Sequences and pick one
-		// TODO bother looking for one based on externally set choices instead of the best.
-		std::sort(sequences.begin(), sequences.end(), Extract::Sequence::weightComp());
 		m_unit = p_unit;
-		if (sequences.size() > 0) {
-			m_sequence = sequences[0];
-		}
-		else
-		{
-			m_sequence = Extract::Sequence();
-		}
+		m_sequence = rInfo.bestSequence;
 		kitten::EventManager::getInstance()->queueEvent(kitten::Event::Action_Complete, new kitten::Event(kitten::Event::Action_Complete));
 	}
 
@@ -87,14 +81,18 @@ namespace AI {
 		// They'll always set Id to 0 when theres an AI ;
 		int startingId = networking::ClientGame::getClientId();
 
-		for (controller* controller: AIcontrollerlist) {
+		// Setup related Abilities of extracted units
+		Extract::setupUniqueAbilities();
+
+		for (controller* controller : AIcontrollerlist) {
 			controller->m_playerID = ++startingId;
 			controller->m_model.playerId = controller->m_playerID;
 			AIcontrollers[controller->m_playerID] = controller;
 
 			// TODO work on how decks are picked, for now MUH OH SEE
 			// Set up deck the AI will use
-			controller->m_model.deck.setDeckSource(kibble::getDeckDataFromId(0));
+			int randomDeckID = (std::uniform_real_distribution<long double>()(controller->m_model.deck.RNGZUZ)* kibble::getAIDeckDataListCount());
+			controller->m_model.deck.setDeckSource(kibble::getAIDeckDataFromId(randomDeckID));
 			controller->m_model.deck.setupDeck();
 
 			// Set up hand
@@ -108,7 +106,7 @@ namespace AI {
 
 			// Spawn Commander
 			kitten::K_GameObject* unitGO = unit::UnitSpawn::getInstance()->spawnUnitObject(controller->m_model.deck.m_deckSource->commanderID);
-			unitGO->getComponent<unit::UnitMove>()->setTile(BoardManager::getInstance()->getSpawnPoint(controller->m_playerID ));
+			unitGO->getComponent<unit::UnitMove>()->setTile(BoardManager::getInstance()->getSpawnPoint(controller->m_playerID));
 			unitGO->getComponent<unit::Unit>()->m_clientId = controller->m_playerID;
 
 			// Set up board reference
@@ -117,44 +115,239 @@ namespace AI {
 		}
 	}
 
-	void controller::generateSequences(Extract::Sequence p_currentSeq,std::vector<Extract::Sequence>& p_sequences, availableInfo p_info)
-	{
-		if (p_info.canMove) {
+	inline bool controller::targetChecks(std::pair<int,int> pos, const retainedInfo & p_retainedInfo, const passedInfo & p_passedInfo, const targettingInfo& p_targgetingInfo) {
+		Extract::Board& board = m_model.board;
+		Extract::Unit::Filter& filter = p_targgetingInfo.source.filter;
+		return (!filter.tilesOwnedByAny || board.tile[pos.first][pos.second]->getOwnerId() < 0)
+			&& (!filter.tilesOwnedByTeam || board.tile[pos.first][pos.second]->getOwnerId() != p_retainedInfo.source.clientId)
+			&& (!filter.tilesNotOwnedByTeam || board.tile[pos.first][pos.second]->getOwnerId() == p_retainedInfo.source.clientId)
+			&& (!filter.occupiedTiles || (board.unit[pos.first][pos.second] == nullptr
+				&& std::find(p_passedInfo.blockedPos.begin(), p_passedInfo.blockedPos.end(), pos) == p_passedInfo.blockedPos.end()))
+			&& (!filter.unoccupiedTiles || (board.unit[pos.first][pos.second] != nullptr && board.unit[pos.first][pos.second] != p_retainedInfo.source.source
+				&& board.unit[pos.first][pos.second]->m_attributes[UNIT_HP] > 0)
+				|| std::find(p_passedInfo.blockedPos.begin(), p_passedInfo.blockedPos.end(), pos) != p_passedInfo.blockedPos.end())
+			&& (!filter.water || board.tile[pos.first][pos.second]->getType() != LandInformation::Water_land) // uber frog filter salesman
+			&& (!filter.enemies || (board.unit[pos.first][pos.second] != nullptr && board.unit[pos.first][pos.second]->m_clientId == p_retainedInfo.source.clientId))
+			&& (!filter.allies || (board.unit[pos.first][pos.second] != nullptr && board.unit[pos.first][pos.second]->m_clientId != p_retainedInfo.source.clientId))
+			&& (!filter.sameUnitKind || (board.unit[pos.first][pos.second] != nullptr && board.unit[pos.first][pos.second]->m_kibbleID != p_retainedInfo.source.kibbleId))
+			&& (!filter.differentUnitKind || (board.unit[pos.first][pos.second] != nullptr && board.unit[pos.first][pos.second]->m_kibbleID == p_retainedInfo.source.kibbleId))
+			;
+	}
 
-			// give the movement check a max value of  1
-			// TODO take into account the various fields he's currently on.
-			Model::TargetRange targetRange;
-			targetRange.currentPlacement = p_info.curPos;
-			targetRange.unit = p_info.sourceUnit;
-			targetRange.blockedPos = p_info.blockedPos;
-			for (auto move : m_model.getAvailableMoves(targetRange)) {
-				Extract::Sequence moveSeq(p_currentSeq);
-				targetRange.targetPlacement = std::make_pair(move.targetX,move.targetY);
-				if (targetRange.unit->m_AbilityBehavior.find(UNIT_MV) != targetRange.unit->m_AbilityBehavior.end()) {
-					moveSeq.weight += targetRange.unit->m_AbilityBehavior[UNIT_MV]->calculateWeight(targetRange, m_model);
+	std::vector<std::pair<int, int>> controller::getTargetsInRange(const retainedInfo & p_retainedInfo, const passedInfo & p_passedInfo, const targettingInfo& p_targgetingInfo)
+	{
+		std::vector<std::pair<int, int>> tilePos;
+		int sides[4][2] = { {1,0},{0,1},{-1,0},{0,-1} };
+		std::pair<int, int> boardDimensions = BoardManager::getInstance()->getDimension();
+
+		for (int i = 1; i <= p_targgetingInfo.source.maxRange; ++i) {
+			for (int j = 0; j <= p_targgetingInfo.source.maxRange - i; ++j) {
+				if (i + j < p_targgetingInfo.source.minRange) continue;
+				for (int k = 0; k < 4; ++k) {
+					std::pair<int, int> temp = std::make_pair(
+						p_passedInfo.curPos.first + sides[k][0] * i + sides[k][1] * j,
+						p_passedInfo.curPos.second + sides[k][1] * i + sides[k][0] * j
+					);
+					if (// Check if Coordinates are valid
+						temp.first >= 0 && temp.first < boardDimensions.first
+						&& temp.second >= 0 && temp.second < boardDimensions.second
+						// Now that the coordinates are valid, start filter checks
+						&& targetChecks(temp,p_retainedInfo,p_passedInfo,p_targgetingInfo))
+					{
+						tilePos.push_back(temp);
+					}
 				}
-				else {
-					moveSeq.weight += defaultBehavior.calculateWeight(targetRange, m_model);
-				}
-				moveSeq.actions.push_back(new Extract::Move(move));
-				p_sequences.push_back(moveSeq);
-				availableInfo info(p_info);
-				info.curPos = std::make_pair(move.targetX,move.targetY);
-				info.canMove = false;
-				generateSequences(moveSeq, p_sequences, info);
 			}
 		}
 
-		if (p_info.canAct) {
-			// For unit AD
-			for (auto ability : p_info.sourceUnit->m_ADList) {
-				// check if our unit can even use it
-				if (ability->m_intValue[UNIT_LV] > p_info.sourceUnit->m_attributes[UNIT_LV]) continue;
-				std::string abilityName = ability->m_stringValue[ABILITY_NAME];
+		if (p_targgetingInfo.source.minRange == 0 && targetChecks(p_passedInfo.curPos, p_retainedInfo, p_passedInfo, p_targgetingInfo)) {
+			tilePos.push_back(p_passedInfo.curPos);
+		}
 
-				// give target max value of 1
+		return tilePos;
+	}
+
+	std::vector<AI::Extract::Move> controller::getAvailableMoves(const retainedInfo & p_retainedInfo, const passedInfo & p_passedInfo, const targettingInfo& p_targgetingInfo) {
+		int initialMovement = p_retainedInfo.source.mv;
+		std::pair<int, int> boardDimensions = BoardManager::getInstance()->getDimension();
+		std::set<MoveCoor, MoveCoor::setComp> movesVisited;
+		std::priority_queue<MoveCoor, std::vector<MoveCoor>, MoveCoor::pqComp> movesToCheck;
+		int sides[4][2] = { {1,0},{0,1},{-1,0},{0,-1} };
+		movesToCheck.push(MoveCoor(p_passedInfo.curPos, 0));
+		movesVisited.insert(movesToCheck.top());
+		Extract::Board& board = m_model.board;
+
+		while (movesToCheck.size() > 0)
+		{
+			MoveCoor temp = movesToCheck.top();
+			movesToCheck.pop();
+			for (int i = 0; i < 4; i++)
+			{
+				auto tempPos = std::make_pair(sides[i][0] + temp.coor.first, sides[i][1] + temp.coor.second);
+				int tempCost;
+
+				if (// Check if Coordinates are valid
+					tempPos.first >= 0 && tempPos.first < boardDimensions.first
+					&& tempPos.second >= 0 && tempPos.second < boardDimensions.second
+					// Check if it's already occupied by something
+					&& !board.tile[tempPos.first][tempPos.second]->hasUnit()
+					// Check if movable to by comparing sum of cost to total allowed
+					&& (tempCost = temp.cost + board.tile[tempPos.first][tempPos.second]->getMVCost()) <= MAX(initialMovement, 1)
+					// Check if blocked by something done already
+					&& std::find(p_passedInfo.blockedPos.begin(), p_passedInfo.blockedPos.end(), tempPos) == p_passedInfo.blockedPos.end()
+					) {
+					MoveCoor newMove(tempPos, tempCost);
+					// Check if we already visited this node
+					auto moveIt = movesVisited.find(newMove);
+					if (moveIt != movesVisited.end()) {
+						// Check if current costs less than previous venture
+						if (tempCost < moveIt->cost) {
+							// update the cost and send it to check for it's children that may have better costs
+							movesVisited.erase(moveIt);
+							movesVisited.insert(newMove);
+							movesToCheck.push(newMove);
+						}
+						//else we don't care about the move
+					}
+					else {
+						//We add it as a visited node and check it
+						movesVisited.insert(newMove);
+						movesToCheck.push(newMove);
+					}
+				}
+			}
+		}
+
+		// send back that move set
+		std::vector<Extract::Move> moves;
+		for (auto it : movesVisited) {
+			if (p_passedInfo.curPos != it.coor)
+				moves.push_back(Extract::Move(it.coor.first, it.coor.second));
+		}
+
+		return moves;
+	}
+
+	std::vector<Extract::UnitCard> controller::getSummonableCards()
+	{
+		std::vector<Extract::UnitCard> summonableCards;
+		for (auto i = 0; i < m_model.hand.m_cards.size(); ++i) {
+			if (m_model.powerTracker.checkPowerAmountUsable(m_model.hand.m_cards[i]->m_attributes[UNIT_COST]-1)) { // This is to allow commander who can manipulate tile to do so.
+				summonableCards.push_back(Extract::UnitCard(m_model.hand.m_cards[i],i));
+			}
+		}
+		return summonableCards;
+	}
+
+	class abilityTargetLoop {
+	public:
+		std::vector<int> reps;
+		std::vector<std::pair<int, int>> &targets, effectiveTargets;
+		int allowedReps;
+		retainedInfo & rInfo;
+		passedInfo & pInfo;
+		targettingInfo & tInfo;
+		controller* cont;
+		abilityTargetLoop(retainedInfo & p_retainedInfo, passedInfo & p_passedInfo, targettingInfo& p_targettingInfo, std::vector<std::pair<int,int>>& targets, controller* cont) 
+			: rInfo(p_retainedInfo), pInfo(p_passedInfo), tInfo(p_targettingInfo), targets(targets), cont(cont){
+			allowedReps = (tInfo.source.selectRepeat) ? MAX(tInfo.source.targets, 1) : 1;
+			effectiveTargets = std::vector<std::pair<int, int>>(tInfo.source.targets, targets[0]);
+			reps = std::vector<int>(targets.size(), 0);
+		}
+
+		void loop(int depth = 0, int tIndex = 0) {
+			// set up the index and reps
+			int oIndex = tIndex;
+			if (reps[tIndex] >= allowedReps) 
+				++tIndex;
+
+			for (int i = tIndex; i < targets.size(); i++)
+			{
+				effectiveTargets[depth] = targets[i];
+				reps[i]++;
+				// Go down in depth if it's not the last
+				if (depth + 1 < tInfo.source.targets) {
+					loop(depth + 1, i);
+				}
+				else {
+					// this is the last target to set. 
+					tInfo.targets = effectiveTargets;
+					passedInfo info(pInfo);
+					info.canAct = false;
+					info.sequence = Extract::Sequence(pInfo.sequence);
+
+					if (rInfo.source.source->m_AbilityBehavior.find(tInfo.source.name) != rInfo.source.source->m_AbilityBehavior.end()) {
+						info.sequence.weight += rInfo.source.source->m_AbilityBehavior[tInfo.source.name]->calculateWeight(rInfo, info, tInfo);
+					}
+					else {
+						info.sequence.weight += defaultBehavior.calculateWeight(rInfo, info, tInfo);
+					}
+					info.sequence.actions.push_back(
+						std::make_shared<Extract::MultiTargetAbility>(Extract::MultiTargetAbility(tInfo.targets, tInfo.source.name))
+					);
+
+					if (info.sequence > rInfo.bestSequence) rInfo.bestSequence = info.sequence;
+					//rInfo.generatedSequences.push_back(info.sequence);
+
+					cont->generateSequences(rInfo, info);
+
+				}
+				reps[i]--;
+			}
+		}
+	};
+
+
+	void controller::setUnitLists(retainedInfo & rInfo)
+	{
+		std::vector<unit::Unit*> units;
+		for (kitten::K_GameObject* unit : unit::InitiativeTracker::getInstance()->getUnitList()) {
+			unit::Unit* temp = unit->getComponent<unit::Unit>();
+			rInfo.allUnits.push_back(temp);
+			if (temp->m_clientId == rInfo.source.clientId)
+				rInfo.allyUnits.push_back(temp);
+			else
+				rInfo.enemyUnits.push_back(temp);
+		}
+	}
+
+	void controller::generateSequences(retainedInfo & p_retainedInfo, passedInfo & p_passedInfo)
+	{
+		if (p_passedInfo.canMove) {
+
+			// give the movement check a max value of  1
+			// TODO take into account the various fields he's currently on.
+
+			targettingInfo targetInfo = targettingInfo(Extract::move);
+
+			for (auto move : getAvailableMoves(p_retainedInfo,p_passedInfo,targetInfo)) {
+				targetInfo.targets = std::vector<std::pair<int, int>>(1, std::make_pair(move.targetX, move.targetY));
+				passedInfo info(p_passedInfo);
+				info.canMove = false;
+				info.curPos = targetInfo.targets.back();
+				info.sequence = Extract::Sequence(p_passedInfo.sequence);
+
+				if (p_retainedInfo.source.source->m_AbilityBehavior.find(UNIT_MV) != p_retainedInfo.source.source->m_AbilityBehavior.end()) {
+					info.sequence.weight += p_retainedInfo.source.source->m_AbilityBehavior[UNIT_MV]->calculateWeight(p_retainedInfo, info, targetInfo);
+				}
+				else {
+					info.sequence.weight += defaultBehavior.calculateWeight(p_retainedInfo, info, targetInfo);
+				}
+				info.sequence.actions.push_back(
+					std::make_shared<Extract::Move>(move)
+				);
+				if (info.sequence > p_retainedInfo.bestSequence) p_retainedInfo.bestSequence = info.sequence;
+				//p_retainedInfo.generatedSequences.push_back(info.sequence);
+
+				generateSequences(p_retainedInfo, info);
+			}
+		}
+
+		if (p_passedInfo.canAct) {
+			// Logic for abilities
+			for (auto ability : p_retainedInfo.source.ability) {
+				// TODO let the target max and min be controlled through datadriving 
 				// give the damage a value boost of difference it does to enemy, which can be a lot. 
-				// TODO add general AI "preferences" that weight up or down damage vs buff vs debuff if units have both else treat them both with weight of the change
 
 				// Give this weight based on closeness to lowest health targets. 
 
@@ -162,104 +355,114 @@ namespace AI {
 				// this will be stripped down to essentials based on what ability information we get. 
 				// TODO add general unit preferences, and ability preferences that override the general. these should affect the target and move
 
-				if (abilityName == ABILITY_SHOOT) {
-					Model::TargetRange targetRange;
-					targetRange.min_range = ability->m_intValue[MIN_RANGE];
-					targetRange.max_range = ability->m_intValue[MAX_RANGE];
-					targetRange.currentPlacement = p_info.curPos;
-					targetRange.unit = p_info.sourceUnit;
-					targetRange.blockedPos = p_info.blockedPos;
-					for (auto target : m_model.getTargetsInRange(targetRange)) {
-						if (target->m_clientId != p_info.sourceUnit->m_clientId 
-							&& target->m_attributes[UNIT_HP] > 0) {
-							Extract::Sequence attackSeq(p_currentSeq);
-							attackSeq.weight += 2;
-							auto targetPos = target->getTile()->getComponent<TileInfo>()->getPos();
-							attackSeq.actions.push_back(new Extract::Ability(targetPos.first, targetPos.second,abilityName));
-							p_sequences.push_back(attackSeq);
-							availableInfo info(p_info);
-							info.canAct = false;
-							generateSequences(attackSeq, p_sequences, info);
-						}
-					}
+				targettingInfo targetInfo = targettingInfo(ability);
 
+				auto targets = getTargetsInRange(p_retainedInfo, p_passedInfo, targetInfo);
 
-				}
-				else if (abilityName == ABILITY_QUICK_SHOOT) {
+				if (targets.size() == 0 || (targets.size() < ability.targets && !ability.selectRepeat)) continue;
 
-				}
-				else if (abilityName == ABILITY_RALLY) {
-
-				}
+				if(ability.targets > 0)
+					abilityTargetLoop(p_retainedInfo, p_passedInfo, targetInfo, targets,this).loop();
 			}
 
-			if (p_info.sourceUnit->isCommander()) {
-				// For Tile Manip
+			if (p_retainedInfo.source.isCommander) {
+				// Logic for Tile Manipulation
 				{
-					Model::TargetRange targetRange;
-					targetRange.min_range = 1;
-					targetRange.max_range = 1;
-					targetRange.currentPlacement = p_info.curPos;
-					targetRange.unit = p_info.sourceUnit;
+					targettingInfo targetInfo = targettingInfo(Extract::manipulateTile);
 
-					for (auto tile : m_model.getTargetNotOwnedTilesInRange(targetRange)) {
-						if (tile->getOwnerId() != m_playerID) {
-							Extract::Sequence manip(p_currentSeq);
-							targetRange.targetPlacement = tile->getPos();
-							if (targetRange.unit->m_AbilityBehavior.find(ABILITY_MANIPULATE_TILE) != targetRange.unit->m_AbilityBehavior.end()) {
-								manip.weight += targetRange.unit->m_AbilityBehavior[ABILITY_MANIPULATE_TILE]->calculateWeight(targetRange, m_model);
-							}
-							else {
-								manip.weight += defaultBehavior.calculateWeight(targetRange, m_model);
-							}
-							manip.actions.push_back(new Extract::ManipulateTile(tile->getPosX(), tile->getPosY()));
-							p_sequences.push_back(manip);
+					for (auto tile : getTargetsInRange(p_retainedInfo,p_passedInfo,targetInfo)) {
+						targetInfo.targets = std::vector<std::pair<int, int>>(1, tile);
+						passedInfo info(p_passedInfo);
+						info.canAct = false;
+						info.availableEnergy++;
+						info.sequence = Extract::Sequence(p_passedInfo.sequence);
 
-							availableInfo info(p_info);
-							info.canAct = false;
-							generateSequences(manip, p_sequences, info);
+						if (p_retainedInfo.source.source->m_AbilityBehavior.find(ABILITY_MANIPULATE_TILE) != p_retainedInfo.source.source->m_AbilityBehavior.end()) {
+							info.sequence.weight += p_retainedInfo.source.source->m_AbilityBehavior[ABILITY_MANIPULATE_TILE]->calculateWeight(p_retainedInfo, info, targetInfo);
 						}
+						else {
+							info.sequence.weight += defaultBehavior.calculateWeight(p_retainedInfo, info, targetInfo);
+						}
+						info.sequence.actions.push_back(
+							std::make_shared<Extract::ManipulateTile>(Extract::ManipulateTile(tile.first, tile.second))
+						);
+						if (info.sequence > p_retainedInfo.bestSequence) p_retainedInfo.bestSequence = info.sequence;
+						//p_retainedInfo.generatedSequences.push_back(info.sequence);
+
+						generateSequences(p_retainedInfo, info);
 					}
 				}
 
-				// For summoning, Currently limited for 2, so that it doesn't go too deep. 
-				if (p_info.summoned < 2) {
-					for (int i = 0; i < p_info.summonableUnits.size();++i) {
-						if (p_info.availableEnergy < m_model.hand.m_cards[p_info.summonableUnits[i]]->m_attributes[UNIT_COST])
+				// Logic for Summoning
+				if (p_passedInfo.summoned < 2) { // Limiting the AI to only summoning 2 from his hand for now
+					for (int i = 0; i < p_passedInfo.summonableUnits.size();++i) { // Go through all summonable units
+						if (p_passedInfo.availableEnergy < p_passedInfo.summonableUnits[i].cost)
 							continue;
 
-						Model::TargetRange targetRange;
-						targetRange.min_range = 1;
-						targetRange.max_range = 1;
-						targetRange.currentPlacement = p_info.curPos;
-						targetRange.unit = p_info.sourceUnit;
-						targetRange.blockedPos = p_info.blockedPos;
+						targettingInfo targetInfo = targettingInfo(Extract::summon);
 
-						for (auto target : m_model.getTargetOwnedTilesInRange(targetRange)) {
-							Extract::Sequence summoning(p_currentSeq);
-							targetRange.targetPlacement = target->getPos();
-							targetRange.targetUnit = m_model.hand.m_cards[p_info.summonableUnits[i]];
-							if (targetRange.unit->m_AbilityBehavior.find(ABILITY_SUMMON_UNIT) != targetRange.unit->m_AbilityBehavior.end()) {
-								summoning.weight += targetRange.unit->m_AbilityBehavior[ABILITY_SUMMON_UNIT]->calculateWeight(targetRange, m_model);
+						for (auto target : getTargetsInRange(p_retainedInfo,p_passedInfo,targetInfo)) {
+							targetInfo.targets = std::vector<std::pair<int, int>>(1, target);
+
+							passedInfo info(p_passedInfo);
+							info.blockedPos.push_back(target);
+							info.summonableUnits.erase(info.summonableUnits.begin() + i);
+							info.availableEnergy -= p_passedInfo.summonableUnits[i].cost;
+							++info.summoned;
+							info.handCardsPicked.push_back(p_passedInfo.summonableUnits[i].handIndex);
+
+							int handOffset = 0; // TODO this is bothering me, it JUST WORKS but find a better way later
+							for (auto handCardPicked : p_passedInfo.handCardsPicked)
+								if (handCardPicked < p_passedInfo.summonableUnits[i].handIndex)
+									++handOffset;
+
+							info.sequence = Extract::Sequence(p_passedInfo.sequence);
+							info.sequence.actions.push_back(
+								std::make_shared<Extract::Summon>(Extract::Summon(target.first, target.second, p_passedInfo.summonableUnits[i].handIndex, handOffset))
+							);
+
+							
+							// TODO change Weight Strategy
+							if (p_retainedInfo.source.source->m_AbilityBehavior.find(ABILITY_SUMMON_UNIT) != p_retainedInfo.source.source->m_AbilityBehavior.end()) {
+								info.sequence.weight += p_retainedInfo.source.source->m_AbilityBehavior[ABILITY_SUMMON_UNIT]->calculateWeight(p_retainedInfo, info, targetInfo);
 							}
 							else {
-								summoning.weight += defaultBehavior.calculateWeight(targetRange, m_model);
+								info.sequence.weight += defaultBehavior.calculateWeight(p_retainedInfo, info, targetInfo);
 							}
-							int handOffset = 0;
-							for (auto handCardPicked : p_info.handCardsPicked)
-								if (handCardPicked < p_info.summonableUnits[i])
-									++handOffset;
-							summoning.actions.push_back(new Extract::Summon(target->getPosX(), target->getPosY(), p_info.summonableUnits[i],handOffset));
-							p_sequences.push_back(summoning);
-							availableInfo info(p_info);
-							info.blockedPos.push_back(target->getPos());
-							info.summonableUnits.erase(info.summonableUnits.begin() + i);
-							info.availableEnergy -= m_model.hand.m_cards[p_info.summonableUnits[i]]->m_attributes[UNIT_COST];
-							++info.summoned;
-							info.handCardsPicked.push_back(p_info.summonableUnits[i]);
-							generateSequences(summoning, p_sequences, info);
+
+							if (info.sequence > p_retainedInfo.bestSequence) p_retainedInfo.bestSequence = info.sequence;
+							//p_retainedInfo.generatedSequences.push_back(info.sequence);
+
+							generateSequences(p_retainedInfo, info);
 						}
 					}
+				}
+			}
+			else {
+				// Logic for Join
+				targettingInfo targetInfo = targettingInfo(Extract::join);
+
+				for (auto unit : getTargetsInRange(p_retainedInfo, p_passedInfo, targetInfo)) {
+					if ( p_retainedInfo.source.lv >= 3 ||
+						p_retainedInfo.board.unit[unit.first][unit.second]->m_attributes[UNIT_LV] != p_retainedInfo.source.lv) continue;
+					targetInfo.targets = std::vector<std::pair<int, int>>(1, unit);
+					passedInfo info(p_passedInfo);
+					info.canAct = false;
+					info.sequence = Extract::Sequence(p_passedInfo.sequence);
+
+					if (p_retainedInfo.source.source->m_AbilityBehavior.find(ACTION_JOIN) != p_retainedInfo.source.source->m_AbilityBehavior.end()) {
+						info.sequence.weight += p_retainedInfo.source.source->m_AbilityBehavior[ACTION_JOIN]->calculateWeight(p_retainedInfo, info, targetInfo);
+					}
+					else {
+						info.sequence.weight += defaultBehavior.calculateWeight(p_retainedInfo, info, targetInfo);
+					}
+					info.sequence.actions.push_back(
+						std::make_shared<Extract::Join>(Extract::Join(unit.first, unit.second))
+					);
+					if (info.sequence > p_retainedInfo.bestSequence) p_retainedInfo.bestSequence = info.sequence;
+					//p_retainedInfo.generatedSequences.push_back(info.sequence);
+
+					generateSequences(p_retainedInfo, info);
 				}
 			}
 		}

@@ -3,6 +3,8 @@
 
 #define MAINSCENE_PATH "mainscene.json"
 #define TESTINGSCENE_PATH "testinggrounds.json"
+#define AI_VS_AI_PATH "AI_vs_AI.json"
+#define PLAYER_VS_AI_PATH "Player_vs_AI.json"
 #define MAINMENU_PATH "mainmenu.json"
 #define DECKBUILDER_PATH "deck-builder-deck_selection_screen.json"
 
@@ -43,7 +45,8 @@ void MainMenu::sceneChangeListener(kitten::Event::EventType p_type, kitten::Even
 {
 	std::string scenePath = p_data->getString(NEXT_SCENE_PATH_KEY);
 
-	if (scenePath == MAINSCENE_PATH || scenePath == TESTINGSCENE_PATH)
+	if (scenePath == MAINSCENE_PATH || scenePath == TESTINGSCENE_PATH 
+		|| scenePath == AI_VS_AI_PATH || scenePath == PLAYER_VS_AI_PATH)
 	{
 		kitten::K_GameObjectManager::getInstance()->destroyGameObject(sm_menuBottom);
 		kitten::K_GameObjectManager::getInstance()->destroyGameObject(sm_menuTop);

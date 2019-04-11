@@ -1246,6 +1246,9 @@
     <ClCompile Include="..\components\NameScreenSceneChanger.cpp">
       <Filter>components</Filter>
     </ClCompile>
+    <ClCompile Include="..\AI\Extract\AIUnit.cpp">
+      <Filter>AI\Extract</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\kitten\K_Common.h">
@@ -2446,9 +2449,6 @@
     <ClInclude Include="..\AI\Extract\PowerTracker.h">
       <Filter>AI\Extract</Filter>
     </ClInclude>
-    <ClInclude Include="..\AI\Extract\Unit.h">
-      <Filter>AI\Extract</Filter>
-    </ClInclude>
     <ClInclude Include="..\AI\controller.h">
       <Filter>AI</Filter>
     </ClInclude>
@@ -2496,6 +2496,9 @@
     </ClInclude>
     <ClInclude Include="..\components\NameScreenSceneChanger.h">
       <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AI\Extract\AIUnit.h">
+      <Filter>AI\Extract</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

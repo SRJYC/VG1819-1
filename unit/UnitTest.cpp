@@ -6,6 +6,7 @@
 #include "kibble/databank/databank.hpp"
 #include "unitComponent\unitAction\ActionButtonStore.h"
 #include "networking/ClientGame.h"
+#include "components/DeckInitializingComponent.h"
 
 // Includes for tile highlighting and manipulating tile
 #include "_Project\UseAbilityWhenClicked.h"
@@ -59,7 +60,11 @@ namespace unit
 		//uNEWDUMMY->getComponent<unit::UnitMove>()->setTile(6, 6);
 		//uNEWDUMMY->getComponent<Unit>()->m_clientId = 1;
 
-		kitten::K_GameObject* uNEWDUMMY2 = UnitSpawn::getInstance()->spawnUnitObject(14); // queen !!!
+		kitten::K_GameObject* uNEWDUMMY2;
+		if (DeckInitializingComponent::getActiveInstance() == nullptr)
+			uNEWDUMMY2 = UnitSpawn::getInstance()->spawnUnitObject(14); // queen !!!
+		else
+			uNEWDUMMY2 = UnitSpawn::getInstance()->spawnUnitObject(DeckInitializingComponent::getActiveInstance()->getDeckData()->commanderID);
 		uNEWDUMMY2->getComponent<unit::UnitMove>()->setTile(BoardManager::getInstance()->getSpawnPoint(0));
 		uNEWDUMMY2->getComponent<unit::Unit>()->m_clientId = 0;
 		

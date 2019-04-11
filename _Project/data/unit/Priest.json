@@ -45,7 +45,80 @@
 				"hp":5
 			}
 		],
-		"portrait_texture" : "textures/cards/500x500/Priest.tga"
+		"portrait_texture" : "textures/cards/500x500/Priest.tga",
+		"AI" : [
+			{
+				"ability" : "Heal",
+				"behavior" : {
+					"name" : "TargetAlignment",
+					"same" : 1,
+					"different" : 0,
+					"subBehavior" : [
+						{
+							"name" : "TargetAttributePercentage",
+							"attribute" : "hp",
+							"multiplier" : 1,
+							"attFrom" : 1.8,
+							"attTo" : 0.2
+						}
+					]
+				}
+			},
+			{
+				"ability" : "Encourage",
+				"behavior" : {
+					"name" : "TargetHasStatus",
+					"multiplier" : 1,
+					"status": "Status_Encourage",
+					"weightIfHas": 0,
+					"weightIfNot" : 1,
+					"subBehavior" : [
+						{
+							"name" : "TargetAttribute",
+							"multiplier" : 1,
+							"attribute" : "hp",
+							"attFrom" : 0,
+							"attTo" : 10
+						}, 
+						{
+							"name" : "TargetAlignment",
+							"same" : 1,
+							"different" : -2
+						}
+					]
+				}
+			},
+			{
+				"ability" : "mv",
+				"behavior" : {
+					"name" : "Behavior",
+					"multiplier" : 1,
+					"subBehavior" : [
+						{
+							"name" : "LowestAttribUnit",
+							"target" : "ally",
+							"attribute" : "hp",
+							"multiplier" : 1.2
+						},
+						{
+							"name" : "NearestUnit",
+							"target": "enemy",
+							"multiplier" : 0.3,
+							"flip" : true
+						}
+					]
+				}
+			},
+			{
+				"ability" : "Join",
+				"behavior" : {
+					"name" : "OwnAttribute",
+					"attribute" : "hp",
+					"attFrom" : 20,
+					"attTo" : 0
+				}
+			}
+		]
 	},
 	"components" : [
 		{

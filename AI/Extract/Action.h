@@ -15,7 +15,7 @@ namespace AI {
 		};
 
 		struct Sequence {
-			std::vector<Action*> actions;
+			std::vector<std::shared_ptr<Action>> actions;
 			double weight = 0;
 			int cStep = 0;
 			bool complete = false;
@@ -25,6 +25,9 @@ namespace AI {
 			Sequence();
 			~Sequence();
 
+			bool operator>( const Sequence& r) const {
+				return this->weight > r.weight;
+			}
 			struct weightComp {
 				bool operator()(const Sequence& l, const Sequence& r) const { return l.weight > r.weight; }
 			};
@@ -46,6 +49,14 @@ namespace AI {
 			void run(unit::Unit* p_unit) override;
 		};
 
+		struct Join : public Action {
+			int targetX, targetY;
+
+			Join(int targetX, int targetY) : targetX(targetX), targetY(targetY) {}
+
+			void run(unit::Unit* p_unit) override;
+		};
+
 		struct Summon : public Action {
 			int targetX, targetY;
 			int targetToSummon;
@@ -59,6 +70,13 @@ namespace AI {
 			int targetX, targetY;
 			std::string abilityName;
 			Ability(int targetX, int targetY, std::string abilityName) : targetX(targetX), targetY(targetY),abilityName(abilityName) {}
+			void run(unit::Unit* p_unit) override;
+		};
+
+		struct MultiTargetAbility : public Action {
+			std::vector<std::pair<int, int>> targetPositions;
+			std::string abilityName;
+			MultiTargetAbility(std::vector<std::pair<int, int>> targetPositions, std::string abilityName) : targetPositions(targetPositions), abilityName(abilityName) {}
 			void run(unit::Unit* p_unit) override;
 		};
 

@@ -44,14 +44,34 @@
 			{
 				"ability" : "Manipulate Tile",
 				"behavior" : {
-					"name" : "TileOwnership",
-					"ownTeam" : false
+					"name" : "ForEachTarget",
+					"subBehavior" : [
+						{
+							"name" : "NearestUnit",
+							"multiplier" : 0.1,
+							"flip" : true,
+							"target" : "enemy"
+						},
+						{
+							"name" : "TileOwnership",
+							"ownTeam" : false,
+							"multiplier" : 0.9
+						}
+					]
 				}
 			},
 			{
 				"ability" : "mv",
 				"behavior" : {
-					"name" : "NearestEnemy"
+					"name" : "NearestUnit",
+					"target" : "enemy"
+				}
+			},
+			{
+				"ability" : "Rally",
+				"behavior" : {
+					"name" : "Behavior",
+					"multiplier" : -1
 				}
 			}
 		]

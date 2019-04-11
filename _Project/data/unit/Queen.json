@@ -32,7 +32,50 @@
 				"description":"Select 4 owned tile, change them into [Homeland]. [Homeland] can grant ally defensive power and extra movement when ally stay on it. "
 			}
 		],
-		"portrait_texture" : "textures/cards/500x500/Queen.tga"
+		"portrait_texture" : "textures/cards/500x500/Queen.tga",
+		"AI" : [
+			{
+				"ability" : "Here is Homeland",
+				"behavior" : {
+					"name" : "ForEachTarget",
+					"multiplier" : 0.275,
+					"subBehavior" : [
+						{
+							"name" : "TileType",
+							"type" : "Home_land",
+							"same" : 0,
+							"different": 1
+						}
+					]
+				}
+			},
+			{
+				"ability" : "Manipulate Tile",
+				"behavior" : {
+					"name" : "ForEachTarget",
+					"subBehavior" : [
+						{
+							"name" : "NearestUnit",
+							"multiplier" : 0.1,
+							"flip" : true,
+							"target" : "enemy"
+						},
+						{
+							"name" : "TileOwnership",
+							"ownTeam" : false,
+							"multiplier" : 0.9
+						}
+					]
+				}
+			},
+			{
+				"ability" : "mv",
+				"behavior" : {
+					"name" : "NearestUnit",
+					"target" : "enemy"
+				}
+			}
+		]
 	},
 	"components" : [
 		{

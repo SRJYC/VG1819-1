@@ -54,7 +54,53 @@
 				"ad_value_1_0":-1
 			}
 		],
-		"portrait_texture" : "textures/cards/500x500/Knight.tga"
+		"portrait_texture" : "textures/cards/500x500/Knight.tga",
+		"AI" : [
+			{
+				"ability" : "Slay",
+				"behavior" : {
+					"name" : "TargetAlignment",
+					"same" : 0,
+					"subBehavior" : [
+						{
+							"name" : "NearestUnit",
+							"target" : "enemy"
+						},
+						{
+							"name" : "NearestUnit",
+							"target" : "ally",
+							"flip" : true,
+							"multiplier" : 0.3
+						}
+					]
+				}
+			},
+			{
+				"ability" : "Defend",
+				"behavior" : {
+					"name" : "OwnAttributePercentage",
+					"attribute" : "hp",
+					"attFrom" : 1.5,
+					"attTo" : 0
+				}
+			},
+			{
+				"ability" : "mv",
+				"behavior" : {
+					"name" : "NearestUnit",
+					"target" : "enemy"
+				}
+			},
+			{
+				"ability" : "Join",
+				"behavior" : {
+					"name" : "OwnAttribute",
+					"attribute" : "hp",
+					"attFrom" : 16,
+					"attTo" : 0
+				}
+			}
+		]
 	},
 	"components" : [
 		{

@@ -49,18 +49,65 @@
 		],
 		"portrait_texture" : "textures/cards/500x500/Archer.tga",
 		"AI" : [
-
 			{
 				"ability" : "Shoot",
 				"behavior" : {
-					"name" : "NearestEnemy",
-					"attribute" : "hp"
+					"name" : "TargetAlignment",
+					"same" : -1,
+					"subBehavior" : [
+						{
+							"name" : "TargetAttributePercentage",
+							"attribute" : "hp",
+							"multiplier" : 1.5,
+							"attFrom" : 1.8,
+							"attTo" : 0,
+							"wFrom" : 0,
+							"wTo" : 1.2
+						}
+					]
+				}
+			},
+			{
+				"ability" : "Quick Shoot",
+				"behavior" : {
+					"name" : "ForEachTarget",
+					"multiplier" : 0.75,
+					"subBehavior" : [
+						{
+							"name" : "TargetAlignment",
+							"same" : -50,
+							"subBehavior" : [
+								{
+									"name" : "TargetAttribute",
+									"multiplier" : 0.8,
+									"attribute" : "hp",
+									"attFrom" : 50,
+									"attTo" : 0
+								}, 
+								{
+									"name" : "RepeatedTarget",
+									"multiplier" : 0.2,
+									"newWeight" : 0.5
+								}
+							]
+						}
+					]
 				}
 			},
 			{
 				"ability" : "mv",
 				"behavior" : {
-					"name" : "NearestEnemy"
+					"name" : "NearestUnit",
+					"target" : "enemy"
+				}
+			},
+			{
+				"ability" : "Join",
+				"behavior" : {
+					"name" : "OwnAttribute",
+					"attribute" : "hp",
+					"attFrom" : 16,
+					"attTo" : 0
 				}
 			}
 		]
